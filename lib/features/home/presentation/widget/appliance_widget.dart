@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:sizer/sizer.dart';
 import 'package:solar_calculator/commen/helpers/icon_helper.dart';
 import 'package:solar_calculator/features/home/model/appliances.dart';
 import 'package:solar_calculator/features/home/presentation/cubit/home/home_cubit.dart';
@@ -34,7 +35,6 @@ class _ApplianceIconState extends State<ApplianceIcon> {
         isDarkMode ? Colors.black.withOpacity(0.7) : Colors.grey.shade500;
     final shadowColor2 = isDarkMode ? Colors.grey.shade800 : Colors.white;
 
-    // جابجایی سایه‌ها برای ایجاد حس فرورفتگی
     final pressedShadows = [
       BoxShadow(
         color: shadowColor2, // سایه روشن در پایین-راست
@@ -62,43 +62,46 @@ class _ApplianceIconState extends State<ApplianceIcon> {
       ),
     ];
 
-    return GestureDetector(
-      onTap: _onTap,
-      child: AnimatedContainer(
-        duration: Durations.short1,
-        decoration: BoxDecoration(
-          color: backgroundColor,
-          borderRadius: BorderRadius.circular(20),
-          boxShadow: _isPressed ? pressedShadows : releasedShadows,
-        ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Expanded(flex: 15, child: SizedBox()),
-            Expanded(
-              flex: 40,
-              child: FittedBox(
-                child: Icon(
-                  IconWrapper.getMaterialIcon(widget.catgory.icon),
-                  // size: 40,
-                  color: Theme.of(context).colorScheme.primary,
+    return SizedBox(
+      height: 1.h > 1.w ? 10.h : 8.w,
+      width: 1.h > 1.w ? 10.h : 8.w,
+      child: GestureDetector(
+        onTap: _onTap,
+        child: AnimatedContainer(
+          duration: Durations.short1,
+          decoration: BoxDecoration(
+            color: backgroundColor,
+            borderRadius: BorderRadius.circular(20),
+            boxShadow: _isPressed ? pressedShadows : releasedShadows,
+          ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Expanded(flex: 15, child: SizedBox()),
+              Expanded(
+                flex: 40,
+                child: FittedBox(
+                  child: Icon(
+                    IconWrapper.getMaterialIcon(widget.catgory.icon),
+                    color: Theme.of(context).colorScheme.primary,
+                  ),
                 ),
               ),
-            ),
-            Expanded(flex: 10, child: SizedBox()),
+              Expanded(flex: 10, child: SizedBox()),
 
-            Expanded(
-              flex: 20,
-              child: FittedBox(
-                child: Text(
-                  widget.catgory.name,
-                  style: TextStyle(fontWeight: FontWeight.w600),
-                  textAlign: TextAlign.center,
+              Expanded(
+                flex: 20,
+                child: FittedBox(
+                  child: Text(
+                    widget.catgory.name,
+                    style: TextStyle(fontWeight: FontWeight.w600),
+                    textAlign: TextAlign.center,
+                  ),
                 ),
               ),
-            ),
-            Expanded(flex: 15, child: SizedBox()),
-          ],
+              Expanded(flex: 15, child: SizedBox()),
+            ],
+          ),
         ),
       ),
     );

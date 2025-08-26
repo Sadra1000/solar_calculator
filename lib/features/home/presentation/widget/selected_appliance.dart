@@ -1,8 +1,6 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
 import 'package:sizer/sizer.dart';
-import 'package:solar_calculator/commen/constants.dart';
-
 import 'package:solar_calculator/commen/helpers/persian.dart';
 
 class GroupCard extends StatelessWidget {
@@ -30,71 +28,54 @@ class GroupCard extends StatelessWidget {
     final theme = Theme.of(context);
 
     return Container(
+      height: 1.w > 1.h ? 5.w : 7.h,
       width: double.infinity,
-      padding: EdgeInsets.symmetric(vertical: 10.sp),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(12),
         color: theme.colorScheme.tertiaryContainer,
       ),
-      child: LayoutBuilder(
-        builder:
-            (_, box) => AspectRatio(
-              aspectRatio: calculateAR(box.maxWidth),
-              child: Row(
-                children: [
-                  Expanded(flex: 1, child: SizedBox.shrink()),
-                  Expanded(flex: 4, child: FittedBox(child: Icon(icon))),
-                  Expanded(flex: 1, child: SizedBox.shrink()),
+      child: Row(
+        children: [
+          Spacer(flex: 1),
+          Expanded(flex: 2, child: FittedBox(child: Icon(icon))),
+          Expanded(
+            flex: 24,
+            child: Row(
+              children: [
+                // متن نام
+                Text(
+                  name,
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: 1,
+                  style: theme.textTheme.labelSmall,
+                ),
 
-                  Expanded(
-                    flex: 10,
-                    child: FittedBox(
-                      child: Text(
-                        name,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ),
-                  ),
+                // فاصله کوچک بین دو متن
+                SizedBox(width: 2.w),
 
-                  Expanded(flex: 1, child: SizedBox.shrink()),
-                  Expanded(
-                    flex: 10,
-                    child: FittedBox(
-                      child: Text(
-                        'توان کل: ${totalWh.toString().toWhPersian()} ',
-                      ),
-                    ),
-                  ),
-                  Expanded(flex: 33, child: SizedBox.shrink()),
-
-                  Expanded(
-                    flex: 14,
-                    child: _QuantityController(
-                      count: count,
-                      onAdd: onAdd,
-                      onRemoveOne: onRemoveOne,
-                      onRemoveAll: onRemoveAll,
-                    ),
-                  ),
-                  Expanded(flex: 1, child: SizedBox.shrink()),
-                ],
-              ),
+                // متن توان کل
+                Text(
+                  'توان کل: ${totalWh.toString().toWhPersian()} ',
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: 1,
+                  textAlign: TextAlign.start,
+                  style: theme.textTheme.titleSmall,
+                ),
+              ],
             ),
+          ),
+          Expanded(
+            flex: 6,
+            child: _QuantityController(
+              count: count,
+              onAdd: onAdd,
+              onRemoveOne: onRemoveOne,
+              onRemoveAll: onRemoveAll,
+            ),
+          ),
+        ],
       ),
     );
-  }
-
-  double calculateAR(double b) {
-    if (b >= Constants.kDesktopBreakpoint) {
-      // Desktop Layout (and very large tablets in landscape)
-      return 10 / 0.36;
-    } else if (b >= Constants.kPhoneBreakpoint) {
-      // Tablet Layout (and large phones in landscape)
-      return 10 / 0.56;
-    } else {
-      return 10 / 0.8;
-    }
   }
 }
 
@@ -126,7 +107,7 @@ class _QuantityController extends StatelessWidget {
               child: IconButton(
                 onPressed: onAdd,
                 icon: const Icon(Icons.add),
-                tooltip: 'افزودن کردن یکی',
+                tooltip: 'افزودن یکی',
               ),
             ),
           ),

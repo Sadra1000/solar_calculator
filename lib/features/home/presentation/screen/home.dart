@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sizer/sizer.dart';
-import 'package:solar_calculator/commen/constants.dart';
 import 'package:solar_calculator/commen/helpers/icon_helper.dart';
 import 'package:solar_calculator/commen/widgets/error.dart';
 import 'package:solar_calculator/commen/widgets/loading.dart';
@@ -9,9 +8,7 @@ import 'package:solar_calculator/features/home/presentation/cubit/home/home_cubi
 import 'package:solar_calculator/features/home/presentation/cubit/home/home_state.dart';
 import 'package:solar_calculator/features/home/presentation/widget/Appliance_widget.dart';
 import 'package:solar_calculator/features/home/presentation/widget/selected_appliance.dart';
-import 'package:solar_calculator/features/home/presentation/widget/settings_switchItem.dart';
 import 'package:solar_calculator/features/home/model/appliances.dart';
-import 'package:solar_calculator/theme/theme_cubit.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -51,82 +48,19 @@ class _HomePageState extends State<HomePage> {
       },
       child: Directionality(
         textDirection: TextDirection.rtl,
-        child: LayoutBuilder(
-          builder: (context, constraints) {
-            final double screenWidth = constraints.minWidth;
-            if (screenWidth >= Constants.kDesktopBreakpoint) {
-              // Desktop Layout (and very large tablets in landscape)
-              return _buildDesktopLayout(context, (screenWidth / 200).round());
-            } else if (screenWidth >= Constants.kPhoneBreakpoint) {
-              // Tablet Layout (and large phones in landscape)
-              return _buildTabletLayout(context, (screenWidth / 150).round());
-            } else {
-              return _buildTabletLayout(context, (screenWidth / 75).round());
-            }
-          },
+        child: Scaffold(
+          body: Column(
+            children: [
+              _buildSelectedContainer(context),
+              _buildApplianceGrid(),
+              _buildCalculateButton(),
+            ],
+          ),
         ),
       ),
     );
   }
 
-  /// Builds the layout for desktop screens.
-  Widget _buildDesktopLayout(BuildContext context, int crossAxisCount) {
-    return BlocListener<HomeCubit, HomeState>(
-      listener: (context, state) {
-        if (state.isLoading) {}
-      },
-      child: Scaffold(
-        body: Row(
-          children: [
-            _buildMenu(widthScaleFactor: 1.0),
-            const VerticalDivider(width: 1, indent: 18, endIndent: 18),
-
-            Expanded(
-              child: SingleChildScrollView(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                  child: Column(
-                    children: [
-                      _buildSelectedContainer(context),
-                      _buildApplianceGrid(crossAxisCount: crossAxisCount),
-
-                      _buildCalculateButton(),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  /// Builds the layout for tablet screens.
-  Widget _buildTabletLayout(BuildContext context, int crossAxisCount) {
-    return Scaffold(
-      appBar: AppBar(),
-
-      floatingActionButtonLocation: FloatingActionButtonLocation.startFloat,
-      floatingActionButton: FloatingActionButton.large(
-        tooltip: "محاسبه و نمایش نتایج",
-        onPressed: () => BlocProvider.of<HomeCubit>(context).process(context),
-        child: Text("محاسبه"),
-      ),
-      drawer: _buildMenu(widthScaleFactor: 1.1),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            _buildSelectedContainer(context),
-
-            _buildApplianceGrid(crossAxisCount: crossAxisCount),
-          ],
-        ),
-      ),
-    );
-  }
-
-  /// The results container with min height constraints.
   Widget _buildSelectedContainer(BuildContext context) {
     return BlocBuilder<HomeCubit, HomeState>(
       buildWhen:
@@ -150,7 +84,7 @@ class _HomePageState extends State<HomePage> {
         }
 
         return Padding(
-          padding: EdgeInsets.symmetric(vertical: 8.h, horizontal: 5.w),
+          padding: EdgeInsets.symmetric(vertical: 8.h, horizontal: 2.w),
           child: Column(
             children:
                 groups.entries.map((entry) {
@@ -186,11 +120,10 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  /// The calculate button
   Widget _buildCalculateButton() {
     return SizedBox(
-      height: 17.h,
-      width: 30.w,
+      height: 1.h > 1.w ? 12.h : 15.h,
+      width: 1.h > 1.w ? 25.w : 20.w,
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 24.0),
         child: SizedBox.expand(
@@ -200,10 +133,8 @@ class _HomePageState extends State<HomePage> {
               BlocProvider.of<HomeCubit>(context).process(context);
             },
             child: Text(
-              'محاسبه کن',
-              style: Theme.of(context).textTheme.headlineMedium!.copyWith(
-                color: Theme.of(context).colorScheme.onPrimary,
-              ),
+              'حساب کن!',
+              style: TextStyle(color: Theme.of(context).colorScheme.onPrimary),
             ),
           ),
         ),
@@ -211,134 +142,20 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  /// A reusable GridView builder for appliances.
-  Widget _buildApplianceGrid({required int crossAxisCount}) {
+  Widget _buildApplianceGrid() {
     return BlocBuilder<HomeCubit, HomeState>(
       buildWhen:
           (previous, current) => previous.initialList != current.initialList,
       builder: (context, state) {
-        final itemHeight = 23.h;
-        final verticalSpacing = 2.h;
-        final totalHeight =
-            (itemHeight *
-                ((state.initialList.length / crossAxisCount).ceil() -
-                    (crossAxisCount / 10).ceil())) +
-            (verticalSpacing *
-                (((state.initialList.length / crossAxisCount).ceil()) - 1));
-        return SizedBox(
-          height: totalHeight,
-          child: GridView.builder(
-            padding: EdgeInsets.symmetric(horizontal: 3.w),
-            physics: const NeverScrollableScrollPhysics(),
-            shrinkWrap: true,
-            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: crossAxisCount,
-              mainAxisSpacing: verticalSpacing,
-              crossAxisSpacing: 2.w, // فاصله ستون‌ها
-              childAspectRatio: 1, // نسبت ابعاد آیتم
-            ),
-            itemCount: state.initialList.length,
-            itemBuilder: (context, index) {
-              final appliance = state.initialList[index];
-              return ApplianceIcon(catgory: appliance);
-            },
-          ),
+        return Wrap(
+          spacing: 1.h > 1.w ? 1.h : 1.w,
+          runSpacing: 1.h > 1.w ? 1.h : 1.w,
+          children: List.generate(state.initialList.length, (index) {
+            final appliance = state.initialList[index];
+            return ApplianceIcon(catgory: appliance);
+          }),
         );
       },
-    );
-  }
-
-  /// The settings menu, used as a permanent panel or a drawer.
-  Widget _buildMenu({required double widthScaleFactor}) {
-    return Drawer(
-      width: 350 * widthScaleFactor,
-      child: BlocBuilder<HomeCubit, HomeState>(
-        buildWhen:
-            (previous, current) =>
-                (previous.aiprocessing != current.aiprocessing ||
-                    previous.ecoprocessing != current.ecoprocessing ||
-                    previous.envirprocessing != current.ecoprocessing),
-        builder: (context, state) {
-          return Column(
-            children: [
-              Expanded(
-                child: ListView(
-                  padding: EdgeInsets.zero, // Remove default padding
-                  children: [
-                    SizedBox(
-                      height: 50 * widthScaleFactor,
-                    ), // Give some space at top
-                    Center(
-                      child: Text(
-                        'ماشین حساب خورشیدی',
-                        style: TextStyle(
-                          fontSize: 20 * widthScaleFactor,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 24),
-                    SettingsSwitchItem(
-                      icon: Icons.smart_toy_outlined,
-                      title: 'تحلیل AI',
-                      scalefactor: widthScaleFactor,
-                      value: state.aiprocessing,
-                      onChanged: (val) {
-                        context.read<HomeCubit>().toggleAIProcessing(val);
-                      },
-                    ),
-                    SettingsSwitchItem(
-                      scalefactor: widthScaleFactor,
-                      icon: Icons.diamond_sharp,
-                      title: 'تحلیل اقتصادی',
-                      value: state.ecoprocessing,
-                      onChanged: (val) {
-                        context.read<HomeCubit>().toggleEcoProcessing(val);
-                      },
-                    ),
-                    SettingsSwitchItem(
-                      icon: Icons.energy_savings_leaf_sharp,
-                      title: 'تحلیل زیست محیطی',
-                      scalefactor: widthScaleFactor,
-                      value: state.envirprocessing,
-                      onChanged: (val) {
-                        context.read<HomeCubit>().toggleEnvirProcessing(val);
-                      },
-                    ),
-                    const SizedBox(height: 12),
-                  ],
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: GestureDetector(
-                  onTap: () {
-                    context.read<ThemeCubit>().changeThemeMode();
-                  },
-                  child: AnimatedSwitcher(
-                    duration: Durations.long4,
-                    transitionBuilder:
-                        (child, animation) =>
-                            RotationTransition(turns: animation, child: child),
-                    child:
-                        Theme.of(context).brightness == Brightness.dark
-                            ? const Icon(
-                              Icons.dark_mode,
-                              key: ValueKey('dark_mode'),
-                              color: Colors.blueGrey,
-                            )
-                            : const Icon(
-                              Icons.light_mode,
-                              key: ValueKey('light_mode'),
-                              color: Colors.amber,
-                            ),
-                  ),
-                ),
-              ),
-            ],
-          );
-        },
-      ),
     );
   }
 
