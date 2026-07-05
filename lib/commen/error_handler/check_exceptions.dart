@@ -40,7 +40,7 @@ class CheckExceptions {
   static Future<DataState> getError(Object error) async {
     if (error is DioException) {
       if (error.message?.contains('DEEPSEEK_API_KEY') ?? false) {
-        return const DataFailed(ApiErrorKeys.auth);
+        return const DataFailed(ApiErrorKeys.deepSeekApiKeyMissing);
       }
       return response(error.response);
     } else {

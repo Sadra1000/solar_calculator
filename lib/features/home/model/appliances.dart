@@ -66,7 +66,16 @@ class Appliance {
       icon: icon,
       name: map['name'] as String,
       powerUsage: map['power_usage'] as int,
-      houres: map['hours'] as double,
+      houres: (map['hours'] as num).toDouble(),
+    );
+  }
+
+  factory Appliance.fromStoredMap(Map<String, dynamic> map) {
+    return Appliance(
+      icon: map['icon'] as int,
+      name: map['name'] as String,
+      powerUsage: map['powerUsage'] as int,
+      houres: (map['houres'] as num).toDouble(),
     );
   }
 }

@@ -37,4 +37,9 @@ extension PersianDigits on String {
     final value = locale == null ? this : localizedDigits(locale);
     return '${value}kg';
   }
+
+  String toTomanPersian([Locale? locale]) {
+    final value = locale == null ? this : localizedDigits(locale);
+    return '${value} تومان';
+  }
 }

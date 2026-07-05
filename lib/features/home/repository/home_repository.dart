@@ -4,8 +4,15 @@ import 'dart:convert';
 import 'package:solar_calculator/commen/data_state.dart';
 import 'package:solar_calculator/commen/error_handler/check_exceptions.dart';
 import 'package:solar_calculator/commen/helpers/api_errors.dart';
+import 'package:solar_calculator/commen/helpers/solar_fallback.dart';
+import 'package:solar_calculator/features/home/data/remote/deepseek_prompt.dart';
 import 'package:solar_calculator/features/home/data/remote/home_api.dart';
 import 'package:solar_calculator/features/home/model/appliances.dart';
+import 'package:solar_calculator/features/home/model/appliances_schema.dart';
+import 'package:solar_calculator/features/home/model/preset_profiles.dart';
+import 'package:solar_calculator/features/result/repository/model.dart';
+import 'package:solar_calculator/features/solar/iran_cities.dart';
+import 'package:solar_calculator/features/solar/solar_calculator.dart';
 
 class HomeRepository {
   final String applianceJson;
@@ -14,49 +21,170 @@ class HomeRepository {
 
   DataState<List<AppliancesCatgory>> getAppliances() {
     try {
-      List<AppliancesCatgory> list = [];
-      for (var element in (jsonDecode(applianceJson) as List<dynamic>)) {
-        list.add(AppliancesCatgory.fromMap(element));
+      final decoded = jsonDecode(applianceJson);
+      AppliancesSchema.validate(decoded);
+
+      final list = <AppliancesCatgory>[];
+      for (final element in decoded as List<dynamic>) {
+        list.add(AppliancesCatgory.fromMap(element as Map<String, dynamic>));
       }
       return DataSuccess(list);
+    } on FormatException catch (e) {
+      return DataFailed('Invalid appliance catalog: ${e.message}');
     } catch (e) {
       return DataFailed(e.toString());
     }
   }
 
-  /// تابعی که لیست وسایل برقی را دریافت کرده و مدل مصرف را برمی‌گرداند
   Map<String, dynamic> calculateConsumption(List<Appliance> appliances) {
-    // مقادیر ثابت برای محاسبات
     const int daysInYear = 365;
     const int monthsInYear = 12;
-    // ضریب متوسط جهانی تولید دی‌اکسید کربن به ازای هر کیلووات‌ساعت
     const double kgCo2PerKwh = 0.417;
 
-    // محاسبه مجموع مصرف روزانه تمام دستگاه‌ها به کیلووات‌ساعت
     double totalDailyKwh = 0.0;
     for (final appliance in appliances) {
-      // تبدیل وات به کیلووات (تقسیم بر 1000) و ضرب در ساعات استفاده
       final dailyKwh = (appliance.powerUsage / 1000.0) * appliance.houres;
       totalDailyKwh += dailyKwh;
     }
 
-    // محاسبه مقادیر نهایی
     final double yearlyKwh = totalDailyKwh * daysInYear;
     final double monthlyKwh = yearlyKwh / monthsInYear;
     final double yearlyCo2 = yearlyKwh * kgCo2PerKwh;
 
-    // ساخت و بازگرداندن مدل خروجی
     return {
-      "dailyConsumption": totalDailyKwh,
-      "monthlyConsumption": monthlyKwh,
-      "yearlyConsumption": yearlyKwh,
-      "yearlyCo2Production": yearlyCo2,
+      'dailyConsumption': totalDailyKwh,
+      'monthlyConsumption': monthlyKwh,
+      'yearlyConsumption': yearlyKwh,
+      'yearlyCo2Production': yearlyCo2,
     };
   }
 
-  Future<DataState<dynamic>> callDeepSeek(List<Appliance> list) async {
+  List<ApplianceConsumptionShare> computeApplianceShares(
+    List<Appliance> appliances,
+  ) {
+    final totals = <String, double>{};
+    for (final appliance in appliances) {
+      final dailyKwh = (appliance.powerUsage / 1000.0) * appliance.houres;
+      totals[appliance.name] = (totals[appliance.name] ?? 0) + dailyKwh;
+    }
+    return totals.entries
+        .map((e) => ApplianceConsumptionShare(name: e.key, dailyKwh: e.value))
+        .toList()
+      ..sort((a, b) => b.dailyKwh.compareTo(a.dailyKwh));
+  }
+
+  Appliance? findApplianceByName(String name) {
+    final data = getAppliances();
+    if (data is! DataSuccess<List<AppliancesCatgory>>) return null;
+    final categories = data.data ?? [];
+    for (final category in categories) {
+      for (final appliance in category.appliance) {
+        if (appliance.name == name) return appliance;
+      }
+    }
+    return null;
+  }
+
+  List<Appliance> resolvePresetAppliances(PresetProfile preset) {
+    final resolved = <Appliance>[];
+    for (final ref in preset.appliances) {
+      final base = findApplianceByName(ref.name);
+      if (base != null) {
+        resolved.add(base.copyWith(houres: ref.hours ?? base.houres));
+      }
+    }
+    return resolved;
+  }
+
+  ResulteModel buildResultModel({
+    required List<Appliance> appliances,
+    required String cityId,
+    required double electricityRateToman,
+    required String languageCode,
+    String analysis = '',
+  }) {
+    final map = calculateConsumption(appliances);
+    final daily = map['dailyConsumption'] as double;
+    final monthly = map['monthlyConsumption'] as double;
+    final yearly = map['yearlyConsumption'] as double;
+    final co2 = map['yearlyCo2Production'] as double;
+    final city = cityById(cityId);
+    final solar = SolarCalculator.calculate(
+      dailyKwh: daily,
+      city: city,
+      cityDisplayName: city.localizedName(languageCode),
+    );
+
+    return ResulteModel(
+      analysis: analysis,
+      dailyConsumption: daily,
+      monthlyConsumption: monthly,
+      yearlyConsumption: yearly,
+      yearlyCo2Production: co2,
+      applianceShares: computeApplianceShares(appliances),
+      solarSizing: solar,
+      monthlyCostToman: monthly * electricityRateToman,
+      yearlyCostToman: yearly * electricityRateToman,
+      electricityRateToman: electricityRateToman,
+    );
+  }
+
+  String buildUserPrompt({
+    required List<Appliance> appliances,
+    required double dailyKwh,
+    required double monthlyKwh,
+    required double yearlyKwh,
+    required String cityDisplayName,
+    required double electricityRateToman,
+  }) {
+    return DeepSeekPrompt.buildUserMessage(
+      appliancesJson: jsonEncode(_sortAppliances(appliances)),
+      dailyKwh: dailyKwh,
+      monthlyKwh: monthlyKwh,
+      yearlyKwh: yearlyKwh,
+      city: cityDisplayName,
+      budget: '${electricityRateToman.round()} تومان/kWh',
+    );
+  }
+
+  String buildFallbackAnalysis({
+    required double dailyKwh,
+    required double monthlyKwh,
+    required double yearlyKwh,
+    required String cityDisplayName,
+    double? electricityRateToman,
+  }) {
+    final budget =
+        electricityRateToman != null
+            ? '${electricityRateToman.round()} تومان/kWh'
+            : null;
+    return SolarFallback.buildRecommendation(
+      dailyKwh: dailyKwh,
+      monthlyKwh: monthlyKwh,
+      yearlyKwh: yearlyKwh,
+      city: cityDisplayName,
+      budget: budget,
+    );
+  }
+
+  Future<DataState<String>> callDeepSeek({
+    required List<Appliance> appliances,
+    required double dailyKwh,
+    required double monthlyKwh,
+    required double yearlyKwh,
+    required String cityDisplayName,
+    required double electricityRateToman,
+  }) async {
     try {
-      final res = await api.callDeepSeekApi(jsonEncode(_sortAppliances(list)));
+      final prompt = buildUserPrompt(
+        appliances: appliances,
+        dailyKwh: dailyKwh,
+        monthlyKwh: monthlyKwh,
+        yearlyKwh: yearlyKwh,
+        cityDisplayName: cityDisplayName,
+        electricityRateToman: electricityRateToman,
+      );
+      final res = await api.callDeepSeekApi(prompt);
       final data = res.data as Map<String, dynamic>;
       final choices = data['choices'] as List<dynamic>?;
       if (choices == null || choices.isEmpty) {
@@ -70,23 +198,41 @@ class HomeRepository {
       }
       return DataSuccess(content);
     } catch (e) {
-      return await CheckExceptions.getError(e);
+      final errorState = await CheckExceptions.getError(e);
+      return DataFailed(errorState.message ?? ApiErrorKeys.generic);
     }
   }
 
+  Stream<String> streamDeepSeek({
+    required List<Appliance> appliances,
+    required double dailyKwh,
+    required double monthlyKwh,
+    required double yearlyKwh,
+    required String cityDisplayName,
+    required double electricityRateToman,
+  }) {
+    final prompt = buildUserPrompt(
+      appliances: appliances,
+      dailyKwh: dailyKwh,
+      monthlyKwh: monthlyKwh,
+      yearlyKwh: yearlyKwh,
+      cityDisplayName: cityDisplayName,
+      electricityRateToman: electricityRateToman,
+    );
+    return api.streamDeepSeekApi(prompt);
+  }
+
   List<Map<String, dynamic>> _sortAppliances(List<Appliance> list) {
-    List<Map<String, dynamic>> sortedList = [];
-    for (var appliance in list) {
-      if (sortedList.any((element) => element["name"] == appliance.name)) {
-        sortedList
-            .where((element) => element["name"] == appliance.name)
-            .first["count"]++;
+    final sortedList = <Map<String, dynamic>>[];
+    for (final appliance in list) {
+      final existing = sortedList.where((e) => e['name'] == appliance.name);
+      if (existing.isNotEmpty) {
+        existing.first['count'] = (existing.first['count'] as int) + 1;
       } else {
-        // اگر وسیله جدید بود، یک ورودی جدید در مپ ایجاد کن.
         sortedList.add({
           'name': appliance.name,
           'consumption': appliance.powerUsage,
-          'count': 1, // شمارش از 1 شروع می شود
+          'count': 1,
           'hours': appliance.houres,
         });
       }

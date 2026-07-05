@@ -271,6 +271,294 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'An unexpected error occurred.'**
   String get genericError;
+
+  /// Dismiss button on error dialog
+  ///
+  /// In en, this message translates to:
+  /// **'Close'**
+  String get close;
+
+  /// Retry button on error dialog
+  ///
+  /// In en, this message translates to:
+  /// **'Retry'**
+  String get retry;
+
+  /// Helper text when calculate button is disabled
+  ///
+  /// In en, this message translates to:
+  /// **'Select at least one appliance to calculate.'**
+  String get selectAppliancesToCalculate;
+
+  /// Running total daily consumption on home screen
+  ///
+  /// In en, this message translates to:
+  /// **'Estimated daily consumption: {value}'**
+  String liveDailyConsumption(String value);
+
+  /// Error when DEEPSEEK_API_KEY environment variable is missing
+  ///
+  /// In en, this message translates to:
+  /// **'The AI API key (DEEPSEEK_API_KEY) is not configured. Add it to your .env file to enable smart analysis.'**
+  String get deepSeekApiKeyMissing;
+
+  /// Placeholder when AI analysis was not requested or failed
+  ///
+  /// In en, this message translates to:
+  /// **'AI analysis is not available. Local calculation results are shown below.'**
+  String get analysisNotAvailable;
+
+  /// Toggle label for optional DeepSeek analysis on home screen
+  ///
+  /// In en, this message translates to:
+  /// **'Include AI solar advice (DeepSeek)'**
+  String get enableAiAnalysis;
+
+  /// Section title for preset appliance bundles
+  ///
+  /// In en, this message translates to:
+  /// **'Quick presets'**
+  String get presetsTitle;
+
+  /// Tooltip for editing operating hours on a group card
+  ///
+  /// In en, this message translates to:
+  /// **'Edit hours'**
+  String get editHours;
+
+  /// Label for custom appliance name field
+  ///
+  /// In en, this message translates to:
+  /// **'Appliance name'**
+  String get applianceName;
+
+  /// Label for custom appliance wattage field
+  ///
+  /// In en, this message translates to:
+  /// **'Power (watts)'**
+  String get powerWatts;
+
+  /// Label for city selection dropdown
+  ///
+  /// In en, this message translates to:
+  /// **'City'**
+  String get selectCity;
+
+  /// Label for configurable electricity rate input
+  ///
+  /// In en, this message translates to:
+  /// **'Electricity rate (Toman/kWh)'**
+  String get electricityRate;
+
+  /// Label for estimated monthly electricity bill
+  ///
+  /// In en, this message translates to:
+  /// **'Monthly electricity cost:'**
+  String get monthlyCost;
+
+  /// Label for estimated yearly electricity bill
+  ///
+  /// In en, this message translates to:
+  /// **'Yearly electricity cost:'**
+  String get yearlyCost;
+
+  /// Section title for formula-based solar sizing
+  ///
+  /// In en, this message translates to:
+  /// **'Suggested solar system'**
+  String get solarSizingTitle;
+
+  /// Label for recommended solar panel count
+  ///
+  /// In en, this message translates to:
+  /// **'Panel count:'**
+  String get panelCount;
+
+  /// Label for total solar array capacity
+  ///
+  /// In en, this message translates to:
+  /// **'Array capacity:'**
+  String get arrayCapacity;
+
+  /// Label for recommended inverter size
+  ///
+  /// In en, this message translates to:
+  /// **'Inverter capacity:'**
+  String get inverterCapacity;
+
+  /// Label for recommended battery storage
+  ///
+  /// In en, this message translates to:
+  /// **'Backup battery capacity:'**
+  String get batteryCapacity;
+
+  /// Label for city irradiance used in sizing
+  ///
+  /// In en, this message translates to:
+  /// **'Solar irradiance factor:'**
+  String get irradianceFactor;
+
+  /// Title for pie chart of per-appliance consumption
+  ///
+  /// In en, this message translates to:
+  /// **'Consumption by appliance'**
+  String get consumptionByAppliance;
+
+  /// Title for bar chart comparing daily and monthly use
+  ///
+  /// In en, this message translates to:
+  /// **'Daily vs monthly consumption'**
+  String get consumptionComparison;
+
+  /// Short label for daily consumption bar
+  ///
+  /// In en, this message translates to:
+  /// **'Daily'**
+  String get dailyShort;
+
+  /// Short label for monthly consumption bar
+  ///
+  /// In en, this message translates to:
+  /// **'Monthly'**
+  String get monthlyShort;
+
+  /// Solar panel count with unit
+  ///
+  /// In en, this message translates to:
+  /// **'{count} panels'**
+  String panelsUnit(int count);
+
+  /// Validation message for custom appliance form
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter a valid name and wattage.'**
+  String get invalidApplianceInput;
+
+  /// First onboarding slide title
+  ///
+  /// In en, this message translates to:
+  /// **'Welcome to Solar Calculator'**
+  String get onboardingTitle1;
+
+  /// First onboarding slide body
+  ///
+  /// In en, this message translates to:
+  /// **'Estimate your daily energy use and see how solar can power your home.'**
+  String get onboardingBody1;
+
+  /// Second onboarding slide title
+  ///
+  /// In en, this message translates to:
+  /// **'Select your appliances'**
+  String get onboardingTitle2;
+
+  /// Second onboarding slide body
+  ///
+  /// In en, this message translates to:
+  /// **'Pick devices, set operating hours, and see consumption instantly.'**
+  String get onboardingBody2;
+
+  /// Third onboarding slide title
+  ///
+  /// In en, this message translates to:
+  /// **'Plan your solar system'**
+  String get onboardingTitle3;
+
+  /// Third onboarding slide body
+  ///
+  /// In en, this message translates to:
+  /// **'Get sizing recommendations, cost estimates, and smart advice.'**
+  String get onboardingBody3;
+
+  /// Onboarding next button
+  ///
+  /// In en, this message translates to:
+  /// **'Next'**
+  String get onboardingNext;
+
+  /// Onboarding back button
+  ///
+  /// In en, this message translates to:
+  /// **'Back'**
+  String get onboardingBack;
+
+  /// Onboarding finish button
+  ///
+  /// In en, this message translates to:
+  /// **'Get started'**
+  String get onboardingGetStarted;
+
+  /// History screen title
+  ///
+  /// In en, this message translates to:
+  /// **'Calculation history'**
+  String get historyTitle;
+
+  /// Empty history placeholder
+  ///
+  /// In en, this message translates to:
+  /// **'No saved calculations yet.'**
+  String get historyEmpty;
+
+  /// History entry appliance summary
+  ///
+  /// In en, this message translates to:
+  /// **'{count} appliances: {summary}'**
+  String historyApplianceSummary(int count, String summary);
+
+  /// Search field hint on home screen
+  ///
+  /// In en, this message translates to:
+  /// **'Search appliances…'**
+  String get searchAppliances;
+
+  /// Empty search results message
+  ///
+  /// In en, this message translates to:
+  /// **'No appliances found.'**
+  String get noSearchResults;
+
+  /// Tooltip for light/dark theme button
+  ///
+  /// In en, this message translates to:
+  /// **'Toggle theme'**
+  String get themeToggle;
+
+  /// Tooltip for language switch button
+  ///
+  /// In en, this message translates to:
+  /// **'Toggle language'**
+  String get languageToggle;
+
+  /// Share results action
+  ///
+  /// In en, this message translates to:
+  /// **'Share results'**
+  String get shareResults;
+
+  /// CO2 trees equivalent
+  ///
+  /// In en, this message translates to:
+  /// **'≈ {count} trees per year to offset'**
+  String co2TreeEquivalent(String count);
+
+  /// CO2 car km equivalent
+  ///
+  /// In en, this message translates to:
+  /// **'≈ {km} km of driving'**
+  String co2CarKmEquivalent(String km);
+
+  /// Banner when AI failed and fallback text is shown
+  ///
+  /// In en, this message translates to:
+  /// **'AI unavailable — showing formula-based recommendation.'**
+  String get aiFallbackNotice;
+
+  /// Tooltip to retry AI analysis on result screen
+  ///
+  /// In en, this message translates to:
+  /// **'Refresh AI analysis'**
+  String get refreshAnalysis;
 }
 
 class _AppLocalizationsDelegate

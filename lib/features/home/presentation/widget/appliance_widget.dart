@@ -110,55 +110,176 @@ class _ApplianceIconState extends State<ApplianceIcon> {
     showDialog(
       context: context,
       builder: (dialogContext) {
+        var searchQuery = '';
+
         return Directionality(
           textDirection: textDirection,
-          child: AlertDialog(
-            title: Text(l10n.selectFromCategory(category.name)),
-            content: SizedBox(
-              width: double.maxFinite,
-              height: adaptiveDialogHeight(maxHeight),
-              child: Column(
-                children: [
-                  Expanded(
-                    child: ListView.builder(
-                      itemCount: category.appliance.length,
-                      itemBuilder: (context, index) {
-                        final subCategory = category.appliance[index];
-                        return ListTile(
-                          title: Text(subCategory.name),
-                          subtitle: Text(
-                            l10n.watts(subCategory.powerUsage),
-                          ),
-                          onTap: () {
-                            Navigator.of(dialogContext).pop();
-                            _showHourSelectionDialog(context, subCategory);
-                          },
-                        );
-                      },
-                    ),
+          child: StatefulBuilder(
+            builder: (context, setDialogState) {
+              final query = searchQuery.trim().toLowerCase();
+              final filtered =
+                  category.appliance.where((sub) {
+                    if (query.isEmpty) return true;
+                    return sub.name.toLowerCase().contains(query);
+                  }).toList();
+
+              return AlertDialog(
+                title: Text(l10n.selectFromCategory(category.name)),
+                content: SizedBox(
+                  width: double.maxFinite,
+                  height: adaptiveDialogHeight(maxHeight),
+                  child: Column(
+                    children: [
+                      TextField(
+                        decoration: InputDecoration(
+                          hintText: l10n.searchAppliances,
+                          prefixIcon: const Icon(Icons.search),
+                          isDense: true,
+                        ),
+                        onChanged: (value) {
+                          setDialogState(() => searchQuery = value);
+                        },
+                      ),
+                      const SizedBox(height: 8),
+                      Expanded(
+                        child:
+                            filtered.isEmpty
+                                ? Center(child: Text(l10n.noSearchResults))
+                                : ListView.builder(
+                                  itemCount: filtered.length,
+                                  itemBuilder: (context, index) {
+                                    final subCategory = filtered[index];
+                                    return ListTile(
+                                      title: Text(subCategory.name),
+                                      subtitle: Text(
+                                        l10n.watts(subCategory.powerUsage),
+                                      ),
+                                      onTap: () {
+                                        Navigator.of(dialogContext).pop();
+                                        _showHourSelectionDialog(
+                                          context,
+                                          subCategory,
+                                        );
+                                      },
+                                    );
+                                  },
+                                ),
+                      ),
+                      const Divider(),
+                      OutlinedButton.icon(
+                        icon: const Icon(Icons.add),
+                        label: Text(l10n.addNewAppliance),
+                        onPressed: () {
+                          Navigator.of(dialogContext).pop();
+                          _showCustomApplianceDialog(context, category);
+                        },
+                      ),
+                    ],
                   ),
-                  const Divider(),
-                  OutlinedButton.icon(
-                    icon: const Icon(Icons.add),
-                    label: Text(l10n.addNewAppliance),
+                ),
+                actions: [
+                  TextButton(
                     onPressed: () {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text(l10n.featureNotImplemented)),
-                      );
+                      Navigator.of(dialogContext).pop();
                     },
+                    child: Text(l10n.cancel),
                   ),
                 ],
-              ),
-            ),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  Navigator.of(dialogContext).pop();
-                },
-                child: Text(l10n.cancel),
-              ),
-            ],
+              );
+            },
           ),
+        );
+      },
+    );
+  }
+
+  void _showCustomApplianceDialog(
+    BuildContext context,
+    AppliancesCatgory category,
+  ) {
+    final l10n = AppLocalizations.of(context)!;
+    final locale = Localizations.localeOf(context);
+    final nameController = TextEditingController();
+    final wattsController = TextEditingController();
+    double selectedHours = 4.0;
+
+    showDialog(
+      context: context,
+      builder: (dialogContext) {
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return AlertDialog(
+              title: Text(l10n.addNewAppliance),
+              content: SingleChildScrollView(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    TextField(
+                      controller: nameController,
+                      decoration: InputDecoration(
+                        labelText: l10n.applianceName,
+                        border: const OutlineInputBorder(),
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    TextField(
+                      controller: wattsController,
+                      keyboardType: TextInputType.number,
+                      decoration: InputDecoration(
+                        labelText: l10n.powerWatts,
+                        border: const OutlineInputBorder(),
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    Text(
+                      l10n.hoursValue(
+                        selectedHours
+                            .toStringAsFixed(1)
+                            .localizedDigits(locale),
+                      ),
+                      style: Theme.of(context).textTheme.titleMedium,
+                    ),
+                    Slider(
+                      value: selectedHours,
+                      min: 0,
+                      max: 24,
+                      divisions: 96,
+                      onChanged: (value) {
+                        setState(() => selectedHours = value);
+                      },
+                    ),
+                  ],
+                ),
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.of(dialogContext).pop(),
+                  child: Text(l10n.cancel),
+                ),
+                FilledButton(
+                  onPressed: () {
+                    final watts = int.tryParse(wattsController.text.trim());
+                    if (nameController.text.trim().isEmpty ||
+                        watts == null ||
+                        watts <= 0) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text(l10n.invalidApplianceInput)),
+                      );
+                      return;
+                    }
+                    BlocProvider.of<HomeCubit>(context).addCustomAppliance(
+                      categoryIcon: category.icon,
+                      name: nameController.text,
+                      watts: watts,
+                      hours: selectedHours,
+                    );
+                    Navigator.of(dialogContext).pop();
+                  },
+                  child: Text(l10n.confirm),
+                ),
+              ],
+            );
+          },
         );
       },
     );

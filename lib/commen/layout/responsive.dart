@@ -1,10 +1,5 @@
 import 'package:flutter/material.dart';
-
-class AppBreakpoints {
-  static const double largeScreenMinWidth = 600;
-  static const double contentMaxWidth = 1200;
-  static const double resultContentMaxWidth = 1000;
-}
+import 'package:solar_calculator/commen/constants.dart';
 
 bool isLargeScreen(double maxWidth) =>
     maxWidth > AppBreakpoints.largeScreenMinWidth;

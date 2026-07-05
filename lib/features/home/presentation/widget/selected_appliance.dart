@@ -12,6 +12,7 @@ class GroupCard extends StatelessWidget {
   final VoidCallback onAdd;
   final VoidCallback onRemoveOne;
   final VoidCallback onRemoveAll;
+  final VoidCallback onEditHours;
 
   const GroupCard({
     super.key,
@@ -23,6 +24,7 @@ class GroupCard extends StatelessWidget {
     required this.onAdd,
     required this.onRemoveOne,
     required this.onRemoveAll,
+    required this.onEditHours,
   });
 
   @override
@@ -32,52 +34,60 @@ class GroupCard extends StatelessWidget {
     final locale = Localizations.localeOf(context);
     final cardHeight = adaptiveGroupCardHeight(maxWidth);
 
-    return Container(
-      height: cardHeight,
-      width: double.infinity,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(12),
-        color: theme.colorScheme.tertiaryContainer,
-      ),
-      child: Row(
-        children: [
-          const SizedBox(width: 12),
-          Icon(icon),
-          const SizedBox(width: 12),
-          Expanded(
-            flex: 25,
-            child: Row(
-              children: [
-                Flexible(
-                  child: Text(
-                    name,
-                    overflow: TextOverflow.ellipsis,
-                    maxLines: 1,
-                    style: theme.textTheme.labelMedium,
-                  ),
-                ),
-                const SizedBox(width: 12),
-                Flexible(
-                  child: Text(
-                    l10n.totalPower(
-                      totalWh.toString().toWhPersian(locale),
+    return GestureDetector(
+      onLongPress: onEditHours,
+      child: Container(
+        height: cardHeight,
+        width: double.infinity,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(12),
+          color: theme.colorScheme.tertiaryContainer,
+        ),
+        child: Row(
+          children: [
+            const SizedBox(width: 12),
+            Icon(icon),
+            const SizedBox(width: 12),
+            Expanded(
+              flex: 25,
+              child: Row(
+                children: [
+                  Flexible(
+                    child: Text(
+                      name,
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 1,
+                      style: theme.textTheme.labelMedium,
                     ),
-                    overflow: TextOverflow.ellipsis,
-                    maxLines: 1,
-                    style: theme.textTheme.titleMedium,
                   ),
-                ),
-              ],
+                  const SizedBox(width: 12),
+                  Flexible(
+                    child: Text(
+                      l10n.totalPower(
+                        totalWh.toString().toWhPersian(locale),
+                      ),
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 1,
+                      style: theme.textTheme.titleMedium,
+                    ),
+                  ),
+                ],
+              ),
             ),
-          ),
-          _QuantityController(
-            count: count,
-            locale: locale,
-            onAdd: onAdd,
-            onRemoveOne: onRemoveOne,
-            onRemoveAll: onRemoveAll,
-          ),
-        ],
+            IconButton(
+              onPressed: onEditHours,
+              icon: const Icon(Icons.edit_outlined),
+              tooltip: l10n.editHours,
+            ),
+            _QuantityController(
+              count: count,
+              locale: locale,
+              onAdd: onAdd,
+              onRemoveOne: onRemoveOne,
+              onRemoveAll: onRemoveAll,
+            ),
+          ],
+        ),
       ),
     );
   }

@@ -145,5 +145,219 @@
   "genericError": "An unexpected error occurred.",
   "@genericError": {
     "description": "Fallback error message"
+  },
+  "close": "Close",
+  "@close": {
+    "description": "Dismiss button on error dialog"
+  },
+  "retry": "Retry",
+  "@retry": {
+    "description": "Retry button on error dialog"
+  },
+  "selectAppliancesToCalculate": "Select at least one appliance to calculate.",
+  "@selectAppliancesToCalculate": {
+    "description": "Helper text when calculate button is disabled"
+  },
+  "liveDailyConsumption": "Estimated daily consumption: {value}",
+  "@liveDailyConsumption": {
+    "description": "Running total daily consumption on home screen",
+    "placeholders": {
+      "value": {
+        "type": "String",
+        "example": "2.5kWh"
+      }
+    }
+  },
+  "deepSeekApiKeyMissing": "The AI API key (DEEPSEEK_API_KEY) is not configured. Add it to your .env file to enable smart analysis.",
+  "@deepSeekApiKeyMissing": {
+    "description": "Error when DEEPSEEK_API_KEY environment variable is missing"
+  },
+  "analysisNotAvailable": "AI analysis is not available. Local calculation results are shown below.",
+  "@analysisNotAvailable": {
+    "description": "Placeholder when AI analysis was not requested or failed"
+  },
+  "enableAiAnalysis": "Include AI solar advice (DeepSeek)",
+  "@enableAiAnalysis": {
+    "description": "Toggle label for optional DeepSeek analysis on home screen"
+  },
+  "presetsTitle": "Quick presets",
+  "@presetsTitle": {
+    "description": "Section title for preset appliance bundles"
+  },
+  "editHours": "Edit hours",
+  "@editHours": {
+    "description": "Tooltip for editing operating hours on a group card"
+  },
+  "applianceName": "Appliance name",
+  "@applianceName": {
+    "description": "Label for custom appliance name field"
+  },
+  "powerWatts": "Power (watts)",
+  "@powerWatts": {
+    "description": "Label for custom appliance wattage field"
+  },
+  "selectCity": "City",
+  "@selectCity": {
+    "description": "Label for city selection dropdown"
+  },
+  "electricityRate": "Electricity rate (Toman/kWh)",
+  "@electricityRate": {
+    "description": "Label for configurable electricity rate input"
+  },
+  "monthlyCost": "Monthly electricity cost:",
+  "@monthlyCost": {
+    "description": "Label for estimated monthly electricity bill"
+  },
+  "yearlyCost": "Yearly electricity cost:",
+  "@yearlyCost": {
+    "description": "Label for estimated yearly electricity bill"
+  },
+  "solarSizingTitle": "Suggested solar system",
+  "@solarSizingTitle": {
+    "description": "Section title for formula-based solar sizing"
+  },
+  "panelCount": "Panel count:",
+  "@panelCount": {
+    "description": "Label for recommended solar panel count"
+  },
+  "arrayCapacity": "Array capacity:",
+  "@arrayCapacity": {
+    "description": "Label for total solar array capacity"
+  },
+  "inverterCapacity": "Inverter capacity:",
+  "@inverterCapacity": {
+    "description": "Label for recommended inverter size"
+  },
+  "batteryCapacity": "Backup battery capacity:",
+  "@batteryCapacity": {
+    "description": "Label for recommended battery storage"
+  },
+  "irradianceFactor": "Solar irradiance factor:",
+  "@irradianceFactor": {
+    "description": "Label for city irradiance used in sizing"
+  },
+  "consumptionByAppliance": "Consumption by appliance",
+  "@consumptionByAppliance": {
+    "description": "Title for pie chart of per-appliance consumption"
+  },
+  "consumptionComparison": "Daily vs monthly consumption",
+  "@consumptionComparison": {
+    "description": "Title for bar chart comparing daily and monthly use"
+  },
+  "dailyShort": "Daily",
+  "@dailyShort": {
+    "description": "Short label for daily consumption bar"
+  },
+  "monthlyShort": "Monthly",
+  "@monthlyShort": {
+    "description": "Short label for monthly consumption bar"
+  },
+  "panelsUnit": "{count} panels",
+  "@panelsUnit": {
+    "description": "Solar panel count with unit",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "8"
+      }
+    }
+  },
+  "invalidApplianceInput": "Please enter a valid name and wattage.",
+  "@invalidApplianceInput": {
+    "description": "Validation message for custom appliance form"
+  },
+  "onboardingTitle1": "Welcome to Solar Calculator",
+  "@onboardingTitle1": {
+    "description": "First onboarding slide title"
+  },
+  "onboardingBody1": "Estimate your daily energy use and see how solar can power your home.",
+  "@onboardingBody1": {
+    "description": "First onboarding slide body"
+  },
+  "onboardingTitle2": "Select your appliances",
+  "@onboardingTitle2": {
+    "description": "Second onboarding slide title"
+  },
+  "onboardingBody2": "Pick devices, set operating hours, and see consumption instantly.",
+  "@onboardingBody2": {
+    "description": "Second onboarding slide body"
+  },
+  "onboardingTitle3": "Plan your solar system",
+  "@onboardingTitle3": {
+    "description": "Third onboarding slide title"
+  },
+  "onboardingBody3": "Get sizing recommendations, cost estimates, and smart advice.",
+  "@onboardingBody3": {
+    "description": "Third onboarding slide body"
+  },
+  "onboardingNext": "Next",
+  "@onboardingNext": {
+    "description": "Onboarding next button"
+  },
+  "onboardingBack": "Back",
+  "@onboardingBack": {
+    "description": "Onboarding back button"
+  },
+  "onboardingGetStarted": "Get started",
+  "@onboardingGetStarted": {
+    "description": "Onboarding finish button"
+  },
+  "historyTitle": "Calculation history",
+  "@historyTitle": {
+    "description": "History screen title"
+  },
+  "historyEmpty": "No saved calculations yet.",
+  "@historyEmpty": {
+    "description": "Empty history placeholder"
+  },
+  "historyApplianceSummary": "{count} appliances: {summary}",
+  "@historyApplianceSummary": {
+    "description": "History entry appliance summary",
+    "placeholders": {
+      "count": {"type": "int"},
+      "summary": {"type": "String"}
+    }
+  },
+  "searchAppliances": "Search appliances…",
+  "@searchAppliances": {
+    "description": "Search field hint on home screen"
+  },
+  "noSearchResults": "No appliances found.",
+  "@noSearchResults": {
+    "description": "Empty search results message"
+  },
+  "themeToggle": "Toggle theme",
+  "@themeToggle": {
+    "description": "Tooltip for light/dark theme button"
+  },
+  "languageToggle": "Toggle language",
+  "@languageToggle": {
+    "description": "Tooltip for language switch button"
+  },
+  "shareResults": "Share results",
+  "@shareResults": {
+    "description": "Share results action"
+  },
+  "co2TreeEquivalent": "≈ {count} trees per year to offset",
+  "@co2TreeEquivalent": {
+    "description": "CO2 trees equivalent",
+    "placeholders": {
+      "count": {"type": "String"}
+    }
+  },
+  "co2CarKmEquivalent": "≈ {km} km of driving",
+  "@co2CarKmEquivalent": {
+    "description": "CO2 car km equivalent",
+    "placeholders": {
+      "km": {"type": "String"}
+    }
+  },
+  "aiFallbackNotice": "AI unavailable — showing formula-based recommendation.",
+  "@aiFallbackNotice": {
+    "description": "Banner when AI failed and fallback text is shown"
+  },
+  "refreshAnalysis": "Refresh AI analysis",
+  "@refreshAnalysis": {
+    "description": "Tooltip to retry AI analysis on result screen"
   }
 }

@@ -1,0 +1,804 @@
+[
+  {
+    "icon": 1,
+    "name": "تلویزیون",
+    "sub_categories": [
+      {
+        "name": "تلویزیون LED 32 اینچ",
+        "power_usage": 60,
+        "hours": 8
+      },
+      {
+        "name": "تلویزیون LED 43 اینچ",
+        "power_usage": 80,
+        "hours": 8
+      },
+      {
+        "name": "تلویزیون LED 50 اینچ",
+        "power_usage": 100,
+        "hours": 8
+      },
+      {
+        "name": "تلویزیون LED 55 اینچ",
+        "power_usage": 130,
+        "hours": 8
+      },
+      {
+        "name": "تلویزیون LED 65 اینچ",
+        "power_usage": 180,
+        "hours": 8
+      },
+      {
+        "name": "تلویزیون OLED 55 اینچ",
+        "power_usage": 120,
+        "hours": 8
+      },
+      {
+        "name": "تلویزیون QLED 55 اینچ",
+        "power_usage": 140,
+        "hours": 8
+      }
+    ]
+  },
+  {
+    "icon": 2,
+    "name": "لباسشویی",
+    "sub_categories": [
+      {
+        "name": "ماشین لباسشویی کوچک (5 کیلو)",
+        "power_usage": 1200,
+        "hours": 1
+      },
+      {
+        "name": "ماشین لباسشویی متوسط (7 کیلو)",
+        "power_usage": 1800,
+        "hours": 1
+      },
+      {
+        "name": "ماشین لباسشویی بزرگ (9 کیلو)",
+        "power_usage": 2500,
+        "hours": 1
+      },
+      {
+        "name": "ماشین لباسشویی انرژی A+",
+        "power_usage": 1000,
+        "hours": 1
+      },
+      {
+        "name": "ماشین لباسشویی با آبگرمکن",
+        "power_usage": 3000,
+        "hours": 1
+      }
+    ]
+  },
+  {
+    "icon": 3,
+    "name": "یخچال",
+    "sub_categories": [
+      {
+        "name": "یخچال کوچک (3 فوت)",
+        "power_usage": 120,
+        "hours": 24
+      },
+      {
+        "name": "یخچال متوسط (9 فوت)",
+        "power_usage": 180,
+        "hours": 24
+      },
+      {
+        "name": "یخچال دوقلو (12 فوت)",
+        "power_usage": 200,
+        "hours": 24
+      },
+      {
+        "name": "یخچال ساید بای ساید",
+        "power_usage": 400,
+        "hours": 24
+      },
+      {
+        "name": "یخچال فریزر بزرگ (24 فوت)",
+        "power_usage": 300,
+        "hours": 24
+      },
+      {
+        "name": "یخچال انرژی A++",
+        "power_usage": 150,
+        "hours": 24
+      }
+    ]
+  },
+  {
+    "icon": 4,
+    "name": "کولر گازی",
+    "sub_categories": [
+      {
+        "name": "کولر گازی 9000 BTU",
+        "power_usage": 900,
+        "hours": 8
+      },
+      {
+        "name": "کولر گازی 12000 BTU",
+        "power_usage": 1200,
+        "hours": 8
+      },
+      {
+        "name": "کولر گازی 18000 BTU",
+        "power_usage": 1800,
+        "hours": 8
+      },
+      {
+        "name": "کولر گازی 24000 BTU",
+        "power_usage": 2400,
+        "hours": 8
+      },
+      {
+        "name": "کولر گازی 30000 BTU",
+        "power_usage": 3000,
+        "hours": 8
+      },
+      {
+        "name": "کولر گازی اینورتر",
+        "power_usage": 800,
+        "hours": 8
+      }
+    ]
+  },
+  {
+    "icon": 5,
+    "name": "جاروبرقی",
+    "sub_categories": [
+      {
+        "name": "جاروبرقی کم قدرت",
+        "power_usage": 800,
+        "hours": 1
+      },
+      {
+        "name": "جاروبرقی متوسط",
+        "power_usage": 1500,
+        "hours": 1
+      },
+      {
+        "name": "جاروبرقی قدرتمند",
+        "power_usage": 2200,
+        "hours": 1
+      },
+      {
+        "name": "جاروبرقی رباتیک",
+        "power_usage": 40,
+        "hours": 2
+      },
+      {
+        "name": "جاروبرقی سطلی",
+        "power_usage": 2500,
+        "hours": 1
+      }
+    ]
+  },
+  {
+    "icon": 6,
+    "name": "اسپلیت",
+    "sub_categories": [
+      {
+        "name": "کولر اسپلیت 12000",
+        "power_usage": 1200,
+        "hours": 8
+      },
+      {
+        "name": "کولر اسپلیت 18000",
+        "power_usage": 1800,
+        "hours": 8
+      },
+      {
+        "name": "کولر اسپلیت 24000",
+        "power_usage": 2400,
+        "hours": 8
+      },
+      {
+        "name": "کولر اسپلیت اینورتر",
+        "power_usage": 1000,
+        "hours": 8
+      }
+    ]
+  },
+  {
+    "icon": 7,
+    "name": "کولر آبی",
+    "sub_categories": [
+      {
+        "name": "کولر آبی کوچک",
+        "power_usage": 250,
+        "hours": 10
+      },
+      {
+        "name": "کولر آبی متوسط",
+        "power_usage": 400,
+        "hours": 10
+      },
+      {
+        "name": "کولر آبی بزرگ",
+        "power_usage": 600,
+        "hours": 10
+      },
+      {
+        "name": "کولر آبی صنعتی",
+        "power_usage": 800,
+        "hours": 10
+      }
+    ]
+  },
+  {
+    "icon": 8,
+    "name": "پنکه",
+    "sub_categories": [
+      {
+        "name": "پنکه رومیزی",
+        "power_usage": 50,
+        "hours": 8
+      },
+      {
+        "name": "پنکه پایه دار",
+        "power_usage": 75,
+        "hours": 8
+      },
+      {
+        "name": "پنکه سقفی",
+        "power_usage": 120,
+        "hours": 8
+      },
+      {
+        "name": "پنکه دیواری",
+        "power_usage": 80,
+        "hours": 8
+      }
+    ]
+  },
+  {
+  "icon": 9,
+  "name": "لامپ",
+  "sub_categories": [
+    {
+      "name": "لامپ ال‌ای‌دی (LED)",
+      "power_usage": 9,
+      "hours": 8
+    },
+     {
+      "name": "لامپ مهتابی",
+      "power_usage": 30,
+      "hours": 8
+    },
+    {
+      "name": "لامپ کم‌مصرف 20",
+      "power_usage": 20,
+      "hours": 8
+    },
+    {
+      "name": "لامپ کم‌مصرف 40",
+      "power_usage": 40,
+      "hours": 8
+    },{
+      "name": "لامپ کم‌مصرف 100",
+      "power_usage": 100,
+      "hours": 8
+    },
+    {
+      "name": "لامپ هالوژن",
+      "power_usage":10,
+      "hours": 8
+    }
+  ]
+  },
+  {
+    "icon": 10,
+    "name": "کنسول بازی",
+    "sub_categories": [
+      {
+        "name": "PlayStation 4",
+        "power_usage": 150,
+        "hours": 4
+      },
+      {
+        "name": "PlayStation 5",
+        "power_usage": 200,
+        "hours": 4
+      },
+      {
+        "name": "Xbox One",
+        "power_usage": 140,
+        "hours": 4
+      },
+      {
+        "name": "Xbox Series X",
+        "power_usage": 180,
+        "hours": 4
+      },
+      {
+        "name": "Nintendo Switch",
+        "power_usage": 40,
+        "hours": 4
+      }
+    ]
+  },
+  {
+    "icon": 11,
+    "name": "بخاری برقی",
+    "sub_categories": [
+      {
+        "name": "بخاری برقی کوچک",
+        "power_usage": 1000,
+        "hours": 6
+      },
+      {
+        "name": "بخاری برقی متوسط",
+        "power_usage": 2000,
+        "hours": 6
+      },
+      {
+        "name": "بخاری برقی بزرگ",
+        "power_usage": 3000,
+        "hours": 6
+      },
+      {
+        "name": "بخاری هیتر",
+        "power_usage": 2500,
+        "hours": 6
+      },
+      {
+        "name": "بخاری گازی برقی",
+        "power_usage": 4500,
+        "hours": 6
+      }
+    ]
+  },
+  {
+    "icon": 12,
+    "name": "آبگرمکن",
+    "sub_categories": [
+      {
+        "name": "آبگرمکن برقی 30 لیتر",
+        "power_usage": 1200,
+        "hours": 3
+      },
+      {
+        "name": "آبگرمکن برقی 50 لیتر",
+        "power_usage": 1800,
+        "hours": 3
+      },
+      {
+        "name": "آبگرمکن برقی 80 لیتر",
+        "power_usage": 2400,
+        "hours": 3
+      },
+      {
+        "name": "آبگرمکن تصریحی",
+        "power_usage": 6000,
+        "hours": 1
+      }
+    ]
+  },
+  {
+    "icon": 13,
+    "name": "ظرفشویی",
+    "sub_categories": [
+      {
+        "name": "ماشین ظرفشویی کوچک",
+        "power_usage": 1200,
+        "hours": 2
+      },
+      {
+        "name": "ماشین ظرفشویی متوسط",
+        "power_usage": 1800,
+        "hours": 2
+      },
+      {
+        "name": "ماشین ظرفشویی بزرگ",
+        "power_usage": 2400,
+        "hours": 2
+      },
+      {
+        "name": "ماشین ظرفشویی انرژی A+",
+        "power_usage": 1000,
+        "hours": 2
+      }
+    ]
+  },
+  {
+    "icon": 14,
+    "name": "مایکروویو",
+    "sub_categories": [
+      {
+        "name": "مایکروویو 700 وات",
+        "power_usage": 700,
+        "hours": 0.5
+      },
+      {
+        "name": "مایکروویو 850 وات",
+        "power_usage": 850,
+        "hours": 0.5
+      },
+      {
+        "name": "مایکروویو 1000 وات",
+        "power_usage": 1000,
+        "hours": 0.5
+      },
+      {
+        "name": "مایکروویو 1200 وات",
+        "power_usage": 1200,
+        "hours": 0.5
+      },
+      {
+        "name": "مایکروویو گریل دار",
+        "power_usage": 2000,
+        "hours": 0.5
+      }
+    ]
+  },
+  {
+    "icon": 15,
+    "name": "مودم",
+    "sub_categories": [
+      {
+        "name": "مودم ADSL",
+        "power_usage": 15,
+        "hours": 24
+      },
+      {
+        "name": "مودم VDSL",
+        "power_usage": 20,
+        "hours": 24
+      },
+      {
+        "name": "روتر بی سیم",
+        "power_usage": 25,
+        "hours": 24
+      },
+      {
+        "name": "مودم فیبر نوری",
+        "power_usage": 30,
+        "hours": 24
+      }
+    ]
+  },
+  {
+    "icon": 16,
+    "name": "پلوپز",
+    "sub_categories": [
+      {
+        "name": "پلوپز 4 نفره",
+        "power_usage": 400,
+        "hours": 1.5
+      },
+      {
+        "name": "پلوپز 6 نفره",
+        "power_usage": 600,
+        "hours": 1.5
+      },
+      {
+        "name": "پلوپز 8 نفره",
+        "power_usage": 800,
+        "hours": 1.5
+      },
+      {
+        "name": "پلوپز دیجیتال",
+        "power_usage": 700,
+        "hours": 1.5
+      }
+    ]
+  },
+  {
+    "icon": 17,
+    "name": "مخلوط‌کن",
+    "sub_categories": [
+      {
+        "name": "مخلوط کن ساده",
+        "power_usage": 300,
+        "hours": 0.25
+      },
+      {
+        "name": "مخلوط کن متوسط",
+        "power_usage": 500,
+        "hours": 0.25
+      },
+      {
+        "name": "مخلوط کن قدرتمند",
+        "power_usage": 800,
+        "hours": 0.25
+      },
+      {
+        "name": "مخلوط کن حرفه ای",
+        "power_usage": 1200,
+        "hours": 0.25
+      }
+    ]
+  },
+  {
+    "icon": 18,
+    "name": "قهوه‌ساز",
+    "sub_categories": [
+      {
+        "name": "قهوه ساز معمولی",
+        "power_usage": 600,
+        "hours": 0.5
+      },
+      {
+        "name": "قهوه ساز اسپرسو",
+        "power_usage": 1200,
+        "hours": 0.5
+      },
+      {
+        "name": "قهوه ساز کپسولی",
+        "power_usage": 800,
+        "hours": 0.25
+      },
+      {
+        "name": "قهوه ساز حرفه ای",
+        "power_usage": 1500,
+        "hours": 0.5
+      }
+    ]
+  },
+  {
+    "icon": 19,
+    "name": "چای‌ساز",
+    "sub_categories": [
+      {
+        "name": "چای ساز کوچک",
+        "power_usage": 800,
+        "hours": 1
+      },
+      {
+        "name": "چای ساز متوسط",
+        "power_usage": 1200,
+        "hours": 1
+      },
+      {
+        "name": "چای ساز بزرگ",
+        "power_usage": 1800,
+        "hours": 1
+      },
+      {
+        "name": "سماور برقی",
+        "power_usage": 2000,
+        "hours": 1
+      }
+    ]
+  },
+  {
+    "icon": 20,
+    "name": "توستر",
+    "sub_categories": [
+      {
+        "name": "توستر 2 نان",
+        "power_usage": 700,
+        "hours": 0.1
+      },
+      {
+        "name": "توستر 4 نان",
+        "power_usage": 1000,
+        "hours": 0.1
+      },
+      {
+        "name": "آون توستر",
+        "power_usage": 1500,
+        "hours": 0.5
+      },
+      {
+        "name": "توستر دیجیتال",
+        "power_usage": 900,
+        "hours": 0.1
+      }
+    ]
+  },
+  {
+    "icon": 21,
+    "name": "سرخ‌کن",
+    "sub_categories": [
+      {
+        "name": "سرخ کن کوچک",
+        "power_usage": 1200,
+        "hours": 0.5
+      },
+      {
+        "name": "سرخ کن متوسط",
+        "power_usage": 1500,
+        "hours": 0.5
+      },
+      {
+        "name": "سرخ کن بزرگ",
+        "power_usage": 1800,
+        "hours": 0.5
+      },
+      {
+        "name": "سرخ کن بدون روغن",
+        "power_usage": 1400,
+        "hours": 0.75
+      }
+    ]
+  },
+  {
+    "icon": 22,
+    "name": "چرخ گوشت",
+    "sub_categories": [
+      {
+        "name": "چرخ گوشت کوچک",
+        "power_usage": 300,
+        "hours": 0.25
+      },
+      {
+        "name": "چرخ گوشت متوسط",
+        "power_usage": 500,
+        "hours": 0.25
+      },
+      {
+        "name": "چرخ گوشت قدرتمند",
+        "power_usage": 800,
+        "hours": 0.25
+      },
+      {
+        "name": "چرخ گوشت حرفه ای",
+        "power_usage": 1200,
+        "hours": 0.25
+      }
+    ]
+  },
+  {
+    "icon": 23,
+    "name": "ساندویچ‌ساز",
+    "sub_categories": [
+      {
+        "name": "ساندویچ ساز کوچک",
+        "power_usage": 600,
+        "hours": 0.25
+      },
+      {
+        "name": "ساندویچ ساز متوسط",
+        "power_usage": 800,
+        "hours": 0.25
+      },
+      {
+        "name": "ساندویچ ساز بزرگ",
+        "power_usage": 1000,
+        "hours": 0.25
+      },
+      {
+        "name": "گریل پانینی",
+        "power_usage": 1200,
+        "hours": 0.25
+      }
+    ]
+  },
+  {
+    "icon": 24,
+    "name": "همزن",
+    "sub_categories": [
+      {
+        "name": "همزن دستی",
+        "power_usage": 250,
+        "hours": 0.25
+      },
+      {
+        "name": "همزن کاسه دار کوچک",
+        "power_usage": 600,
+        "hours": 0.5
+      },
+      {
+        "name": "همزن کاسه دار متوسط",
+        "power_usage": 800,
+        "hours": 0.5
+      },
+      {
+        "name": "همزن کاسه دار قدرتمند",
+        "power_usage": 1200,
+        "hours": 0.5
+      },
+      {
+        "name": "همزن حرفه ای",
+        "power_usage": 1800,
+        "hours": 0.5
+      }
+    ]
+  },
+  {
+    "icon": 25,
+    "name": "اتو",
+    "sub_categories": [
+      {
+        "name": "اتو معمولی",
+        "power_usage": 700,
+        "hours": 1
+      },
+      {
+        "name": "اتو بخار",
+        "power_usage": 1200,
+        "hours": 1
+      },
+      {
+        "name": "اتو بخار حرفه ای",
+        "power_usage": 1800,
+        "hours": 1
+      },
+      {
+        "name": "اتو مخزن دار",
+        "power_usage": 2000,
+        "hours": 1
+      }
+    ]
+  },
+  {
+    "icon": 26,
+    "name": "تصفیه هوا",
+    "sub_categories": [
+      {
+        "name": "تصفیه هوا کوچک",
+        "power_usage": 50,
+        "hours": 12
+      },
+      {
+        "name": "تصفیه هوا متوسط",
+        "power_usage": 100,
+        "hours": 12
+      },
+      {
+        "name": "تصفیه هوا بزرگ",
+        "power_usage": 150,
+        "hours": 12
+      },
+      {
+        "name": "تصفیه هوا مرکزی",
+        "power_usage": 300,
+        "hours": 12
+      }
+    ]
+  },
+  {
+    "icon": 27,
+    "name": "سشوار",
+    "sub_categories": [
+      {
+        "name": "سشوار کم قدرت",
+        "power_usage": 800,
+        "hours": 0.25
+      },
+      {
+        "name": "سشوار متوسط",
+        "power_usage": 1200,
+        "hours": 0.25
+      },
+      {
+        "name": "سشوار قدرتمند",
+        "power_usage": 1800,
+        "hours": 0.25
+      },
+      {
+        "name": "سشوار حرفه ای",
+        "power_usage": 2200,
+        "hours": 0.25
+      }
+    ]
+  },
+    {
+    "icon": 28,
+    "name": "هود",
+    "sub_categories": [
+      {
+        "name": "هود کابینتی",
+        "power_usage": 200,
+        "hours": 2
+      },
+      {
+        "name": "هود شومینه ای",
+        "power_usage": 300,
+        "hours": 2
+      },
+      {
+        "name": "هود جزیره ای",
+        "power_usage": 400,
+        "hours": 2
+      },
+      {
+        "name": "هود توکار",
+        "power_usage": 250,
+        "hours": 2
+      }
+    ]
+  }
+]

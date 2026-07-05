@@ -28,5 +28,76 @@
   "serverError": "سرور پاسخگو نیست.",
   "connectionError": "اتصال به اینترنت دستگاه را بررسی کنید.",
   "noInternet": "لطفا از اتصال به اینترنت اطمینان حاصل کنید.",
-  "genericError": "خطای غیرمنتظره‌ای رخ داد."
+  "genericError": "خطای غیرمنتظره‌ای رخ داد.",
+  "close": "بستن",
+  "retry": "تلاش مجدد",
+  "selectAppliancesToCalculate": "برای محاسبه، حداقل یک وسیله انتخاب کنید.",
+  "liveDailyConsumption": "مصرف روزانه تخمینی: {value}",
+  "@liveDailyConsumption": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "deepSeekApiKeyMissing": "کلید API هوش مصنوعی (DEEPSEEK_API_KEY) تنظیم نشده است. برای تحلیل هوشمند، کلید را در فایل .env قرار دهید.",
+  "analysisNotAvailable": "تحلیل هوش مصنوعی در دسترس نیست. نتایج محاسبه محلی در زیر نمایش داده شده‌اند.",
+  "enableAiAnalysis": "تحلیل هوشمند خورشیدی (DeepSeek)",
+  "presetsTitle": "پیش‌فرض‌های سریع",
+  "editHours": "ویرایش ساعات",
+  "applianceName": "نام وسیله",
+  "powerWatts": "توان (وات)",
+  "selectCity": "شهر",
+  "electricityRate": "نرخ برق (تومان/kWh)",
+  "monthlyCost": "هزینه ماهانه برق:",
+  "yearlyCost": "هزینه سالانه برق:",
+  "solarSizingTitle": "پیشنهاد سیستم خورشیدی",
+  "panelCount": "تعداد پنل:",
+  "arrayCapacity": "ظرفیت آرایه:",
+  "inverterCapacity": "ظرفیت اینورتر:",
+  "batteryCapacity": "ظرفیت باتری پشتیبان:",
+  "irradianceFactor": "ضریب تابش خورشید:",
+  "consumptionByAppliance": "مصرف به تفکیک وسیله",
+  "consumptionComparison": "مقایسه مصرف روزانه و ماهانه",
+  "dailyShort": "روزانه",
+  "monthlyShort": "ماهانه",
+  "panelsUnit": "{count} پنل",
+  "invalidApplianceInput": "نام و توان وسیله را به درستی وارد کنید.",
+  "onboardingTitle1": "به ماشین‌حساب خورشیدی خوش آمدید",
+  "onboardingBody1": "مصرف روزانه انرژی خود را تخمین بزنید و ببینید خورشید چگونه خانه‌تان را تأمین می‌کند.",
+  "onboardingTitle2": "وسایل خود را انتخاب کنید",
+  "onboardingBody2": "دستگاه‌ها را انتخاب کنید، ساعات کارکرد را تنظیم کنید و مصرف را فوراً ببینید.",
+  "onboardingTitle3": "سیستم خورشیدی خود را برنامه‌ریزی کنید",
+  "onboardingBody3": "پیشنهاد اندازه‌گیری، برآورد هزینه و توصیه‌های هوشمند دریافت کنید.",
+  "onboardingNext": "بعدی",
+  "onboardingBack": "قبلی",
+  "onboardingGetStarted": "شروع کنید",
+  "historyTitle": "تاریخچه محاسبات",
+  "historyEmpty": "هنوز محاسبه‌ای ذخیره نشده است.",
+  "historyApplianceSummary": "{count} وسیله: {summary}",
+  "@historyApplianceSummary": {
+    "placeholders": {
+      "count": {"type": "int"},
+      "summary": {"type": "String"}
+    }
+  },
+  "searchAppliances": "جستجوی وسایل…",
+  "noSearchResults": "وسیله‌ای یافت نشد.",
+  "themeToggle": "تغییر تم",
+  "languageToggle": "تغییر زبان",
+  "shareResults": "اشتراک‌گذاری نتایج",
+  "co2TreeEquivalent": "≈ {count} درخت در سال برای جبران",
+  "@co2TreeEquivalent": {
+    "placeholders": {
+      "count": {"type": "String"}
+    }
+  },
+  "co2CarKmEquivalent": "≈ {km} کیلومتر رانندگی خودرو",
+  "@co2CarKmEquivalent": {
+    "placeholders": {
+      "km": {"type": "String"}
+    }
+  },
+  "aiFallbackNotice": "هوش مصنوعی در دسترس نیست — پیشنهاد فرمولی نمایش داده می‌شود.",
+  "refreshAnalysis": "بروزرسانی تحلیل هوشمند"
 }

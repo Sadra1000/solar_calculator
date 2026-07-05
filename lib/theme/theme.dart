@@ -62,27 +62,21 @@ const darkColorScheme = ColorScheme(
 );
 
 class MyTheme {
-  // 1. Color Scheme for Light Theme
+  static const _fontFamily = 'Vazirmatn';
 
-  // 2. Color Scheme for Dark Theme
-
-  // 3. Custom Text Theme based on Material 3 Typography
-  // You can replace 'null' with your desired font family, for example, 'Vazirmatn'
-
-  // 4. Final ThemeData objects
-  static ThemeData lightTheme() {
+  static ThemeData lightTheme({bool usePersianFont = true}) {
     return ThemeData(
       useMaterial3: true,
       colorScheme: lightColorScheme,
-      // You can add other theme properties here like appbarTheme, elevatedButtonTheme, etc.
+      fontFamily: usePersianFont ? _fontFamily : null,
     );
   }
 
-  static ThemeData darkTheme() {
+  static ThemeData darkTheme({bool usePersianFont = true}) {
     return ThemeData(
       useMaterial3: true,
       colorScheme: darkColorScheme,
-      // You can add other theme properties here like appbarTheme, elevatedButtonTheme, etc.
+      fontFamily: usePersianFont ? _fontFamily : null,
     );
   }
 }
