@@ -21,9 +21,28 @@ Or launch **Flutter (Chrome)** from VS Code (uses `dart_defines.json`).
 
 ## GitHub Pages (free hosting)
 
-1. **Settings → Pages → Source: GitHub Actions**
-2. Add secret **`DEEPSEEK_API_KEY`** with your DeepSeek API key
-3. Push to `main`
+### 1. Enable Pages
+
+**Settings → Pages → Build and deployment:**
+
+| Setting | Value |
+|---------|-------|
+| Source | **Deploy from a branch** |
+| Branch | **gh-pages** / **/(root)** |
+
+> Do **not** use "GitHub Actions" as the source — the workflow pushes built files to the `gh-pages` branch automatically.
+
+### 2. Add API key secret
+
+**Settings → Secrets and variables → Actions → New repository secret**
+
+| Name | Value |
+|------|-------|
+| `DEEPSEEK_API_KEY` | your DeepSeek API key (`sk-...`) |
+
+### 3. Deploy
+
+Push to `main` (or run the workflow manually from the Actions tab).
 
 App URL: `https://<username>.github.io/<repo-name>/`
 

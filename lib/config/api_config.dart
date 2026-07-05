@@ -18,7 +18,7 @@ abstract final class ApiConfig {
   /// See https://api-docs.deepseek.com/
   static const String model = String.fromEnvironment(
     'DEEPSEEK_MODEL',
-    defaultValue: 'deepseek-v4-flash',
+    defaultValue: 'deepseek-v4-pro',
   );
 
   static bool get hasApiKey => deepSeekApiKey.isNotEmpty;
