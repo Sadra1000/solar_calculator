@@ -14,7 +14,12 @@ abstract final class ApiConfig {
 
   static const String chatCompletionsPath = '/chat/completions';
 
-  static const String model = 'deepseek-chat';
+  /// Non-thinking mode successor to deprecated `deepseek-chat`.
+  /// See https://api-docs.deepseek.com/
+  static const String model = String.fromEnvironment(
+    'DEEPSEEK_MODEL',
+    defaultValue: 'deepseek-v4-flash',
+  );
 
   static bool get hasApiKey => deepSeekApiKey.isNotEmpty;
 }

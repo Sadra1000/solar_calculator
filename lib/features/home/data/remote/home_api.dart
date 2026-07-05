@@ -16,17 +16,23 @@ class HomeApi {
     }
 
     final prompt =
-        'You are a solar energy advisor. Analyze this household appliance '
-        'list and respond in Persian with practical solar panel recommendations. '
-        'Data: $appliancesDataJson';
+        'Analyze this household appliance list and recommend a suitable '
+        'solar setup. Data: $appliancesDataJson';
 
     return dio.post(
       ApiConfig.chatCompletionsPath,
       data: {
         'model': ApiConfig.model,
         'messages': [
+          {
+            'role': 'system',
+            'content':
+                'You are a solar energy advisor. Respond in Persian with '
+                'practical, concise solar panel recommendations.',
+          },
           {'role': 'user', 'content': prompt},
         ],
+        'stream': false,
       },
       options: Options(
         headers: {'Authorization': 'Bearer ${ApiConfig.deepSeekApiKey}'},
