@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:solar_calculator/commen/constants.dart';
 import 'package:solar_calculator/commen/services/shared_operator.dart';
 import 'package:solar_calculator/l10n/app_localizations.dart';
 import 'package:solar_calculator/locator.dart';
@@ -59,11 +60,18 @@ class _OnboardingPageState extends State<OnboardingPage> {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(
-                          _slideIcons[index],
-                          size: 96,
-                          color: Theme.of(context).colorScheme.primary,
-                        ),
+                        if (index == 0)
+                          Image.asset(
+                            AppAssets.logoTransparent,
+                            width: 120,
+                            height: 120,
+                          )
+                        else
+                          Icon(
+                            _slideIcons[index],
+                            size: 96,
+                            color: Theme.of(context).colorScheme.primary,
+                          ),
                         const SizedBox(height: 32),
                         Text(
                           slide.$1,

@@ -91,7 +91,7 @@ class SharedPrefOperator {
 
   /// `false` = light, `true` = dark.
   bool loadDarkMode() {
-    return sharedPreferences.getBool(_keyDarkMode) ?? false;
+    return sharedPreferences.getBool(_keyDarkMode) ?? true;
   }
 
   Future<void> saveLocaleCode(String code) async {
