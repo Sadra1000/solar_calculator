@@ -38,9 +38,9 @@ abstract final class SolarFallback {
 ---
 
 ### پنل‌های خورشیدی
-- تعداد پنل پیشنهادی: **$panelCount عدد** (${panelWattage} وات)
+- تعداد پنل پیشنهادی: **$panelCount عدد** ($panelWattage وات)
 - ظرفیت کل: **${actualKw.toStringAsFixed(1)} کیلووات**
-- با ${peakSunHoursIran} ساعت اوج تابش در $city
+- با $peakSunHoursIran ساعت اوج تابش در $city
 
 ### اینورتر
 - ظرفیت پیشنهادی: **$inverterKw کیلووات**

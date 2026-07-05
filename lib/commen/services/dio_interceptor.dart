@@ -11,11 +11,8 @@ class DioInterceptor extends Interceptor {
     return super.onRequest(options, handler);
   }
 
-  void onResponse(Response response, ResponseInterceptorHandler handler) {
-    return super.onResponse(response, handler);
-  }
-
-  void onError(DioException err, ErrorInterceptorHandler handler) async {
+  @override
+  void onError(DioException err, ErrorInterceptorHandler handler) {
     handler.next(err);
   }
 }

@@ -33,7 +33,7 @@ class _ApplianceIconState extends State<ApplianceIcon> {
     final isDarkMode = Theme.of(context).brightness == Brightness.dark;
 
     final shadowColor1 =
-        isDarkMode ? Colors.black.withOpacity(0.7) : Colors.grey.shade500;
+        isDarkMode ? Colors.black.withValues(alpha: 0.7) : Colors.grey.shade500;
     final shadowColor2 = isDarkMode ? Colors.grey.shade800 : Colors.white;
 
     final pressedShadows = [

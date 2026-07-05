@@ -40,6 +40,6 @@ extension PersianDigits on String {
 
   String toTomanPersian([Locale? locale]) {
     final value = locale == null ? this : localizedDigits(locale);
-    return '${value} تومان';
+    return '$value تومان';
   }
 }

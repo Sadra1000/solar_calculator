@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/cupertino.dart';
 
 /// کلاس wrapper برای مدیریت آیکون‌های مختلف وسایل برقی خانگی
 class IconWrapper {

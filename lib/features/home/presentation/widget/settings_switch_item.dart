@@ -21,12 +21,13 @@ class SettingsSwitchItem extends StatelessWidget {
   final bool enabled;
   final EdgeInsetsGeometry? padding;
   final double scalefactor;
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
     return Padding(
-      padding: padding ?? EdgeInsets.symmetric(vertical: 16, horizontal: 14),
+      padding: padding ?? const EdgeInsets.symmetric(vertical: 16, horizontal: 14),
       child: Material(
         color: Colors.transparent,
         child: InkWell(
@@ -41,7 +42,6 @@ class SettingsSwitchItem extends StatelessWidget {
               leading: Container(
                 width: 35,
                 height: 35,
-                // decoration: BoxDecoration(color: Colors.amber, shape: BoxShape.circle),
                 alignment: Alignment.center,
                 child: Icon(icon, size: 32, color: colorScheme.secondary),
               ),
@@ -49,14 +49,12 @@ class SettingsSwitchItem extends StatelessWidget {
                 title,
                 style: Theme.of(context).textTheme.titleMedium,
               ),
-
-              contentPadding: EdgeInsets.symmetric(horizontal: 8),
-              // horizontalTitleGap: 7.w,
+              contentPadding: const EdgeInsets.symmetric(horizontal: 8),
               enabled: enabled,
               trailing: Switch.adaptive(
                 value: value,
                 onChanged: enabled ? onChanged : null,
-                activeColor: colorScheme.onPrimary,
+                activeThumbColor: colorScheme.onPrimary,
                 activeTrackColor: colorScheme.primary,
                 inactiveThumbColor: colorScheme.onSurface,
                 inactiveTrackColor: colorScheme.surfaceContainerHighest,

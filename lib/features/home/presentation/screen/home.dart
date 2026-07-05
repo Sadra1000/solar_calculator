@@ -61,6 +61,8 @@ class _HomePageState extends State<HomePage> {
           _loadingDialogOpen = false;
         }
 
+        if (!context.mounted) return;
+
         final event = state.navigationEvent;
         if (event != null) {
           final cubit = context.read<HomeCubit>();
@@ -71,6 +73,7 @@ class _HomePageState extends State<HomePage> {
         }
 
         if (state.errorMsg != null) {
+          if (!context.mounted) return;
           final cubit = context.read<HomeCubit>();
           final languageCode = Localizations.localeOf(context).languageCode;
           await showDialog<void>(
@@ -277,7 +280,8 @@ class _HomePageState extends State<HomePage> {
               ),
               const SizedBox(height: 16),
               DropdownButtonFormField<String>(
-                value: state.selectedCityId,
+                key: ValueKey(state.selectedCityId),
+                initialValue: state.selectedCityId,
                 decoration: InputDecoration(
                   labelText: l10n.selectCity,
                   border: const OutlineInputBorder(),
