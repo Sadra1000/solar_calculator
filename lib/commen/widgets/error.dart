@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:sizer/sizer.dart';
 
 class CustomError extends StatelessWidget {
   const CustomError({super.key, required this.msg});
@@ -9,8 +8,8 @@ class CustomError extends StatelessWidget {
   Widget build(BuildContext context) {
     return Dialog(
       child: Container(
-        width: 24.w,
-        padding: const EdgeInsets.all(10),
+        constraints: const BoxConstraints(maxWidth: 320),
+        padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
           color: Theme.of(context).colorScheme.errorContainer,
           borderRadius: BorderRadius.circular(16),

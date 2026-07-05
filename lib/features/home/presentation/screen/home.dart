@@ -1,20 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:sizer/sizer.dart';
+import 'package:solar_calculator/commen/helpers/api_errors.dart';
 import 'package:solar_calculator/commen/helpers/icon_helper.dart';
+import 'package:solar_calculator/commen/layout/responsive.dart';
+import 'package:solar_calculator/commen/platform/navigate_back.dart';
 import 'package:solar_calculator/commen/widgets/error.dart';
 import 'package:solar_calculator/commen/widgets/loading.dart';
+import 'package:solar_calculator/features/home/model/appliances.dart';
 import 'package:solar_calculator/features/home/presentation/cubit/home/home_cubit.dart';
 import 'package:solar_calculator/features/home/presentation/cubit/home/home_state.dart';
-import 'package:solar_calculator/features/home/presentation/widget/Appliance_widget.dart';
+import 'package:solar_calculator/features/home/presentation/widget/appliance_widget.dart';
 import 'package:solar_calculator/features/home/presentation/widget/selected_appliance.dart';
-import 'package:solar_calculator/features/home/model/appliances.dart';
+import 'package:solar_calculator/l10n/app_localizations.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
-
-  // Breakpoints for responsive design
-
   @override
   State<HomePage> createState() => _HomePageState();
 }
@@ -28,6 +28,12 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final textDirection =
+        Localizations.localeOf(context).languageCode == 'fa'
+            ? TextDirection.rtl
+            : TextDirection.ltr;
+
     return BlocListener<HomeCubit, HomeState>(
       listenWhen:
           (previous, current) =>
@@ -37,46 +43,98 @@ class _HomePageState extends State<HomePage> {
           await showDialog(
             barrierDismissible: false,
             context: context,
-            builder: (context) => CustomLoading(),
+            builder: (context) => const CustomLoading(),
           );
         } else if (state.errorMsg != null) {
           await showDialog(
             context: context,
-            builder: (context) => CustomError(msg: state.errorMsg!),
+            builder: (dialogContext) {
+              final errorL10n = AppLocalizations.of(dialogContext)!;
+              return CustomError(
+                msg: localizeApiError(errorL10n, state.errorMsg!),
+              );
+            },
           );
         }
       },
       child: Directionality(
-        textDirection: TextDirection.rtl,
+        textDirection: textDirection,
         child: Scaffold(
-          body: Column(
-            children: [
-              _buildSelectedContainer(context),
-              _buildApplianceGrid(),
-              _buildCalculateButton(),
+          appBar: AppBar(
+            title: Text(l10n.appTitle),
+            centerTitle: true,
+            actions: [
+              Directionality(
+                textDirection: TextDirection.ltr,
+                child: BackButton(onPressed: navigateBack),
+              ),
             ],
+          ),
+          body: LayoutBuilder(
+            builder: (context, constraints) {
+              final content = isLargeScreen(constraints.maxWidth)
+                  ? _buildLargeScreenBody(constraints.maxWidth)
+                  : _buildSmallScreenBody(constraints.maxWidth);
+
+              return constrainContent(child: content);
+            },
           ),
         ),
       ),
     );
   }
 
-  Widget _buildSelectedContainer(BuildContext context) {
+  Widget _buildSmallScreenBody(double maxWidth) {
+    return ListView(
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      children: [
+        _buildSelectedContainer(maxWidth),
+        _buildApplianceGrid(maxWidth),
+        _buildCalculateButton(),
+      ],
+    );
+  }
+
+  Widget _buildLargeScreenBody(double maxWidth) {
+    return ListView(
+      padding: const EdgeInsets.all(24),
+      children: [
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(
+              flex: 5,
+              child: _buildSelectedContainer(maxWidth),
+            ),
+            const SizedBox(width: 24),
+            Expanded(
+              flex: 7,
+              child: _buildApplianceGrid(maxWidth),
+            ),
+          ],
+        ),
+        _buildCalculateButton(),
+      ],
+    );
+  }
+
+  Widget _buildSelectedContainer(double maxWidth) {
     return BlocBuilder<HomeCubit, HomeState>(
       buildWhen:
           (previous, current) =>
               previous.selectedAppliance != current.selectedAppliance,
       builder: (context, state) {
+        final l10n = AppLocalizations.of(context)!;
         final groups = groupAppliances(
           state.selectedAppliance.cast<Appliance>(),
         );
 
         if (groups.isEmpty) {
           return Padding(
-            padding: EdgeInsets.symmetric(vertical: 6.h),
+            padding: const EdgeInsets.symmetric(vertical: 48),
             child: Center(
               child: Text(
-                'هیچ آیتمی انتخاب نشده است',
+                l10n.noItemsSelected,
                 style: Theme.of(context).textTheme.bodyMedium,
               ),
             ),
@@ -84,7 +142,7 @@ class _HomePageState extends State<HomePage> {
         }
 
         return Padding(
-          padding: EdgeInsets.symmetric(vertical: 8.h, horizontal: 2.w),
+          padding: const EdgeInsets.symmetric(vertical: 24),
           child: Column(
             children:
                 groups.entries.map((entry) {
@@ -96,12 +154,13 @@ class _HomePageState extends State<HomePage> {
                   final sample = list.first;
 
                   return Padding(
-                    padding: EdgeInsets.symmetric(vertical: 1.h),
+                    padding: const EdgeInsets.symmetric(vertical: 8),
                     child: GroupCard(
                       icon: IconWrapper.getMaterialIcon(icon),
                       name: label,
                       count: count,
                       totalWh: totalWh,
+                      maxWidth: maxWidth,
                       onAdd: () => context.read<HomeCubit>().addOneLike(sample),
                       onRemoveOne:
                           () => context
@@ -121,39 +180,49 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget _buildCalculateButton() {
-    return SizedBox(
-      height: 1.h > 1.w ? 12.h : 15.h,
-      width: 1.h > 1.w ? 25.w : 20.w,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 24.0),
-        child: SizedBox.expand(
-          // Makes the button fill the padded area
-          child: FilledButton(
-            onPressed: () {
-              BlocProvider.of<HomeCubit>(context).process(context);
-            },
-            child: Text(
-              'حساب کن!',
-              style: TextStyle(color: Theme.of(context).colorScheme.onPrimary),
-            ),
+    final l10n = AppLocalizations.of(context)!;
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 24),
+      child: SizedBox(
+        height: 56,
+        width: double.infinity,
+        child: FilledButton(
+          onPressed: () {
+            BlocProvider.of<HomeCubit>(context).process(context);
+          },
+          child: Text(
+            l10n.calculate,
+            style: TextStyle(color: Theme.of(context).colorScheme.onPrimary),
           ),
         ),
       ),
     );
   }
 
-  Widget _buildApplianceGrid() {
+  Widget _buildApplianceGrid(double maxWidth) {
     return BlocBuilder<HomeCubit, HomeState>(
       buildWhen:
           (previous, current) => previous.initialList != current.initialList,
       builder: (context, state) {
-        return Wrap(
-          spacing: 1.h > 1.w ? 1.h : 1.w,
-          runSpacing: 1.h > 1.w ? 1.h : 1.w,
-          children: List.generate(state.initialList.length, (index) {
-            final appliance = state.initialList[index];
-            return ApplianceIcon(catgory: appliance);
-          }),
+        final itemSize = adaptiveGridItemSize(maxWidth);
+
+        return Padding(
+          padding: const EdgeInsets.symmetric(vertical: 16),
+          child: Wrap(
+            alignment: WrapAlignment.center,
+            runAlignment: WrapAlignment.center,
+            spacing: 16,
+            runSpacing: 16,
+            children: List.generate(state.initialList.length, (index) {
+              final appliance = state.initialList[index];
+              return SizedBox(
+                width: itemSize,
+                height: itemSize,
+                child: ApplianceIcon(catgory: appliance),
+              );
+            }),
+          ),
         );
       },
     );
@@ -161,9 +230,6 @@ class _HomePageState extends State<HomePage> {
 
   int totalGroupWh(List<Appliance> group) {
     if (group.isEmpty) return 0;
-    // توان هر آیتم = powerUsage * hours
-    // خروجی به صورت W/h تجمیع می‌شود
-    // چون powerUsage:int و hours:double است، جمع را به int رُند می‌کنیم
     final perItem = (group.first.powerUsage * group.first.houres).round();
     return perItem * group.length;
   }

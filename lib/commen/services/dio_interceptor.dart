@@ -7,11 +7,6 @@ class DioInterceptor extends Interceptor {
   @override
   void onRequest(RequestOptions options, RequestInterceptorHandler handler) {
     options.headers.addAll({"Content-Type": "application/json"});
-    print(options.uri);
-
-    print(options.contentType);
-    print(options.data);
-    print(options.path);
 
     return super.onRequest(options, handler);
   }

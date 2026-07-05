@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
-import 'package:sizer/sizer.dart';
 
 class CustomLoading extends StatelessWidget {
   const CustomLoading({super.key});
@@ -10,15 +9,15 @@ class CustomLoading extends StatelessWidget {
     return Dialog(
       alignment: Alignment.center,
       child: Container(
-        width: 20.w,
-        height: 30.h,
+        width: 120,
+        height: 120,
         decoration: BoxDecoration(borderRadius: BorderRadius.circular(16)),
         child: Center(
           child: LoadingAnimationWidget.discreteCircle(
             color: Theme.of(context).colorScheme.primary,
             secondRingColor: Theme.of(context).colorScheme.secondary,
             thirdRingColor: Theme.of(context).colorScheme.tertiary,
-            size: 15.h,
+            size: 56,
           ),
         ),
       ),

@@ -1,13 +1,14 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
-import 'package:sizer/sizer.dart';
 import 'package:solar_calculator/commen/helpers/persian.dart';
+import 'package:solar_calculator/commen/layout/responsive.dart';
+import 'package:solar_calculator/l10n/app_localizations.dart';
 
 class GroupCard extends StatelessWidget {
   final IconData icon;
   final String name;
   final int count;
   final int totalWh;
+  final double maxWidth;
   final VoidCallback onAdd;
   final VoidCallback onRemoveOne;
   final VoidCallback onRemoveAll;
@@ -18,6 +19,7 @@ class GroupCard extends StatelessWidget {
     required this.name,
     required this.count,
     required this.totalWh,
+    required this.maxWidth,
     required this.onAdd,
     required this.onRemoveOne,
     required this.onRemoveAll,
@@ -26,9 +28,12 @@ class GroupCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final l10n = AppLocalizations.of(context)!;
+    final locale = Localizations.localeOf(context);
+    final cardHeight = adaptiveGroupCardHeight(maxWidth);
 
     return Container(
-      height: 1.w > 1.h ? 5.w : 7.h,
+      height: cardHeight,
       width: double.infinity,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(12),
@@ -36,42 +41,41 @@ class GroupCard extends StatelessWidget {
       ),
       child: Row(
         children: [
-          Spacer(flex: 1),
-          Expanded(flex: 2, child: FittedBox(child: Icon(icon))),
+          const SizedBox(width: 12),
+          Icon(icon),
+          const SizedBox(width: 12),
           Expanded(
-            flex: 24,
+            flex: 25,
             child: Row(
               children: [
-                // متن نام
-                Text(
-                  name,
-                  overflow: TextOverflow.ellipsis,
-                  maxLines: 1,
-                  style: theme.textTheme.labelSmall,
+                Flexible(
+                  child: Text(
+                    name,
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 1,
+                    style: theme.textTheme.labelMedium,
+                  ),
                 ),
-
-                // فاصله کوچک بین دو متن
-                SizedBox(width: 2.w),
-
-                // متن توان کل
-                Text(
-                  'توان کل: ${totalWh.toString().toWhPersian()} ',
-                  overflow: TextOverflow.ellipsis,
-                  maxLines: 1,
-                  textAlign: TextAlign.start,
-                  style: theme.textTheme.titleSmall,
+                const SizedBox(width: 12),
+                Flexible(
+                  child: Text(
+                    l10n.totalPower(
+                      totalWh.toString().toWhPersian(locale),
+                    ),
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 1,
+                    style: theme.textTheme.titleMedium,
+                  ),
                 ),
               ],
             ),
           ),
-          Expanded(
-            flex: 6,
-            child: _QuantityController(
-              count: count,
-              onAdd: onAdd,
-              onRemoveOne: onRemoveOne,
-              onRemoveAll: onRemoveAll,
-            ),
+          _QuantityController(
+            count: count,
+            locale: locale,
+            onAdd: onAdd,
+            onRemoveOne: onRemoveOne,
+            onRemoveAll: onRemoveAll,
           ),
         ],
       ),
@@ -81,12 +85,14 @@ class GroupCard extends StatelessWidget {
 
 class _QuantityController extends StatelessWidget {
   final int count;
+  final Locale locale;
   final VoidCallback onAdd;
   final VoidCallback onRemoveOne;
   final VoidCallback onRemoveAll;
 
   const _QuantityController({
     required this.count,
+    required this.locale,
     required this.onAdd,
     required this.onRemoveOne,
     required this.onRemoveAll,
@@ -94,56 +100,42 @@ class _QuantityController extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // final theme = Theme.of(context);
+    final l10n = AppLocalizations.of(context)!;
 
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        // دکمه + (TextButton با استایل M3)
-        Expanded(
-          flex: 1,
-          child: FittedBox(
-            child: FittedBox(
-              child: IconButton(
-                onPressed: onAdd,
-                icon: const Icon(Icons.add),
-                tooltip: 'افزودن یکی',
-              ),
-            ),
+        IconButton(
+          onPressed: onAdd,
+          icon: const Icon(Icons.add),
+          tooltip: l10n.addOne,
+        ),
+        SizedBox(
+          width: 32,
+          child: Text(
+            count.toString().localizedDigits(locale),
+            style: Theme.of(context).textTheme.titleMedium,
+            textAlign: TextAlign.center,
           ),
         ),
-
-        // تعداد به فارسی
-        Expanded(
-          flex: 1,
-          child: Padding(
-            padding: EdgeInsets.all(7),
-            child: FittedBox(child: Text(count.toString().toPersianDigits())),
-          ),
-        ),
-
-        Expanded(flex: 1, child: _builbtn()),
+        _buildRemoveButton(l10n),
       ],
     );
   }
 
-  Widget _builbtn() {
+  Widget _buildRemoveButton(AppLocalizations l10n) {
     if (count >= 2) {
-      return FittedBox(
-        child: IconButton(
-          onPressed: onRemoveOne,
-          icon: const Icon(Icons.remove_circle_outline),
-          tooltip: 'کم کردن یکی',
-        ),
-      );
-    } else {
-      return FittedBox(
-        child: IconButton(
-          onPressed: onRemoveAll,
-          icon: const Icon(Icons.delete_outline),
-          tooltip: 'حذف کامل',
-        ),
+      return IconButton(
+        onPressed: onRemoveOne,
+        icon: const Icon(Icons.remove_circle_outline),
+        tooltip: l10n.removeOne,
       );
     }
+
+    return IconButton(
+      onPressed: onRemoveAll,
+      icon: const Icon(Icons.delete_outline),
+      tooltip: l10n.removeAll,
+    );
   }
 }

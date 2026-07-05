@@ -1,0 +1,149 @@
+{
+  "@@locale": "en",
+  "appTitle": "Solar Calculator",
+  "@appTitle": {
+    "description": "Application title shown in the app bar"
+  },
+  "noItemsSelected": "No items selected",
+  "@noItemsSelected": {
+    "description": "Placeholder when the user has not selected any appliances"
+  },
+  "calculate": "Calculate!",
+  "@calculate": {
+    "description": "Primary action button on the home screen"
+  },
+  "resultsTitle": "Calculation Results",
+  "@resultsTitle": {
+    "description": "Title for the results screen"
+  },
+  "dailyConsumption": "Daily consumption:",
+  "@dailyConsumption": {
+    "description": "Label for daily energy consumption"
+  },
+  "monthlyConsumption": "Monthly consumption:",
+  "@monthlyConsumption": {
+    "description": "Label for monthly energy consumption"
+  },
+  "yearlyConsumption": "Yearly consumption:",
+  "@yearlyConsumption": {
+    "description": "Label for yearly energy consumption"
+  },
+  "yearlyCo2Production": "Yearly CO2 production:",
+  "@yearlyCo2Production": {
+    "description": "Label for yearly CO2 production"
+  },
+  "totalPower": "Total power: {power}",
+  "@totalPower": {
+    "description": "Total power label for a selected appliance group",
+    "placeholders": {
+      "power": {
+        "type": "String",
+        "example": "120Wh"
+      }
+    }
+  },
+  "addOne": "Add one",
+  "@addOne": {
+    "description": "Tooltip for increasing appliance count"
+  },
+  "removeOne": "Remove one",
+  "@removeOne": {
+    "description": "Tooltip for decreasing appliance count"
+  },
+  "removeAll": "Remove all",
+  "@removeAll": {
+    "description": "Tooltip for removing all appliances of a type"
+  },
+  "selectFromCategory": "Select from {category} category",
+  "@selectFromCategory": {
+    "description": "Dialog title when choosing an appliance from a category",
+    "placeholders": {
+      "category": {
+        "type": "String",
+        "example": "Kitchen"
+      }
+    }
+  },
+  "watts": "{power} watts",
+  "@watts": {
+    "description": "Appliance power usage subtitle",
+    "placeholders": {
+      "power": {
+        "type": "int",
+        "example": "100"
+      }
+    }
+  },
+  "addNewAppliance": "Add new appliance",
+  "@addNewAppliance": {
+    "description": "Button to add a custom appliance"
+  },
+  "featureNotImplemented": "This feature is not implemented yet.",
+  "@featureNotImplemented": {
+    "description": "Snackbar shown for unimplemented custom appliance flow"
+  },
+  "cancel": "Cancel",
+  "@cancel": {
+    "description": "Generic cancel action"
+  },
+  "operatingHours": "Operating hours for {name}",
+  "@operatingHours": {
+    "description": "Dialog title for selecting daily operating hours",
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "Refrigerator"
+      }
+    }
+  },
+  "hoursPrompt": "Please specify how many hours per day this appliance is on.",
+  "@hoursPrompt": {
+    "description": "Instruction text in the hours selection dialog"
+  },
+  "hoursValue": "{hours} hours",
+  "@hoursValue": {
+    "description": "Selected hours value label",
+    "placeholders": {
+      "hours": {
+        "type": "String",
+        "example": "8.0"
+      }
+    }
+  },
+  "dismiss": "Dismiss",
+  "@dismiss": {
+    "description": "Dismiss action in the hours dialog"
+  },
+  "confirm": "Confirm",
+  "@confirm": {
+    "description": "Confirm action in the hours dialog"
+  },
+  "rateLimitError": "You cannot use this service more than 4 times per day.",
+  "@rateLimitError": {
+    "description": "API rate limit error message"
+  },
+  "notFound": "Not found",
+  "@notFound": {
+    "description": "HTTP 404 error message"
+  },
+  "authError": "Something went wrong. Please contact support.",
+  "@authError": {
+    "description": "HTTP 401 error message"
+  },
+  "serverError": "Server is not responding.",
+  "@serverError": {
+    "description": "HTTP 500 error message"
+  },
+  "connectionError": "Check your device internet connection.",
+  "@connectionError": {
+    "description": "Generic connection error with response body"
+  },
+  "noInternet": "Please make sure you are connected to the internet.",
+  "@noInternet": {
+    "description": "No response connection error"
+  },
+  "genericError": "An unexpected error occurred.",
+  "@genericError": {
+    "description": "Fallback error message"
+  }
+}

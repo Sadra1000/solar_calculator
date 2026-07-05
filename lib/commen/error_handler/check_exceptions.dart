@@ -1,45 +1,50 @@
 import 'package:dio/dio.dart';
+import 'package:solar_calculator/commen/helpers/api_errors.dart';
 import 'package:solar_calculator/commen/data_state.dart';
 
 class CheckExceptions {
   CheckExceptions(Object? error);
 
   static Future<DataFailed> response(Response? response) async {
-    // print(response?.statusCode ?? "aaaa");
+    final errorMessage = _extractMessage(response?.data);
+
     switch (response?.statusCode ?? -1) {
       case 400:
-        return DataFailed(
-          response?.data['message'] ??
-              "شما نمیتوانید بیش از 4 بار در روز از این سرویس استفاده کنید",
-        );
+        return DataFailed(errorMessage ?? ApiErrorKeys.rateLimit);
       case 404:
-        return DataFailed("Not Found");
+        return const DataFailed(ApiErrorKeys.notFound);
       case 401:
-        return DataFailed(
-          response?.data['message'] ??
-              "مشکلی پیش اومده، لطفا با پشتیبانی در ارتباط باشید.",
-        );
+        return DataFailed(errorMessage ?? ApiErrorKeys.auth);
       case 500:
-        return DataFailed("Server is Not Responding,");
+        return const DataFailed(ApiErrorKeys.server);
       default:
         if (response != null) {
-          return DataFailed(
-            response.data['message'] ??
-                ".اتصال به اینترنت  دستگاه را برسی کنید",
-          );
+          return DataFailed(errorMessage ?? ApiErrorKeys.connection);
         } else {
-          return const DataFailed(
-            ".لطفا از اتصال به اینترنت اطمینان حاصل کنید",
-          );
+          return const DataFailed(ApiErrorKeys.noInternet);
         }
     }
   }
 
+  static String? _extractMessage(dynamic data) {
+    if (data is! Map) return null;
+    final direct = data['message'];
+    if (direct is String && direct.isNotEmpty) return direct;
+    final nested = data['error'];
+    if (nested is Map && nested['message'] is String) {
+      return nested['message'] as String;
+    }
+    return null;
+  }
+
   static Future<DataState> getError(Object error) async {
     if (error is DioException) {
+      if (error.message?.contains('DEEPSEEK_API_KEY') ?? false) {
+        return const DataFailed(ApiErrorKeys.auth);
+      }
       return response(error.response);
     } else {
-      return const DataFailed("There is an Error");
+      return const DataFailed(ApiErrorKeys.generic);
     }
   }
 }

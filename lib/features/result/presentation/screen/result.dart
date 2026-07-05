@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
-import 'package:sizer/sizer.dart';
-import 'package:solar_calculator/commen/constants.dart';
 import 'package:solar_calculator/commen/helpers/persian.dart';
+import 'package:solar_calculator/commen/layout/responsive.dart';
 import 'package:solar_calculator/features/result/repository/model.dart';
+import 'package:solar_calculator/l10n/app_localizations.dart';
 import 'dart:async';
 
 class ResultPage extends StatelessWidget {
@@ -12,57 +12,65 @@ class ResultPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // دریافت دیتا از Route Arguments
     final data = (ModalRoute.of(context)!.settings.arguments) as ResulteModel;
+    final l10n = AppLocalizations.of(context)!;
+    final textDirection =
+        Localizations.localeOf(context).languageCode == 'fa'
+            ? TextDirection.rtl
+            : TextDirection.ltr;
 
     return Directionality(
-      textDirection: TextDirection.rtl,
+      textDirection: textDirection,
       child: Scaffold(
         appBar: AppBar(
           title: Text(
-            'نتایج محاسبه',
+            l10n.resultsTitle,
             style: Theme.of(context).textTheme.displaySmall,
           ),
           centerTitle: true,
         ),
         body: LayoutBuilder(
           builder: (context, constraints) {
-            if (constraints.maxWidth >= Constants.kDesktopBreakpoint) {
-              return _buildDesktopLayout(context, data: data);
-            } else if (constraints.maxWidth >= Constants.kPhoneBreakpoint) {
-              return _buildDesktopLayout(context, data: data);
-            } else {
-              return _buildMobileLayout(context, data: data);
-            }
+            final content = isLargeScreen(constraints.maxWidth)
+                ? _buildLargeScreenLayout(context, data: data)
+                : _buildSmallScreenLayout(context, data: data);
+
+            return constrainContent(
+              maxWidth: AppBreakpoints.resultContentMaxWidth,
+              child: content,
+            );
           },
         ),
       ),
     );
   }
 
-  Widget _buildMobileLayout(
+  Widget _buildSmallScreenLayout(
     BuildContext context, {
     required ResulteModel data,
   }) {
     final theme = Theme.of(context);
+    final locale = Localizations.localeOf(context);
+
     return SingleChildScrollView(
-      padding: EdgeInsets.symmetric(horizontal: 12.sp, vertical: 10.sp),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           _AnalysisPanel(markdown: data.analysis, theme: theme),
-          SizedBox(height: 10.sp),
+          const SizedBox(height: 16),
           AnimationLimiter(
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: _builListOfCalculatedItems(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: _buildListOfCalculatedItems(
+                context: context,
                 dailyConsumption: data.dailyConsumption.toStringAsFixed(2),
                 monthlyConsumption: data.monthlyConsumption.toStringAsFixed(2),
-                yearlyConsumption: data.dailyConsumption.toStringAsFixed(2),
+                yearlyConsumption: data.yearlyConsumption.toStringAsFixed(2),
                 yearlyCo2Production: data.yearlyCo2Production.toStringAsFixed(
                   2,
                 ),
+                locale: locale,
                 theme: theme,
               ),
             ),
@@ -72,36 +80,48 @@ class ResultPage extends StatelessWidget {
     );
   }
 
-  Widget _buildDesktopLayout(
+  Widget _buildLargeScreenLayout(
     BuildContext context, {
     required ResulteModel data,
   }) {
     final theme = Theme.of(context);
+    final locale = Localizations.localeOf(context);
+
     return SingleChildScrollView(
-      padding: EdgeInsets.symmetric(horizontal: 12.sp, vertical: 12.sp),
+      padding: const EdgeInsets.all(24),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           _AnalysisPanel(
             markdown: data.analysis,
             theme: theme,
-            isDesktop: true,
+            isLargeScreen: true,
           ),
-          SizedBox(height: 12.sp),
+          const SizedBox(height: 24),
           AnimationLimiter(
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: _builListOfCalculatedItems(
-                dailyConsumption: data.dailyConsumption.toStringAsFixed(2),
-                monthlyConsumption: data.monthlyConsumption.toStringAsFixed(2),
-                yearlyConsumption: data.dailyConsumption.toStringAsFixed(2),
-                yearlyCo2Production: data.yearlyCo2Production.toStringAsFixed(
-                  2,
-                ),
-                isDesktop: true,
-                theme: theme,
-              ),
+            child: LayoutBuilder(
+              builder: (context, constraints) {
+                return Wrap(
+                  alignment: WrapAlignment.center,
+                  spacing: 16,
+                  runSpacing: 16,
+                  children: _buildListOfCalculatedItems(
+                    context: context,
+                    dailyConsumption: data.dailyConsumption.toStringAsFixed(2),
+                    monthlyConsumption: data.monthlyConsumption
+                        .toStringAsFixed(2),
+                    yearlyConsumption: data.yearlyConsumption.toStringAsFixed(
+                      2,
+                    ),
+                    yearlyCo2Production: data.yearlyCo2Production
+                        .toStringAsFixed(2),
+                    locale: locale,
+                    theme: theme,
+                    isLargeScreen: true,
+                    tileWidth: (constraints.maxWidth - 16) / 2,
+                  ),
+                );
+              },
             ),
           ),
         ],
@@ -109,140 +129,99 @@ class ResultPage extends StatelessWidget {
     );
   }
 
-  List<Widget> _builListOfCalculatedItems({
+  List<Widget> _buildListOfCalculatedItems({
+    required BuildContext context,
     required String dailyConsumption,
     required String monthlyConsumption,
     required String yearlyConsumption,
     required String yearlyCo2Production,
-    bool isDesktop = false,
+    required Locale locale,
     required ThemeData theme,
+    bool isLargeScreen = false,
+    double? tileWidth,
   }) {
-    return [
-      AnimationConfiguration.staggeredList(
-        position: 0,
-        duration: const Duration(milliseconds: 400),
-        child: SlideAnimation(
-          child: FadeInAnimation(
-            child: IntrinsicWidth(
-              // برای اینکه عرض آیتم‌ها متناسب با محتوا باشد
-              child: _buildResultTile(
-                theme: theme,
-                title: " مصرف روزانه:",
-                value: dailyConsumption.tokWhPersian(),
-                isDesktop: isDesktop,
-              ),
-            ),
-          ),
-        ),
-      ),
-      AnimationConfiguration.staggeredList(
-        position: 1,
-        duration: const Duration(milliseconds: 400),
-        child: SlideAnimation(
-          child: FadeInAnimation(
-            child: IntrinsicWidth(
-              child: _buildResultTile(
-                theme: theme,
-                title: " مصرف ماهانه:",
-                value: monthlyConsumption.tokWhPersian(),
-                isDesktop: isDesktop,
-              ),
-            ),
-          ),
-        ),
-      ),
-      AnimationConfiguration.staggeredList(
-        position: 2,
-        duration: const Duration(milliseconds: 400),
-        child: SlideAnimation(
-          child: FadeInAnimation(
-            child: IntrinsicWidth(
-              child: _buildResultTile(
-                theme: theme,
-                title: " مصرف سالانه:",
-                value: yearlyConsumption.tokWhPersian(),
-                isDesktop: isDesktop,
-              ),
-            ),
-          ),
-        ),
-      ),
-      AnimationConfiguration.staggeredList(
-        position: 3,
-        duration: const Duration(milliseconds: 400),
-        child: SlideAnimation(
-          child: FadeInAnimation(
-            child: IntrinsicWidth(
-              // برای اینکه عرض آیتم‌ها متناسب با محتوا باشد
-              child: _buildResultTile(
-                theme: theme,
-                title: " تولید CO2 سالانه:",
-                value: yearlyCo2Production.tokWhPersian(),
-                isDesktop: isDesktop,
-              ),
-            ),
-          ),
-        ),
-      ),
+    final l10n = AppLocalizations.of(context)!;
+
+    final items = [
+      (l10n.dailyConsumption, dailyConsumption.tokWhPersian(locale)),
+      (l10n.monthlyConsumption, monthlyConsumption.tokWhPersian(locale)),
+      (l10n.yearlyConsumption, yearlyConsumption.tokWhPersian(locale)),
+      (l10n.yearlyCo2Production, yearlyCo2Production.tokWhPersian(locale)),
     ];
+
+    return List.generate(items.length, (index) {
+      final item = items[index];
+      return AnimationConfiguration.staggeredList(
+        position: index,
+        duration: const Duration(milliseconds: 400),
+        child: SlideAnimation(
+          child: FadeInAnimation(
+            child: _buildResultTile(
+              theme: theme,
+              title: item.$1,
+              value: item.$2,
+              isLargeScreen: isLargeScreen,
+              width: tileWidth,
+            ),
+          ),
+        ),
+      );
+    });
   }
 
   Widget _buildResultTile({
     required String title,
     required String value,
-    required bool isDesktop,
+    required bool isLargeScreen,
     required ThemeData theme,
+    double? width,
   }) {
-    Widget content =
-        isDesktop
-            ? Column(
-              // حالت دسکتاپ: عنوان بالا، مقدار پایین
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Text(title, style: theme.textTheme.titleMedium),
-                Text(
-                  value,
-                  style: theme.textTheme.headlineSmall?.copyWith(
-                    fontWeight: FontWeight.bold,
-                    color: theme.colorScheme.primary,
-                  ),
+    final content = isLargeScreen
+        ? Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Text(title, style: theme.textTheme.titleMedium),
+            const SizedBox(height: 8),
+            Text(
+              value,
+              style: theme.textTheme.headlineSmall?.copyWith(
+                fontWeight: FontWeight.bold,
+                color: theme.colorScheme.primary,
+              ),
+            ),
+          ],
+        )
+        : Row(
+          children: [
+            Expanded(
+              flex: 24,
+              child: Text(title, textAlign: TextAlign.start),
+            ),
+            Expanded(
+              flex: 30,
+              child: Text(
+                value,
+                textAlign: TextAlign.end,
+                style: theme.textTheme.headlineSmall?.copyWith(
+                  fontWeight: FontWeight.bold,
+                  color: theme.colorScheme.primary,
                 ),
-              ],
-            )
-            : Row(
-              // حالت موبایل/تبلت
-              children: [
-                Expanded(
-                  flex: 24,
-                  child: Text(title, textAlign: TextAlign.right),
-                ),
-                const Spacer(),
-                Expanded(
-                  flex: 30,
-                  child: Text(
-                    value,
-                    textAlign: TextAlign.left,
-                    style: theme.textTheme.headlineSmall?.copyWith(
-                      fontWeight: FontWeight.bold,
-                      color: theme.colorScheme.primary,
-                    ),
-                  ),
-                ),
-              ],
-            );
+              ),
+            ),
+          ],
+        );
 
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 15.sp, vertical: 10.sp),
-      margin: EdgeInsets.all(10.sp),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      margin: const EdgeInsets.symmetric(vertical: 8),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(16),
         border: Border.all(width: 2, color: theme.colorScheme.primary),
         color: theme.colorScheme.tertiaryContainer,
       ),
-      // در حالت دسکتاپ برای هم‌اندازه شدن، ارتفاع مشخصی می‌دهیم
-      height: isDesktop ? 20.h : 10.h,
-      width: isDesktop ? null : 100.w,
+      height: isLargeScreen ? 140 : 72,
+      width: isLargeScreen ? width : double.infinity,
       child: content,
     );
   }
@@ -251,20 +230,21 @@ class ResultPage extends StatelessWidget {
 class _AnalysisPanel extends StatelessWidget {
   final String markdown;
   final ThemeData theme;
-  final bool isDesktop;
+  final bool isLargeScreen;
+
   const _AnalysisPanel({
     required this.markdown,
     required this.theme,
-    this.isDesktop = false,
+    this.isLargeScreen = false,
   });
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 50.w,
-      padding: EdgeInsets.all(12.sp),
+      width: double.infinity,
+      padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: theme.colorScheme.surfaceVariant.withOpacity(0.6),
+        color: theme.colorScheme.surfaceContainerHighest.withOpacity(0.6),
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
           width: 1.5,
@@ -284,6 +264,7 @@ class _AnimatedMarkdownTyper extends StatefulWidget {
   final String markdown;
   final ThemeData theme;
   final Duration speed;
+
   const _AnimatedMarkdownTyper({
     required this.markdown,
     required this.theme,
@@ -316,7 +297,7 @@ class _AnimatedMarkdownTyperState extends State<_AnimatedMarkdownTyper> {
         t.cancel();
         setState(() => _completed = true);
       } else {
-        setState(() => _len += 2); // نمایش 2 کاراکتر در هر تیک
+        setState(() => _len += 2);
       }
     });
   }

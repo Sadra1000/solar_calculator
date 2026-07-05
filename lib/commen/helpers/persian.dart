@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+
 extension PersianDigits on String {
   String toPersianDigits() {
     const english = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
@@ -9,23 +11,30 @@ extension PersianDigits on String {
     return out;
   }
 
-  String toWhPersian() {
-    var out = this;
-    return '${out.toString().toPersianDigits()}Wh';
+  String localizedDigits(Locale locale) {
+    if (locale.languageCode == 'fa') {
+      return toPersianDigits();
+    }
+    return this;
   }
 
-  String tokWhPersian() {
-    var out = this;
-    return '${out.toString().toPersianDigits()}kWh';
+  String toWhPersian([Locale? locale]) {
+    final value = locale == null ? this : localizedDigits(locale);
+    return '${value}Wh';
   }
 
-  String tokWPersian() {
-    var out = this;
-    return '${out.toString().toPersianDigits()}kW';
+  String tokWhPersian([Locale? locale]) {
+    final value = locale == null ? this : localizedDigits(locale);
+    return '${value}kWh';
   }
 
-  String tokgPersian() {
-    var out = this;
-    return '${out.toString().toPersianDigits()}kg';
+  String tokWPersian([Locale? locale]) {
+    final value = locale == null ? this : localizedDigits(locale);
+    return '${value}kW';
+  }
+
+  String tokgPersian([Locale? locale]) {
+    final value = locale == null ? this : localizedDigits(locale);
+    return '${value}kg';
   }
 }

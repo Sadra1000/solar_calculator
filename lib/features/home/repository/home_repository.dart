@@ -1,9 +1,9 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
 
-import 'package:dio/dio.dart';
-import 'package:solar_calculator/commen/error_handler/check_exceptions.dart';
 import 'package:solar_calculator/commen/data_state.dart';
+import 'package:solar_calculator/commen/error_handler/check_exceptions.dart';
+import 'package:solar_calculator/commen/helpers/api_errors.dart';
 import 'package:solar_calculator/features/home/data/remote/home_api.dart';
 import 'package:solar_calculator/features/home/model/appliances.dart';
 
@@ -56,10 +56,19 @@ class HomeRepository {
 
   Future<DataState<dynamic>> callDeepSeek(List<Appliance> list) async {
     try {
-      Response res = await api.callDeepSeekApi(
-        jsonEncode(_sortAppliances(list)),
-      );
-      return DataSuccess((res.data as Map<String, dynamic>)["response"]);
+      final res = await api.callDeepSeekApi(jsonEncode(_sortAppliances(list)));
+      final data = res.data as Map<String, dynamic>;
+      final choices = data['choices'] as List<dynamic>?;
+      if (choices == null || choices.isEmpty) {
+        return const DataFailed(ApiErrorKeys.generic);
+      }
+      final content =
+          (choices.first as Map<String, dynamic>)['message']?['content']
+              as String?;
+      if (content == null || content.isEmpty) {
+        return const DataFailed(ApiErrorKeys.generic);
+      }
+      return DataSuccess(content);
     } catch (e) {
       return await CheckExceptions.getError(e);
     }
