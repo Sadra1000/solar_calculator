@@ -5,6 +5,7 @@ import 'package:solar_calculator/commen/data_state.dart';
 import 'package:solar_calculator/commen/error_handler/check_exceptions.dart';
 import 'package:solar_calculator/commen/helpers/api_errors.dart';
 import 'package:solar_calculator/commen/helpers/solar_fallback.dart';
+import 'package:solar_calculator/commen/services/exchange_rate_service.dart';
 import 'package:solar_calculator/features/home/data/remote/deepseek_prompt.dart';
 import 'package:solar_calculator/features/home/data/remote/home_api.dart';
 import 'package:solar_calculator/features/home/model/appliances.dart';
@@ -129,32 +130,36 @@ class HomeRepository {
     );
   }
 
-  String buildUserPrompt({
+  Future<String> buildUserPrompt({
     required List<Appliance> appliances,
     required double dailyKwh,
     required double monthlyKwh,
     required double yearlyKwh,
     required String cityDisplayName,
     required double electricityRateToman,
-  }) {
+  }) async {
+    final rate = await ExchangeRateService.fetchUsdToToman();
     return DeepSeekPrompt.buildUserMessage(
       appliancesJson: jsonEncode(_sortAppliances(appliances)),
       dailyKwh: dailyKwh,
       monthlyKwh: monthlyKwh,
       yearlyKwh: yearlyKwh,
       city: cityDisplayName,
-      budget: '${electricityRateToman.round()} تومان/kWh',
+      electricityRateToman: electricityRateToman,
+      usdToToman: rate.toman,
+      rateDate: rate.sourceDate,
     );
   }
 
-  String buildFallbackAnalysis({
+  Future<String> buildFallbackAnalysis({
     required double dailyKwh,
     required double monthlyKwh,
     required double yearlyKwh,
     required String cityDisplayName,
     double? electricityRateToman,
-  }) {
-    final budget =
+  }) async {
+    final rate = await ExchangeRateService.fetchUsdToToman();
+    final electricityLine =
         electricityRateToman != null
             ? '${electricityRateToman.round()} تومان/kWh'
             : null;
@@ -163,7 +168,8 @@ class HomeRepository {
       monthlyKwh: monthlyKwh,
       yearlyKwh: yearlyKwh,
       city: cityDisplayName,
-      budget: budget,
+      budget: electricityLine,
+      usdToToman: rate.toman,
     );
   }
 
@@ -176,7 +182,8 @@ class HomeRepository {
     required double electricityRateToman,
   }) async {
     try {
-      final prompt = buildUserPrompt(
+      final rate = await ExchangeRateService.fetchUsdToToman();
+      final prompt = await buildUserPrompt(
         appliances: appliances,
         dailyKwh: dailyKwh,
         monthlyKwh: monthlyKwh,
@@ -184,7 +191,11 @@ class HomeRepository {
         cityDisplayName: cityDisplayName,
         electricityRateToman: electricityRateToman,
       );
-      final res = await api.callDeepSeekApi(prompt);
+      final res = await api.callDeepSeekApi(
+        prompt,
+        usdToToman: rate.toman,
+        rateDate: rate.sourceDate,
+      );
       final data = res.data as Map<String, dynamic>;
       final choices = data['choices'] as List<dynamic>?;
       if (choices == null || choices.isEmpty) {
@@ -210,8 +221,9 @@ class HomeRepository {
     required double yearlyKwh,
     required String cityDisplayName,
     required double electricityRateToman,
-  }) {
-    final prompt = buildUserPrompt(
+  }) async* {
+    final rate = await ExchangeRateService.fetchUsdToToman();
+    final prompt = await buildUserPrompt(
       appliances: appliances,
       dailyKwh: dailyKwh,
       monthlyKwh: monthlyKwh,
@@ -219,7 +231,11 @@ class HomeRepository {
       cityDisplayName: cityDisplayName,
       electricityRateToman: electricityRateToman,
     );
-    return api.streamDeepSeekApi(prompt);
+    yield* api.streamDeepSeekApi(
+      prompt,
+      usdToToman: rate.toman,
+      rateDate: rate.sourceDate,
+    );
   }
 
   List<Map<String, dynamic>> _sortAppliances(List<Appliance> list) {

@@ -51,7 +51,7 @@ const List<PresetProfile> presetProfiles = [
     nameFa: 'دفتر کار',
     nameEn: 'Office',
     appliances: [
-      PresetApplianceRef(name: 'لامپ مهتابی', hours: 10),
+      PresetApplianceRef(name: 'لامپ مهتابی LED', hours: 10),
       PresetApplianceRef(name: 'کولر گازی 18000 BTU', hours: 8),
       PresetApplianceRef(name: 'یخچال کوچک (3 فوت)', hours: 24),
     ],

@@ -13,11 +13,19 @@ class HomeApi {
   Map<String, dynamic> _requestBody({
     required String userMessage,
     required bool stream,
+    required int usdToToman,
+    String? rateDate,
   }) {
     return {
       'model': ApiConfig.model,
       'messages': [
-        {'role': 'system', 'content': DeepSeekPrompt.systemMessage},
+        {
+          'role': 'system',
+          'content': DeepSeekPrompt.buildSystemMessage(
+            usdToToman: usdToToman,
+            rateDate: rateDate,
+          ),
+        },
         {'role': 'user', 'content': userMessage},
       ],
       'stream': stream,
@@ -46,23 +54,41 @@ class HomeApi {
     }
   }
 
-  Future<Response<dynamic>> callDeepSeekApi(String userMessage) async {
+  Future<Response<dynamic>> callDeepSeekApi(
+    String userMessage, {
+    required int usdToToman,
+    String? rateDate,
+  }) async {
     _ensureApiKey();
 
     return dio.post(
       ApiConfig.chatCompletionsPath,
-      data: _requestBody(userMessage: userMessage, stream: false),
+      data: _requestBody(
+        userMessage: userMessage,
+        stream: false,
+        usdToToman: usdToToman,
+        rateDate: rateDate,
+      ),
       options: _authOptions(stream: false),
     );
   }
 
   /// Server-sent events stream of text deltas. Caller must handle errors.
-  Stream<String> streamDeepSeekApi(String userMessage) async* {
+  Stream<String> streamDeepSeekApi(
+    String userMessage, {
+    required int usdToToman,
+    String? rateDate,
+  }) async* {
     _ensureApiKey();
 
     final response = await dio.post<ResponseBody>(
       ApiConfig.chatCompletionsPath,
-      data: _requestBody(userMessage: userMessage, stream: true),
+      data: _requestBody(
+        userMessage: userMessage,
+        stream: true,
+        usdToToman: usdToToman,
+        rateDate: rateDate,
+      ),
       options: _authOptions(
         stream: true,
         receiveTimeout: const Duration(seconds: 120),

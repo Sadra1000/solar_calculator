@@ -20,7 +20,7 @@ class SolarSizingResult {
 
 /// Formula-based solar system sizing from daily consumption.
 class SolarCalculator {
-  static const double defaultPanelWattage = 550;
+  static const double defaultPanelWattage = 700;
   static const double systemPerformanceRatio = 0.78;
   static const double backupDays = 1.0;
   static const double inverterSafetyFactor = 1.15;

@@ -1,8 +1,11 @@
+import 'dart:async';
+
 import 'package:dio/dio.dart';
 import 'package:flutter/services.dart';
 import 'package:get_it/get_it.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:solar_calculator/commen/services/dio_interceptor.dart';
+import 'package:solar_calculator/commen/services/exchange_rate_service.dart';
 import 'package:solar_calculator/commen/services/shared_operator.dart';
 import 'package:solar_calculator/config/api_config.dart';
 import 'package:solar_calculator/features/home/data/remote/home_api.dart';
@@ -44,4 +47,6 @@ Future<void> setupLocato() async {
       prefs: locator<SharedPrefOperator>(),
     ),
   );
+
+  unawaited(ExchangeRateService.warmCache());
 }

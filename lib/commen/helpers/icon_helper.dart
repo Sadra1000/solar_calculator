@@ -61,6 +61,14 @@ class IconWrapper {
         return Icons.device_thermostat_outlined;
       case 28:
         return Icons.adf_scanner_outlined;
+      case 29:
+        return Icons.computer;
+      case 30:
+        return Icons.water_drop;
+      case 31:
+        return Icons.ac_unit_outlined;
+      case 32:
+        return Icons.water;
 
       default:
         return Icons.help_outline;
@@ -95,5 +103,8 @@ class IconWrapper {
     Icons.air: 26,
     Icons.device_thermostat_outlined: 27,
     Icons.adf_scanner_outlined: 28,
+    Icons.computer: 29,
+    Icons.water_drop: 30,
+    Icons.ac_unit_outlined: 31,
   };
 }

@@ -217,12 +217,12 @@ class ResultCubit extends Cubit<ResultState> {
       return;
     }
 
-    _applyFallback(cityName: cityName);
+    await _applyFallback(cityName: cityName);
   }
 
-  void _applyFallback({required String cityName}) {
+  Future<void> _applyFallback({required String cityName}) async {
     final session = state.session;
-    final text = _repo.buildFallbackAnalysis(
+    final text = await _repo.buildFallbackAnalysis(
       dailyKwh: session.result.dailyConsumption,
       monthlyKwh: session.result.monthlyConsumption,
       yearlyKwh: session.result.yearlyConsumption,
