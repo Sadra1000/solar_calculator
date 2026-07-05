@@ -27,15 +27,14 @@ Or launch **Flutter (Chrome)** from VS Code (uses `dart_defines.json`).
 
 | Setting | Value |
 |---------|-------|
-| Source | **Deploy from a branch** |
-| Branch | **gh-pages** / **/(root)** |
+| Source | **GitHub Actions** |
 
 **Settings → Actions → General → Workflow permissions:**
 
 - Select **Read and write permissions**
 - Save
 
-> If Source is set to **GitHub Actions**, deployments will fail. Switch to **gh-pages** branch.
+> If Source is set to **Deploy from a branch (gh-pages)**, either switch to **GitHub Actions** (recommended) or revert the workflow to `peaceiris/actions-gh-pages`.
 
 ### 2. Add API key secret
 
@@ -55,9 +54,9 @@ App URL: `https://<username>.github.io/<repo-name>/`
 
 | Symptom | Fix |
 |---------|-----|
-| Deployments tab shows red **Failed to deploy to github-pages** | Old `deploy-pages` runs — ignore after switching workflow; re-run **Deploy Flutter Web** from Actions |
+| **deploy-pages** fails with "Deployment failed, try again later" | Pages source must be **GitHub Actions** (not gh-pages branch). Re-run the workflow after saving Settings. |
 | peaceiris push fails | Enable **Read and write permissions** for workflows |
-| Site 404 after green workflow | Pages source must be **gh-pages** branch, not GitHub Actions |
+| Site 404 after green workflow | Check `--base-href` matches repo name; URL is `https://<user>.github.io/<repo>/` |
 | AI button errors in app | Add `DEEPSEEK_API_KEY` in Secrets |
 
 ## Security note
