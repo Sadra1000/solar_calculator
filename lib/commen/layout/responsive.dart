@@ -26,8 +26,14 @@ double adaptiveGridItemSize(double maxWidth) {
   return 76;
 }
 
-double adaptiveGroupCardHeight(double maxWidth) {
-  return maxWidth > AppBreakpoints.largeScreenMinWidth ? 72 : 64;
+EdgeInsets adaptiveGroupCardPadding(double maxWidth) {
+  if (maxWidth > AppBreakpoints.largeScreenMinWidth) {
+    return const EdgeInsets.symmetric(horizontal: 16, vertical: 14);
+  }
+  if (maxWidth < 400) {
+    return const EdgeInsets.symmetric(horizontal: 12, vertical: 10);
+  }
+  return const EdgeInsets.symmetric(horizontal: 14, vertical: 12);
 }
 
 double adaptiveDialogHeight(double maxHeight) => maxHeight * 0.5;

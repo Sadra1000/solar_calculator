@@ -121,9 +121,8 @@ class _OnboardingPageState extends State<OnboardingPage> {
                         );
                       },
                       child: Text(l10n.onboardingBack),
-                    )
-                  else
-                    const Spacer(),
+                    ),
+                  const Spacer(),
                   FilledButton(
                     onPressed: () {
                       if (isLast) {

@@ -30,65 +30,235 @@ class GroupCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final l10n = AppLocalizations.of(context)!;
     final locale = Localizations.localeOf(context);
-    final cardHeight = adaptiveGroupCardHeight(maxWidth);
+    final onCard = theme.colorScheme.onTertiaryContainer;
+    final padding = adaptiveGroupCardPadding(maxWidth);
+    final isCompact = maxWidth < 400;
 
     return GestureDetector(
       onLongPress: onEditHours,
       child: Container(
-        height: cardHeight,
         width: double.infinity,
+        padding: padding,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(12),
           color: theme.colorScheme.tertiaryContainer,
         ),
-        child: Row(
+        child:
+            isCompact
+                ? _CompactLayout(
+                  icon: icon,
+                  name: name,
+                  totalWh: totalWh,
+                  count: count,
+                  locale: locale,
+                  onCard: onCard,
+                  onAdd: onAdd,
+                  onRemoveOne: onRemoveOne,
+                  onRemoveAll: onRemoveAll,
+                  onEditHours: onEditHours,
+                )
+                : _StandardLayout(
+                  icon: icon,
+                  name: name,
+                  totalWh: totalWh,
+                  count: count,
+                  locale: locale,
+                  onCard: onCard,
+                  onAdd: onAdd,
+                  onRemoveOne: onRemoveOne,
+                  onRemoveAll: onRemoveAll,
+                  onEditHours: onEditHours,
+                ),
+      ),
+    );
+  }
+}
+
+class _StandardLayout extends StatelessWidget {
+  final IconData icon;
+  final String name;
+  final int totalWh;
+  final int count;
+  final Locale locale;
+  final Color onCard;
+  final VoidCallback onAdd;
+  final VoidCallback onRemoveOne;
+  final VoidCallback onRemoveAll;
+  final VoidCallback onEditHours;
+
+  const _StandardLayout({
+    required this.icon,
+    required this.name,
+    required this.totalWh,
+    required this.count,
+    required this.locale,
+    required this.onCard,
+    required this.onAdd,
+    required this.onRemoveOne,
+    required this.onRemoveAll,
+    required this.onEditHours,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final l10n = AppLocalizations.of(context)!;
+
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Icon(icon, color: onCard, size: 28),
+        const SizedBox(width: 12),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                name,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+                style: theme.textTheme.titleSmall?.copyWith(
+                  color: onCard,
+                  fontWeight: FontWeight.w600,
+                  height: 1.3,
+                ),
+              ),
+              const SizedBox(height: 4),
+              Text(
+                l10n.totalPower(totalWh.toString().toWhPersian(locale)),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: theme.textTheme.bodySmall?.copyWith(
+                  color: onCard.withValues(alpha: 0.85),
+                  height: 1.2,
+                ),
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(width: 4),
+        _EditButton(onEditHours: onEditHours, onCard: onCard),
+        _QuantityController(
+          count: count,
+          locale: locale,
+          onCard: onCard,
+          onAdd: onAdd,
+          onRemoveOne: onRemoveOne,
+          onRemoveAll: onRemoveAll,
+        ),
+      ],
+    );
+  }
+}
+
+class _CompactLayout extends StatelessWidget {
+  final IconData icon;
+  final String name;
+  final int totalWh;
+  final int count;
+  final Locale locale;
+  final Color onCard;
+  final VoidCallback onAdd;
+  final VoidCallback onRemoveOne;
+  final VoidCallback onRemoveAll;
+  final VoidCallback onEditHours;
+
+  const _CompactLayout({
+    required this.icon,
+    required this.name,
+    required this.totalWh,
+    required this.count,
+    required this.locale,
+    required this.onCard,
+    required this.onAdd,
+    required this.onRemoveOne,
+    required this.onRemoveAll,
+    required this.onEditHours,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final l10n = AppLocalizations.of(context)!;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const SizedBox(width: 12),
-            Icon(icon),
-            const SizedBox(width: 12),
+            Icon(icon, color: onCard, size: 24),
+            const SizedBox(width: 10),
             Expanded(
-              flex: 25,
-              child: Row(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
                 children: [
-                  Flexible(
-                    child: Text(
-                      name,
-                      overflow: TextOverflow.ellipsis,
-                      maxLines: 1,
-                      style: theme.textTheme.labelMedium,
+                  Text(
+                    name,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: theme.textTheme.titleSmall?.copyWith(
+                      color: onCard,
+                      fontWeight: FontWeight.w600,
+                      height: 1.3,
                     ),
                   ),
-                  const SizedBox(width: 12),
-                  Flexible(
-                    child: Text(
-                      l10n.totalPower(
-                        totalWh.toString().toWhPersian(locale),
-                      ),
-                      overflow: TextOverflow.ellipsis,
-                      maxLines: 1,
-                      style: theme.textTheme.titleMedium,
+                  const SizedBox(height: 4),
+                  Text(
+                    l10n.totalPower(totalWh.toString().toWhPersian(locale)),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: theme.textTheme.bodySmall?.copyWith(
+                      color: onCard.withValues(alpha: 0.85),
+                      height: 1.2,
                     ),
                   ),
                 ],
               ),
             ),
-            IconButton(
-              onPressed: onEditHours,
-              icon: const Icon(Icons.edit_outlined),
-              tooltip: l10n.editHours,
-            ),
+          ],
+        ),
+        const SizedBox(height: 8),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            _EditButton(onEditHours: onEditHours, onCard: onCard),
             _QuantityController(
               count: count,
               locale: locale,
+              onCard: onCard,
               onAdd: onAdd,
               onRemoveOne: onRemoveOne,
               onRemoveAll: onRemoveAll,
             ),
           ],
         ),
-      ),
+      ],
+    );
+  }
+}
+
+class _EditButton extends StatelessWidget {
+  final VoidCallback onEditHours;
+  final Color onCard;
+
+  const _EditButton({required this.onEditHours, required this.onCard});
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
+    return IconButton(
+      onPressed: onEditHours,
+      icon: Icon(Icons.edit_outlined, color: onCard),
+      tooltip: l10n.editHours,
+      visualDensity: VisualDensity.compact,
+      padding: EdgeInsets.zero,
+      constraints: const BoxConstraints(minWidth: 36, minHeight: 36),
     );
   }
 }
@@ -96,6 +266,7 @@ class GroupCard extends StatelessWidget {
 class _QuantityController extends StatelessWidget {
   final int count;
   final Locale locale;
+  final Color onCard;
   final VoidCallback onAdd;
   final VoidCallback onRemoveOne;
   final VoidCallback onRemoveAll;
@@ -103,6 +274,7 @@ class _QuantityController extends StatelessWidget {
   const _QuantityController({
     required this.count,
     required this.locale,
+    required this.onCard,
     required this.onAdd,
     required this.onRemoveOne,
     required this.onRemoveAll,
@@ -111,20 +283,27 @@ class _QuantityController extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final theme = Theme.of(context);
 
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
         IconButton(
           onPressed: onAdd,
-          icon: const Icon(Icons.add),
+          icon: Icon(Icons.add, color: onCard),
           tooltip: l10n.addOne,
+          visualDensity: VisualDensity.compact,
+          padding: EdgeInsets.zero,
+          constraints: const BoxConstraints(minWidth: 36, minHeight: 36),
         ),
         SizedBox(
-          width: 32,
+          width: 28,
           child: Text(
             count.toString().localizedDigits(locale),
-            style: Theme.of(context).textTheme.titleMedium,
+            style: theme.textTheme.titleSmall?.copyWith(
+              color: onCard,
+              fontWeight: FontWeight.w700,
+            ),
             textAlign: TextAlign.center,
           ),
         ),
@@ -137,15 +316,21 @@ class _QuantityController extends StatelessWidget {
     if (count >= 2) {
       return IconButton(
         onPressed: onRemoveOne,
-        icon: const Icon(Icons.remove_circle_outline),
+        icon: Icon(Icons.remove_circle_outline, color: onCard),
         tooltip: l10n.removeOne,
+        visualDensity: VisualDensity.compact,
+        padding: EdgeInsets.zero,
+        constraints: const BoxConstraints(minWidth: 36, minHeight: 36),
       );
     }
 
     return IconButton(
       onPressed: onRemoveAll,
-      icon: const Icon(Icons.delete_outline),
+      icon: Icon(Icons.delete_outline, color: onCard),
       tooltip: l10n.removeAll,
+      visualDensity: VisualDensity.compact,
+      padding: EdgeInsets.zero,
+      constraints: const BoxConstraints(minWidth: 36, minHeight: 36),
     );
   }
 }
