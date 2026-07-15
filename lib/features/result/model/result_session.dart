@@ -11,6 +11,7 @@ class ResultSession extends Equatable {
     required this.languageCode,
     required this.requestAi,
     required this.electricityRateToman,
+    this.persistHistory = true,
   });
 
   final ResulteModel result;
@@ -20,6 +21,9 @@ class ResultSession extends Equatable {
   final bool requestAi;
   final double electricityRateToman;
 
+  /// When false (e.g. reopening from history), do not write another history entry.
+  final bool persistHistory;
+
   @override
   List<Object?> get props => [
     result,
@@ -28,5 +32,6 @@ class ResultSession extends Equatable {
     languageCode,
     requestAi,
     electricityRateToman,
+    persistHistory,
   ];
 }

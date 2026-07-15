@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:solar_calculator/commen/helpers/persian.dart';
 import 'package:solar_calculator/commen/services/shared_operator.dart';
@@ -36,55 +37,65 @@ class HistoryPage extends StatelessWidget {
                   ).add_jm().format(date).localizedDigits(locale);
 
                   return Card(
-                    child: Padding(
-                      padding: const EdgeInsets.all(16),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            dateStr,
-                            style: Theme.of(context).textTheme.titleSmall,
-                          ),
-                          const SizedBox(height: 4),
-                          Text(
-                            l10n.historyApplianceSummary(
-                              entry.applianceCount,
-                              entry.applianceSummary,
+                    clipBehavior: Clip.antiAlias,
+                    child: InkWell(
+                      onTap:
+                          entry.canOpenResults
+                              ? () {
+                                final session = entry.toResultSession()!;
+                                context.push('/result', extra: session);
+                              }
+                              : null,
+                      child: Padding(
+                        padding: const EdgeInsets.all(16),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              dateStr,
+                              style: Theme.of(context).textTheme.titleSmall,
                             ),
-                            style: Theme.of(context).textTheme.bodySmall,
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                          const Divider(height: 20),
-                          _metricRow(
-                            context,
-                            l10n.dailyConsumption,
-                            entry.dailyConsumption.toStringAsFixed(2).tokWhPersian(
-                              locale,
+                            const SizedBox(height: 4),
+                            Text(
+                              l10n.historyApplianceSummary(
+                                entry.applianceCount,
+                                entry.applianceSummary,
+                              ),
+                              style: Theme.of(context).textTheme.bodySmall,
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
                             ),
-                          ),
-                          _metricRow(
-                            context,
-                            l10n.monthlyConsumption,
-                            entry.monthlyConsumption
-                                .toStringAsFixed(2)
-                                .tokWhPersian(locale),
-                          ),
-                          _metricRow(
-                            context,
-                            l10n.yearlyConsumption,
-                            entry.yearlyConsumption
-                                .toStringAsFixed(2)
-                                .tokWhPersian(locale),
-                          ),
-                          _metricRow(
-                            context,
-                            l10n.yearlyCo2Production,
-                            entry.yearlyCo2Production
-                                .toStringAsFixed(2)
-                                .tokgPersian(locale),
-                          ),
-                        ],
+                            const Divider(height: 20),
+                            _metricRow(
+                              context,
+                              l10n.dailyConsumption,
+                              entry.dailyConsumption
+                                  .toStringAsFixed(2)
+                                  .tokWhPersian(locale),
+                            ),
+                            _metricRow(
+                              context,
+                              l10n.monthlyConsumption,
+                              entry.monthlyConsumption
+                                  .toStringAsFixed(2)
+                                  .tokWhPersian(locale),
+                            ),
+                            _metricRow(
+                              context,
+                              l10n.yearlyConsumption,
+                              entry.yearlyConsumption
+                                  .toStringAsFixed(2)
+                                  .tokWhPersian(locale),
+                            ),
+                            _metricRow(
+                              context,
+                              l10n.yearlyCo2Production,
+                              entry.yearlyCo2Production
+                                  .toStringAsFixed(2)
+                                  .tokgPersian(locale),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   );

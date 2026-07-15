@@ -65,7 +65,7 @@ class ResultCubit extends Cubit<ResultState> {
 
     if (session.requestAi) {
       _loadAnalysis(streamFirst: true);
-    } else {
+    } else if (session.persistHistory) {
       _saveHistory();
     }
   }
@@ -241,11 +241,14 @@ class ResultCubit extends Cubit<ResultState> {
 
   Future<void> _saveHistory() async {
     final session = state.session;
+    if (!session.persistHistory) return;
+
     final summary =
         session.appliances.map((a) => a.name).toSet().join('، ');
     await _prefs.addCalculationHistory(
       CalculationHistoryEntry.fromResult(
         state.data,
+        session: session,
         applianceCount: session.appliances.length,
         applianceSummary: summary,
       ),

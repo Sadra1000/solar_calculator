@@ -16,6 +16,26 @@ class SolarSizingResult {
   final double batteryCapacityKwh;
   final double irradianceUsed;
   final String cityName;
+
+  Map<String, dynamic> toJson() => {
+    'panelCount': panelCount,
+    'arrayCapacityKw': arrayCapacityKw,
+    'inverterCapacityKw': inverterCapacityKw,
+    'batteryCapacityKwh': batteryCapacityKwh,
+    'irradianceUsed': irradianceUsed,
+    'cityName': cityName,
+  };
+
+  factory SolarSizingResult.fromJson(Map<String, dynamic> json) {
+    return SolarSizingResult(
+      panelCount: json['panelCount'] as int,
+      arrayCapacityKw: (json['arrayCapacityKw'] as num).toDouble(),
+      inverterCapacityKw: (json['inverterCapacityKw'] as num).toDouble(),
+      batteryCapacityKwh: (json['batteryCapacityKwh'] as num).toDouble(),
+      irradianceUsed: (json['irradianceUsed'] as num).toDouble(),
+      cityName: json['cityName'] as String,
+    );
+  }
 }
 
 /// Formula-based solar system sizing from daily consumption.
