@@ -1,7 +1,7 @@
 class PresetApplianceRef {
-  const PresetApplianceRef({required this.name, this.hours});
+  const PresetApplianceRef({required this.id, this.hours});
 
-  final String name;
+  final String id;
   final double? hours;
 }
 
@@ -28,11 +28,11 @@ const List<PresetProfile> presetProfiles = [
     nameFa: 'خانه ۳ نفره',
     nameEn: '3-person home',
     appliances: [
-      PresetApplianceRef(name: 'یخچال متوسط (9 فوت)', hours: 24),
-      PresetApplianceRef(name: 'تلویزیون LED 43 اینچ', hours: 6),
-      PresetApplianceRef(name: 'لامپ ال‌ای‌دی (LED)', hours: 5),
-      PresetApplianceRef(name: 'ماشین لباسشویی متوسط (7 کیلو)', hours: 1),
-      PresetApplianceRef(name: 'کولر گازی 12000 BTU', hours: 8),
+      PresetApplianceRef(id: 'cat_3_medium_fridge_9_cu_ft_1', hours: 24),
+      PresetApplianceRef(id: 'cat_1_43_led_tv_1', hours: 6),
+      PresetApplianceRef(id: 'cat_9_led_bulb_0', hours: 5),
+      PresetApplianceRef(id: 'cat_2_medium_washer_7_kg_1', hours: 1),
+      PresetApplianceRef(id: 'cat_4_12000_btu_ac_1', hours: 8),
     ],
   ),
   PresetProfile(
@@ -40,10 +40,10 @@ const List<PresetProfile> presetProfiles = [
     nameFa: 'آپارتمان کوچک',
     nameEn: 'Small apartment',
     appliances: [
-      PresetApplianceRef(name: 'یخچال کوچک (3 فوت)', hours: 24),
-      PresetApplianceRef(name: 'تلویزیون LED 32 اینچ', hours: 4),
-      PresetApplianceRef(name: 'لامپ ال‌ای‌دی (LED)', hours: 4),
-      PresetApplianceRef(name: 'جاروبرقی متوسط', hours: 0.5),
+      PresetApplianceRef(id: 'cat_3_small_fridge_3_cu_ft_0', hours: 24),
+      PresetApplianceRef(id: 'cat_1_32_led_tv_0', hours: 4),
+      PresetApplianceRef(id: 'cat_9_led_bulb_0', hours: 4),
+      PresetApplianceRef(id: 'cat_5_medium_vacuum_1', hours: 0.5),
     ],
   ),
   PresetProfile(
@@ -51,9 +51,9 @@ const List<PresetProfile> presetProfiles = [
     nameFa: 'دفتر کار',
     nameEn: 'Office',
     appliances: [
-      PresetApplianceRef(name: 'لامپ مهتابی LED', hours: 10),
-      PresetApplianceRef(name: 'کولر گازی 18000 BTU', hours: 8),
-      PresetApplianceRef(name: 'یخچال کوچک (3 فوت)', hours: 24),
+      PresetApplianceRef(id: 'cat_9_led_tube_light_2', hours: 10),
+      PresetApplianceRef(id: 'cat_4_18000_btu_ac_2', hours: 8),
+      PresetApplianceRef(id: 'cat_3_small_fridge_3_cu_ft_0', hours: 24),
     ],
   ),
 ];

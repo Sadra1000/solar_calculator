@@ -1,52 +1,55 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
-// lib/core/models/appliance.dart (or any other path)
-
-class AppliancesCatgory {
+class AppliancesCategory {
+  final String id;
   final int icon;
-  final String name;
-  final List<Appliance> appliance;
+  final String nameFa;
+  final String nameEn;
+  final List<Appliance> appliances;
 
-  AppliancesCatgory({
+  const AppliancesCategory({
+    required this.id,
     required this.icon,
-    required this.name,
-    required this.appliance,
+    required this.nameFa,
+    required this.nameEn,
+    required this.appliances,
   });
 
-  factory AppliancesCatgory.fromMap(Map<String, dynamic> map) {
-    return AppliancesCatgory(
-      icon: map["icon"] as int,
-      name: map['name'] as String,
-      appliance: List<Appliance>.from(
-        (map['sub_categories'] as List<dynamic>).map<Appliance>(
-          (x) =>
-              Appliance.fromMap(x as Map<String, dynamic>, map["icon"] as int),
-        ),
-      ),
-    );
-  }
+  String localizedName(String languageCode) =>
+      languageCode == 'fa' ? nameFa : nameEn;
 }
 
 class Appliance {
+  final String id;
   final int icon;
-  final String name;
+  final String nameFa;
+  final String nameEn;
   final int powerUsage;
   final double houres;
+
   const Appliance({
+    required this.id,
+    required this.icon,
+    required this.nameFa,
+    required this.nameEn,
     required this.powerUsage,
     required this.houres,
-    required this.icon,
-    required this.name,
   });
 
+  String localizedName(String languageCode) =>
+      languageCode == 'fa' ? nameFa : nameEn;
+
   Appliance copyWith({
+    String? id,
     int? icon,
-    String? name,
+    String? nameFa,
+    String? nameEn,
     int? powerUsage,
     double? houres,
   }) {
     return Appliance(
+      id: id ?? this.id,
       icon: icon ?? this.icon,
-      name: name ?? this.name,
+      nameFa: nameFa ?? this.nameFa,
+      nameEn: nameEn ?? this.nameEn,
       powerUsage: powerUsage ?? this.powerUsage,
       houres: houres ?? this.houres,
     );
@@ -54,33 +57,44 @@ class Appliance {
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
+      'id': id,
       'icon': icon,
-      'name': name,
+      'nameFa': nameFa,
+      'nameEn': nameEn,
       'powerUsage': powerUsage,
       'houres': houres,
     };
   }
 
-  factory Appliance.fromMap(Map<String, dynamic> map, int icon) {
+  factory Appliance.fromStoredMap(Map<String, dynamic> map) {
     return Appliance(
-      icon: icon,
-      name: map['name'] as String,
-      powerUsage: map['power_usage'] as int,
-      houres: (map['hours'] as num).toDouble(),
+      id: map['id'] as String,
+      icon: map['icon'] as int,
+      nameFa: map['nameFa'] as String,
+      nameEn: map['nameEn'] as String,
+      powerUsage: map['powerUsage'] as int,
+      houres: (map['houres'] as num).toDouble(),
     );
   }
 
-  factory Appliance.fromStoredMap(Map<String, dynamic> map) {
+  factory Appliance.custom({
+    required int icon,
+    required String name,
+    required int powerUsage,
+    required double houres,
+  }) {
+    final trimmed = name.trim();
     return Appliance(
-      icon: map['icon'] as int,
-      name: map['name'] as String,
-      powerUsage: map['powerUsage'] as int,
-      houres: (map['houres'] as num).toDouble(),
+      id: 'custom_${trimmed.hashCode}_$icon',
+      icon: icon,
+      nameFa: trimmed,
+      nameEn: trimmed,
+      powerUsage: powerUsage,
+      houres: houres,
     );
   }
 }
 
 extension ApplianceX on Appliance {
-  // برای گروه‌بندی بر اساس نام
-  String get key => name.trim();
+  String get key => id;
 }

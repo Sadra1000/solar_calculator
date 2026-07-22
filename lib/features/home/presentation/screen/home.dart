@@ -326,6 +326,8 @@ class _HomePageState extends State<HomePage> {
               previous.selectedAppliance != current.selectedAppliance,
       builder: (context, state) {
         final l10n = AppLocalizations.of(context)!;
+        final locale = Localizations.localeOf(context);
+        final languageCode = locale.languageCode;
         final groups = groupAppliances(
           state.selectedAppliance.cast<Appliance>(),
         );
@@ -347,18 +349,19 @@ class _HomePageState extends State<HomePage> {
           child: Column(
             children:
                 groups.entries.map((entry) {
-                  final label = entry.key;
+                  final id = entry.key;
                   final list = entry.value;
                   final count = list.length;
                   final icon = list.first.icon;
                   final totalWh = totalGroupWh(list);
                   final sample = list.first;
+                  final displayName = sample.localizedName(languageCode);
 
                   return Padding(
                     padding: const EdgeInsets.symmetric(vertical: 8),
                     child: GroupCard(
                       icon: IconWrapper.getMaterialIcon(icon),
-                      name: label,
+                      name: displayName,
                       count: count,
                       totalWh: totalWh,
                       maxWidth: maxWidth,
@@ -366,11 +369,11 @@ class _HomePageState extends State<HomePage> {
                       onRemoveOne:
                           () => context
                               .read<HomeCubit>()
-                              .removeOneApplianceOfType(label),
+                              .removeOneApplianceOfType(id),
                       onRemoveAll:
                           () => context
                               .read<HomeCubit>()
-                              .removeAllApplianceOfType(label),
+                              .removeAllApplianceOfType(id),
                       onEditHours:
                           () => _showEditHoursDialog(context, sample),
                     ),
@@ -385,6 +388,7 @@ class _HomePageState extends State<HomePage> {
   void _showEditHoursDialog(BuildContext context, Appliance appliance) {
     final l10n = AppLocalizations.of(context)!;
     final locale = Localizations.localeOf(context);
+    final languageCode = locale.languageCode;
     double selectedHours = appliance.houres;
 
     showDialog<void>(
@@ -393,7 +397,9 @@ class _HomePageState extends State<HomePage> {
         return StatefulBuilder(
           builder: (context, setState) {
             return AlertDialog(
-              title: Text(l10n.operatingHours(appliance.name)),
+              title: Text(
+                l10n.operatingHours(appliance.localizedName(languageCode)),
+              ),
               content: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
@@ -434,7 +440,7 @@ class _HomePageState extends State<HomePage> {
                 FilledButton(
                   onPressed: () {
                     context.read<HomeCubit>().updateGroupHours(
-                      appliance.name,
+                      appliance.id,
                       selectedHours,
                     );
                     Navigator.of(dialogContext).pop();
@@ -511,12 +517,20 @@ class _HomePageState extends State<HomePage> {
         final l10n = AppLocalizations.of(context)!;
         final itemSize = adaptiveGridItemSize(maxWidth);
         final query = state.applianceSearchQuery.trim().toLowerCase();
+        final languageCode = Localizations.localeOf(context).languageCode;
         final filtered =
             state.initialList.where((cat) {
               if (query.isEmpty) return true;
-              if (cat.name.toLowerCase().contains(query)) return true;
-              return cat.appliance.any(
-                (a) => a.name.toLowerCase().contains(query),
+              if (cat.localizedName(languageCode).toLowerCase().contains(query)) {
+                return true;
+              }
+              if (cat.nameFa.toLowerCase().contains(query)) return true;
+              if (cat.nameEn.toLowerCase().contains(query)) return true;
+              return cat.appliances.any(
+                (a) =>
+                    a.localizedName(languageCode).toLowerCase().contains(query) ||
+                    a.nameFa.toLowerCase().contains(query) ||
+                    a.nameEn.toLowerCase().contains(query),
               );
             }).toList();
 
@@ -555,7 +569,7 @@ class _HomePageState extends State<HomePage> {
                         return SizedBox(
                           width: itemSize,
                           height: itemSize,
-                          child: ApplianceIcon(catgory: appliance),
+                          child: ApplianceIcon(category: appliance),
                         );
                       }).toList(),
                 ),

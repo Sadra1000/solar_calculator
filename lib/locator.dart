@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:dio/dio.dart';
-import 'package:flutter/services.dart';
 import 'package:get_it/get_it.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:solar_calculator/commen/services/dio_interceptor.dart';
@@ -22,8 +21,6 @@ Future<void> setupLocato() async {
 
   locator.registerSingleton<SharedPrefOperator>(sharedPrefs);
 
-  final applianceJson = await rootBundle.loadString('assets/data.json');
-
   final dio = Dio(
     BaseOptions(
       baseUrl: ApiConfig.deepSeekBaseUrl,
@@ -38,9 +35,7 @@ Future<void> setupLocato() async {
   locator.registerSingleton<ThemeCubit>(ThemeCubit(sharedPrefs));
   locator.registerSingleton<LocaleCubit>(LocaleCubit(sharedPrefs));
   locator.registerSingleton<HomeApi>(HomeApi(dio: locator()));
-  locator.registerSingleton<HomeRepository>(
-    HomeRepository(applianceJson: applianceJson, api: locator()),
-  );
+  locator.registerSingleton<HomeRepository>(HomeRepository(api: locator()));
   locator.registerSingleton<HomeCubit>(
     HomeCubit(
       repo: locator<HomeRepository>(),

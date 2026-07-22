@@ -4,7 +4,7 @@ publish_to: 'none'
 version: 0.1.0
 
 environment:
-  sdk: ^3.7.2
+  sdk: ^3.12.2
 
 dependencies:
   flutter:
@@ -50,7 +50,6 @@ flutter:
   generate: true
   uses-material-design: true
   assets:
-    - assets/data.json
     - assets/images/
   fonts:
     - family: Vazirmatn

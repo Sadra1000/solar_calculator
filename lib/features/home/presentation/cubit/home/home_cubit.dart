@@ -21,7 +21,7 @@ class HomeCubit extends Cubit<HomeState> {
     final cityId = prefs.loadSelectedCityId();
     final rate = prefs.loadElectricityRate();
     final data = repo.getAppliances();
-    if (data is DataSuccess<List<AppliancesCatgory>>) {
+    if (data is DataSuccess<List<AppliancesCategory>>) {
       emit(
         state.copyWith(
           initialList: data.data ?? [],
@@ -86,18 +86,18 @@ class HomeCubit extends Cubit<HomeState> {
     addApplianceToSelection(appliance);
   }
 
-  void removeOneApplianceOfType(String name) {
+  void removeOneApplianceOfType(String id) {
     final updated = List<Appliance>.from(state.selectedAppliance);
-    final idx = updated.indexWhere((e) => e.name == name);
+    final idx = updated.indexWhere((e) => e.id == id);
     if (idx != -1) {
       updated.removeAt(idx);
       _updateSelection(updated);
     }
   }
 
-  void removeAllApplianceOfType(String name) {
+  void removeAllApplianceOfType(String id) {
     final updated = List<Appliance>.from(state.selectedAppliance)
-      ..removeWhere((e) => e.name == name);
+      ..removeWhere((e) => e.id == id);
     _updateSelection(updated);
   }
 
@@ -116,7 +116,7 @@ class HomeCubit extends Cubit<HomeState> {
     final trimmed = name.trim();
     if (trimmed.isEmpty || watts <= 0) return;
     addApplianceToSelection(
-      Appliance(
+      Appliance.custom(
         icon: categoryIcon,
         name: trimmed,
         powerUsage: watts,
@@ -125,10 +125,10 @@ class HomeCubit extends Cubit<HomeState> {
     );
   }
 
-  void updateGroupHours(String name, double hours) {
+  void updateGroupHours(String id, double hours) {
     final updated =
         state.selectedAppliance
-            .map((a) => a.name == name ? a.copyWith(houres: hours) : a)
+            .map((a) => a.id == id ? a.copyWith(houres: hours) : a)
             .toList();
     _updateSelection(updated);
   }

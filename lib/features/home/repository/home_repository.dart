@@ -6,35 +6,22 @@ import 'package:solar_calculator/commen/error_handler/check_exceptions.dart';
 import 'package:solar_calculator/commen/helpers/api_errors.dart';
 import 'package:solar_calculator/commen/helpers/solar_fallback.dart';
 import 'package:solar_calculator/commen/services/exchange_rate_service.dart';
+import 'package:solar_calculator/features/home/data/appliance_catalog.dart';
 import 'package:solar_calculator/features/home/data/remote/deepseek_prompt.dart';
 import 'package:solar_calculator/features/home/data/remote/home_api.dart';
 import 'package:solar_calculator/features/home/model/appliances.dart';
-import 'package:solar_calculator/features/home/model/appliances_schema.dart';
 import 'package:solar_calculator/features/home/model/preset_profiles.dart';
 import 'package:solar_calculator/features/result/repository/model.dart';
 import 'package:solar_calculator/features/solar/iran_cities.dart';
 import 'package:solar_calculator/features/solar/solar_calculator.dart';
 
 class HomeRepository {
-  final String applianceJson;
   final HomeApi api;
-  HomeRepository({required this.api, required this.applianceJson});
 
-  DataState<List<AppliancesCatgory>> getAppliances() {
-    try {
-      final decoded = jsonDecode(applianceJson);
-      AppliancesSchema.validate(decoded);
+  HomeRepository({required this.api});
 
-      final list = <AppliancesCatgory>[];
-      for (final element in decoded as List<dynamic>) {
-        list.add(AppliancesCatgory.fromMap(element as Map<String, dynamic>));
-      }
-      return DataSuccess(list);
-    } on FormatException catch (e) {
-      return DataFailed('Invalid appliance catalog: ${e.message}');
-    } catch (e) {
-      return DataFailed(e.toString());
-    }
+  DataState<List<AppliancesCategory>> getAppliances() {
+    return DataSuccess(List<AppliancesCategory>.from(applianceCatalog));
   }
 
   Map<String, dynamic> calculateConsumption(List<Appliance> appliances) {
@@ -61,35 +48,33 @@ class HomeRepository {
   }
 
   List<ApplianceConsumptionShare> computeApplianceShares(
-    List<Appliance> appliances,
-  ) {
+    List<Appliance> appliances, {
+    required String languageCode,
+  }) {
     final totals = <String, double>{};
+    final labels = <String, String>{};
     for (final appliance in appliances) {
       final dailyKwh = (appliance.powerUsage / 1000.0) * appliance.houres;
-      totals[appliance.name] = (totals[appliance.name] ?? 0) + dailyKwh;
+      totals[appliance.id] = (totals[appliance.id] ?? 0) + dailyKwh;
+      labels[appliance.id] = appliance.localizedName(languageCode);
     }
     return totals.entries
-        .map((e) => ApplianceConsumptionShare(name: e.key, dailyKwh: e.value))
+        .map(
+          (e) => ApplianceConsumptionShare(
+            name: labels[e.key]!,
+            dailyKwh: e.value,
+          ),
+        )
         .toList()
       ..sort((a, b) => b.dailyKwh.compareTo(a.dailyKwh));
   }
 
-  Appliance? findApplianceByName(String name) {
-    final data = getAppliances();
-    if (data is! DataSuccess<List<AppliancesCatgory>>) return null;
-    final categories = data.data ?? [];
-    for (final category in categories) {
-      for (final appliance in category.appliance) {
-        if (appliance.name == name) return appliance;
-      }
-    }
-    return null;
-  }
+  Appliance? findApplianceById(String id) => applianceById[id];
 
   List<Appliance> resolvePresetAppliances(PresetProfile preset) {
     final resolved = <Appliance>[];
     for (final ref in preset.appliances) {
-      final base = findApplianceByName(ref.name);
+      final base = findApplianceById(ref.id);
       if (base != null) {
         resolved.add(base.copyWith(houres: ref.hours ?? base.houres));
       }
@@ -122,7 +107,10 @@ class HomeRepository {
       monthlyConsumption: monthly,
       yearlyConsumption: yearly,
       yearlyCo2Production: co2,
-      applianceShares: computeApplianceShares(appliances),
+      applianceShares: computeApplianceShares(
+        appliances,
+        languageCode: languageCode,
+      ),
       solarSizing: solar,
       monthlyCostToman: monthly * electricityRateToman,
       yearlyCostToman: yearly * electricityRateToman,
@@ -137,10 +125,13 @@ class HomeRepository {
     required double yearlyKwh,
     required String cityDisplayName,
     required double electricityRateToman,
+    required String languageCode,
   }) async {
     final rate = await ExchangeRateService.fetchUsdToToman();
     return DeepSeekPrompt.buildUserMessage(
-      appliancesJson: jsonEncode(_sortAppliances(appliances)),
+      appliancesJson: jsonEncode(
+        _sortAppliances(appliances, languageCode: languageCode),
+      ),
       dailyKwh: dailyKwh,
       monthlyKwh: monthlyKwh,
       yearlyKwh: yearlyKwh,
@@ -180,6 +171,7 @@ class HomeRepository {
     required double yearlyKwh,
     required String cityDisplayName,
     required double electricityRateToman,
+    required String languageCode,
   }) async {
     try {
       final rate = await ExchangeRateService.fetchUsdToToman();
@@ -190,6 +182,7 @@ class HomeRepository {
         yearlyKwh: yearlyKwh,
         cityDisplayName: cityDisplayName,
         electricityRateToman: electricityRateToman,
+        languageCode: languageCode,
       );
       final res = await api.callDeepSeekApi(
         prompt,
@@ -221,6 +214,7 @@ class HomeRepository {
     required double yearlyKwh,
     required String cityDisplayName,
     required double electricityRateToman,
+    required String languageCode,
   }) async* {
     final rate = await ExchangeRateService.fetchUsdToToman();
     final prompt = await buildUserPrompt(
@@ -230,6 +224,7 @@ class HomeRepository {
       yearlyKwh: yearlyKwh,
       cityDisplayName: cityDisplayName,
       electricityRateToman: electricityRateToman,
+      languageCode: languageCode,
     );
     yield* api.streamDeepSeekApi(
       prompt,
@@ -238,15 +233,19 @@ class HomeRepository {
     );
   }
 
-  List<Map<String, dynamic>> _sortAppliances(List<Appliance> list) {
+  List<Map<String, dynamic>> _sortAppliances(
+    List<Appliance> list, {
+    required String languageCode,
+  }) {
     final sortedList = <Map<String, dynamic>>[];
     for (final appliance in list) {
-      final existing = sortedList.where((e) => e['name'] == appliance.name);
+      final name = appliance.localizedName(languageCode);
+      final existing = sortedList.where((e) => e['name'] == name);
       if (existing.isNotEmpty) {
         existing.first['count'] = (existing.first['count'] as int) + 1;
       } else {
         sortedList.add({
-          'name': appliance.name,
+          'name': name,
           'consumption': appliance.powerUsage,
           'count': 1,
           'hours': appliance.houres,

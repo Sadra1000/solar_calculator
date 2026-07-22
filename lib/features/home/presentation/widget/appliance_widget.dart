@@ -8,9 +8,9 @@ import 'package:solar_calculator/features/home/presentation/cubit/home/home_cubi
 import 'package:solar_calculator/l10n/app_localizations.dart';
 
 class ApplianceIcon extends StatefulWidget {
-  const ApplianceIcon({super.key, required this.catgory});
+  const ApplianceIcon({super.key, required this.category});
 
-  final AppliancesCatgory catgory;
+  final AppliancesCategory category;
 
   @override
   State<ApplianceIcon> createState() => _ApplianceIconState();
@@ -21,7 +21,7 @@ class _ApplianceIconState extends State<ApplianceIcon> {
 
   void _onTap() async {
     setState(() => _isPressed = true);
-    _showSubCategoryDialog(context, widget.catgory);
+    _showSubCategoryDialog(context, widget.category);
     if (mounted) {
       setState(() => _isPressed = false);
     }
@@ -29,6 +29,8 @@ class _ApplianceIconState extends State<ApplianceIcon> {
 
   @override
   Widget build(BuildContext context) {
+    final locale = Localizations.localeOf(context);
+    final languageCode = locale.languageCode;
     final backgroundColor = Theme.of(context).scaffoldBackgroundColor;
     final isDarkMode = Theme.of(context).brightness == Brightness.dark;
 
@@ -75,7 +77,7 @@ class _ApplianceIconState extends State<ApplianceIcon> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Icon(
-              IconWrapper.getMaterialIcon(widget.catgory.icon),
+              IconWrapper.getMaterialIcon(widget.category.icon),
               color: Theme.of(context).colorScheme.primary,
               size: 28,
             ),
@@ -83,7 +85,7 @@ class _ApplianceIconState extends State<ApplianceIcon> {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 6),
               child: Text(
-                widget.catgory.name,
+                widget.category.localizedName(languageCode),
                 style: const TextStyle(fontWeight: FontWeight.w600),
                 textAlign: TextAlign.center,
                 maxLines: 2,
@@ -98,13 +100,12 @@ class _ApplianceIconState extends State<ApplianceIcon> {
 
   void _showSubCategoryDialog(
     BuildContext context,
-    AppliancesCatgory category,
+    AppliancesCategory category,
   ) {
     final l10n = AppLocalizations.of(context)!;
+    final languageCode = Localizations.localeOf(context).languageCode;
     final textDirection =
-        Localizations.localeOf(context).languageCode == 'fa'
-            ? TextDirection.rtl
-            : TextDirection.ltr;
+        languageCode == 'fa' ? TextDirection.rtl : TextDirection.ltr;
     final maxHeight = MediaQuery.sizeOf(context).height;
 
     showDialog(
@@ -118,13 +119,18 @@ class _ApplianceIconState extends State<ApplianceIcon> {
             builder: (context, setDialogState) {
               final query = searchQuery.trim().toLowerCase();
               final filtered =
-                  category.appliance.where((sub) {
+                  category.appliances.where((sub) {
                     if (query.isEmpty) return true;
-                    return sub.name.toLowerCase().contains(query);
+                    final localized = sub.localizedName(languageCode).toLowerCase();
+                    return localized.contains(query) ||
+                        sub.nameFa.toLowerCase().contains(query) ||
+                        sub.nameEn.toLowerCase().contains(query);
                   }).toList();
 
               return AlertDialog(
-                title: Text(l10n.selectFromCategory(category.name)),
+                title: Text(
+                  l10n.selectFromCategory(category.localizedName(languageCode)),
+                ),
                 content: SizedBox(
                   width: double.maxFinite,
                   height: adaptiveDialogHeight(maxHeight),
@@ -150,7 +156,9 @@ class _ApplianceIconState extends State<ApplianceIcon> {
                                   itemBuilder: (context, index) {
                                     final subCategory = filtered[index];
                                     return ListTile(
-                                      title: Text(subCategory.name),
+                                      title: Text(
+                                        subCategory.localizedName(languageCode),
+                                      ),
                                       subtitle: Text(
                                         l10n.watts(subCategory.powerUsage),
                                       ),
@@ -195,7 +203,7 @@ class _ApplianceIconState extends State<ApplianceIcon> {
 
   void _showCustomApplianceDialog(
     BuildContext context,
-    AppliancesCatgory category,
+    AppliancesCategory category,
   ) {
     final l10n = AppLocalizations.of(context)!;
     final locale = Localizations.localeOf(context);
@@ -288,6 +296,7 @@ class _ApplianceIconState extends State<ApplianceIcon> {
   void _showHourSelectionDialog(BuildContext context, Appliance appliance) {
     final l10n = AppLocalizations.of(context)!;
     final locale = Localizations.localeOf(context);
+    final languageCode = locale.languageCode;
     double selectedHours = appliance.houres;
 
     showDialog(
@@ -296,7 +305,9 @@ class _ApplianceIconState extends State<ApplianceIcon> {
         return StatefulBuilder(
           builder: (context, setState) {
             return AlertDialog(
-              title: Text(l10n.operatingHours(appliance.name)),
+              title: Text(
+                l10n.operatingHours(appliance.localizedName(languageCode)),
+              ),
               content: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [

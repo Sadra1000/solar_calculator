@@ -25,7 +25,7 @@ class HomeState extends Equatable {
   final bool isInitializing;
   final String? errorMsg;
   final List<Appliance> selectedAppliance;
-  final List<AppliancesCatgory> initialList;
+  final List<AppliancesCategory> initialList;
   final String selectedCityId;
   final double electricityRateToman;
   final HomeNavigationEvent? navigationEvent;
@@ -40,7 +40,7 @@ class HomeState extends Equatable {
     String? errorMsg,
     bool clearError = false,
     List<Appliance>? selectedAppliance,
-    List<AppliancesCatgory>? initialList,
+    List<AppliancesCategory>? initialList,
     String? selectedCityId,
     double? electricityRateToman,
     HomeNavigationEvent? navigationEvent,

@@ -16,10 +16,9 @@ import 'package:solar_calculator/l10n/app_localizations.dart';
 
 class ResultCubit extends Cubit<ResultState> {
   ResultCubit({
-    required HomeRepository repo,
+    required this._repo,
     required SharedPrefOperator prefs,
-  }) : _repo = repo,
-       _prefs = prefs,
+  }) : _prefs = prefs,
        super(
          ResultState(
            session: ResultSession(
@@ -148,6 +147,7 @@ class ResultCubit extends Cubit<ResultState> {
             yearlyKwh: yearlyKwh,
             cityDisplayName: cityName,
             electricityRateToman: session.electricityRateToman,
+            languageCode: session.languageCode,
           )
           .listen(
             (chunk) {
@@ -203,6 +203,7 @@ class ResultCubit extends Cubit<ResultState> {
       yearlyKwh: yearlyKwh,
       cityDisplayName: cityName,
       electricityRateToman: session.electricityRateToman,
+      languageCode: session.languageCode,
     );
 
     if (apiResult is DataSuccess<String> && apiResult.data != null) {
@@ -243,8 +244,10 @@ class ResultCubit extends Cubit<ResultState> {
     final session = state.session;
     if (!session.persistHistory) return;
 
-    final summary =
-        session.appliances.map((a) => a.name).toSet().join('، ');
+    final summary = session.appliances
+        .map((a) => a.localizedName(session.languageCode))
+        .toSet()
+        .join('، ');
     await _prefs.addCalculationHistory(
       CalculationHistoryEntry.fromResult(
         state.data,

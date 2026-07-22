@@ -8,10 +8,7 @@ void main() {
   late HomeRepository repository;
 
   setUp(() {
-    repository = HomeRepository(
-      applianceJson: '[]',
-      api: HomeApi(dio: Dio()),
-    );
+    repository = HomeRepository(api: HomeApi(dio: Dio()));
   });
 
   group('calculateConsumption', () {
@@ -25,16 +22,20 @@ void main() {
     });
 
     test('sums daily kWh from watts and hours', () {
-      final appliances = [
-        const Appliance(
+      const appliances = [
+        Appliance(
+          id: 'lamp',
           icon: 1,
-          name: 'Lamp',
+          nameFa: 'لامپ',
+          nameEn: 'Lamp',
           powerUsage: 1000,
           houres: 2,
         ),
-        const Appliance(
+        Appliance(
+          id: 'fan',
           icon: 1,
-          name: 'Fan',
+          nameFa: 'پنکه',
+          nameEn: 'Fan',
           powerUsage: 500,
           houres: 4,
         ),
@@ -50,8 +51,10 @@ void main() {
 
     test('counts duplicate appliances separately', () {
       const appliance = Appliance(
+        id: 'tv',
         icon: 1,
-        name: 'TV',
+        nameFa: 'تلویزیون',
+        nameEn: 'TV',
         powerUsage: 200,
         houres: 5,
       );
@@ -63,11 +66,28 @@ void main() {
   });
 
   group('computeApplianceShares', () {
-    test('aggregates consumption by appliance name', () {
-      const tv = Appliance(icon: 1, name: 'TV', powerUsage: 100, houres: 10);
-      const lamp = Appliance(icon: 2, name: 'Lamp', powerUsage: 50, houres: 4);
+    test('aggregates consumption by appliance id', () {
+      const tv = Appliance(
+        id: 'tv',
+        icon: 1,
+        nameFa: 'تلویزیون',
+        nameEn: 'TV',
+        powerUsage: 100,
+        houres: 10,
+      );
+      const lamp = Appliance(
+        id: 'lamp',
+        icon: 2,
+        nameFa: 'لامپ',
+        nameEn: 'Lamp',
+        powerUsage: 50,
+        houres: 4,
+      );
 
-      final shares = repository.computeApplianceShares([tv, tv, lamp]);
+      final shares = repository.computeApplianceShares(
+        [tv, tv, lamp],
+        languageCode: 'en',
+      );
 
       expect(shares.length, 2);
       expect(shares.firstWhere((s) => s.name == 'TV').dailyKwh, 2.0);
