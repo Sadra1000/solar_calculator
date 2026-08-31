@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_markdown/flutter_markdown.dart';
+import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:go_router/go_router.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
@@ -20,20 +20,20 @@ class ResultPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final textDirection =
-        Localizations.localeOf(context).languageCode == 'fa'
-            ? TextDirection.rtl
-            : TextDirection.ltr;
+    final textDirection = Localizations.localeOf(context).languageCode == 'fa'
+        ? TextDirection.rtl
+        : TextDirection.ltr;
 
     return BlocConsumer<ResultCubit, ResultState>(
-      listenWhen: (previous, current) => previous.shareMessage != current.shareMessage,
+      listenWhen: (previous, current) =>
+          previous.shareMessage != current.shareMessage,
       listener: (context, state) {
         final msg = state.shareMessage;
         if (msg == null) return;
         if (msg == 'shared' && context.mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(l10n.shareResults)),
-          );
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(SnackBar(content: Text(l10n.shareResults)));
         }
         context.read<ResultCubit>().clearShareMessage();
       },
@@ -57,17 +57,17 @@ class ResultPage extends StatelessWidget {
               actions: [
                 if (state.session.requestAi)
                   IconButton(
-                    icon:
-                        state.isRefreshing
-                            ? const SizedBox(
-                              width: 22,
-                              height: 22,
-                              child: CircularProgressIndicator(strokeWidth: 2),
-                            )
-                            : const Icon(Icons.refresh),
+                    icon: state.isRefreshing
+                        ? const SizedBox(
+                            width: 22,
+                            height: 22,
+                            child: CircularProgressIndicator(strokeWidth: 2),
+                          )
+                        : const Icon(Icons.refresh),
                     tooltip: l10n.refreshAnalysis,
-                    onPressed:
-                        state.isRefreshing ? null : () => cubit.refresh(),
+                    onPressed: state.isRefreshing
+                        ? null
+                        : () => cubit.refresh(),
                   ),
                 IconButton(
                   icon: const Icon(Icons.share),
@@ -78,20 +78,19 @@ class ResultPage extends StatelessWidget {
             ),
             body: LayoutBuilder(
               builder: (context, constraints) {
-                final content =
-                    isLargeScreen(constraints.maxWidth)
-                        ? _buildLargeScreenLayout(
-                          context,
-                          data: data,
-                          isStreaming: state.isStreaming,
-                          isFallback: state.isFallback,
-                        )
-                        : _buildSmallScreenLayout(
-                          context,
-                          data: data,
-                          isStreaming: state.isStreaming,
-                          isFallback: state.isFallback,
-                        );
+                final content = isLargeScreen(constraints.maxWidth)
+                    ? _buildLargeScreenLayout(
+                        context,
+                        data: data,
+                        isStreaming: state.isStreaming,
+                        isFallback: state.isFallback,
+                      )
+                    : _buildSmallScreenLayout(
+                        context,
+                        data: data,
+                        isStreaming: state.isStreaming,
+                        isFallback: state.isFallback,
+                      );
 
                 return constrainContent(
                   maxWidth: AppBreakpoints.resultContentMaxWidth,
@@ -141,6 +140,8 @@ class ResultPage extends StatelessWidget {
               ),
             ),
           ),
+          const SizedBox(height: 16),
+          const _EstimateDisclaimer(),
         ],
       ),
     );
@@ -196,6 +197,8 @@ class ResultPage extends StatelessWidget {
               },
             ),
           ),
+          const SizedBox(height: 16),
+          const _EstimateDisclaimer(),
         ],
       ),
     );
@@ -216,27 +219,24 @@ class ResultPage extends StatelessWidget {
       (l10n.monthlyConsumption, data.monthlyConsumption.toStringAsFixed(2)),
       (l10n.yearlyConsumption, data.yearlyConsumption.toStringAsFixed(2)),
       (l10n.yearlyCo2Production, data.yearlyCo2Production.toStringAsFixed(2)),
-      (
-        l10n.monthlyCost,
-        _formatToman(data.monthlyCostToman, locale),
-      ),
-      (
-        l10n.yearlyCost,
-        _formatToman(data.yearlyCostToman, locale),
-      ),
+      (l10n.monthlyCost, _formatToman(data.monthlyCostToman, locale)),
+      (l10n.yearlyCost, _formatToman(data.yearlyCostToman, locale)),
     ];
 
-    final co2Subtitle = _co2EquivalentsText(l10n, data.yearlyCo2Production, locale);
+    final co2Subtitle = _co2EquivalentsText(
+      l10n,
+      data.yearlyCo2Production,
+      locale,
+    );
 
     return List.generate(items.length, (index) {
       final item = items[index];
       final isCost = index >= 4;
-      final value =
-          isCost
-              ? item.$2
-              : index == 3
-              ? item.$2.tokgPersian(locale)
-              : item.$2.tokWhPersian(locale);
+      final value = isCost
+          ? item.$2
+          : index == 3
+          ? item.$2.tokgPersian(locale)
+          : item.$2.tokWhPersian(locale);
 
       return AnimationConfiguration.staggeredList(
         position: index,
@@ -285,61 +285,61 @@ class ResultPage extends StatelessWidget {
   }) {
     final content = isLargeScreen
         ? Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Text(title, style: theme.textTheme.titleMedium),
-            const SizedBox(height: 8),
-            Text(
-              value,
-              style: theme.textTheme.headlineSmall?.copyWith(
-                fontWeight: FontWeight.bold,
-                color: theme.colorScheme.primary,
-              ),
-            ),
-            if (subtitle != null) ...[
-              const SizedBox(height: 6),
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Text(title, style: theme.textTheme.titleMedium),
+              const SizedBox(height: 8),
               Text(
-                subtitle,
-                style: theme.textTheme.bodySmall,
-                textAlign: TextAlign.center,
+                value,
+                style: theme.textTheme.headlineSmall?.copyWith(
+                  fontWeight: FontWeight.bold,
+                  color: theme.colorScheme.primary,
+                ),
               ),
-            ],
-          ],
-        )
-        : Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Row(
-              children: [
-                Expanded(
-                  flex: 24,
-                  child: Text(title, textAlign: TextAlign.start),
-                ),
-                Expanded(
-                  flex: 30,
-                  child: Text(
-                    value,
-                    textAlign: TextAlign.end,
-                    style: theme.textTheme.headlineSmall?.copyWith(
-                      fontWeight: FontWeight.bold,
-                      color: theme.colorScheme.primary,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            if (subtitle != null)
-              Padding(
-                padding: const EdgeInsets.only(top: 4),
-                child: Text(
+              if (subtitle != null) ...[
+                const SizedBox(height: 6),
+                Text(
                   subtitle,
                   style: theme.textTheme.bodySmall,
-                  textAlign: TextAlign.end,
+                  textAlign: TextAlign.center,
                 ),
+              ],
+            ],
+          )
+        : Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Row(
+                children: [
+                  Expanded(
+                    flex: 24,
+                    child: Text(title, textAlign: TextAlign.start),
+                  ),
+                  Expanded(
+                    flex: 30,
+                    child: Text(
+                      value,
+                      textAlign: TextAlign.end,
+                      style: theme.textTheme.headlineSmall?.copyWith(
+                        fontWeight: FontWeight.bold,
+                        color: theme.colorScheme.primary,
+                      ),
+                    ),
+                  ),
+                ],
               ),
-          ],
-        );
+              if (subtitle != null)
+                Padding(
+                  padding: const EdgeInsets.only(top: 4),
+                  child: Text(
+                    subtitle,
+                    style: theme.textTheme.bodySmall,
+                    textAlign: TextAlign.end,
+                  ),
+                ),
+            ],
+          );
 
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
@@ -379,6 +379,38 @@ class _FallbackBanner extends StatelessWidget {
   }
 }
 
+class _EstimateDisclaimer extends StatelessWidget {
+  const _EstimateDisclaimer();
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final l10n = AppLocalizations.of(context)!;
+    return Semantics(
+      label: l10n.estimateDisclaimer,
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Icon(
+            Icons.engineering_outlined,
+            size: 20,
+            color: theme.colorScheme.onSurfaceVariant,
+          ),
+          const SizedBox(width: 8),
+          Expanded(
+            child: Text(
+              l10n.estimateDisclaimer,
+              style: theme.textTheme.bodySmall?.copyWith(
+                color: theme.colorScheme.onSurfaceVariant,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
 class _ConsumptionCharts extends StatelessWidget {
   const _ConsumptionCharts({required this.data});
 
@@ -390,25 +422,13 @@ class _ConsumptionCharts extends StatelessWidget {
     final theme = Theme.of(context);
     final locale = Localizations.localeOf(context);
 
-    final pieData =
-        data.applianceShares
-            .map(
-              (s) => _ChartPoint(
-                label: s.name,
-                value: s.dailyKwh,
-              ),
-            )
-            .toList();
+    final pieData = data.applianceShares
+        .map((s) => _ChartPoint(label: s.name, value: s.dailyKwh))
+        .toList();
 
     final barData = [
-      _ChartPoint(
-        label: l10n.dailyShort,
-        value: data.dailyConsumption,
-      ),
-      _ChartPoint(
-        label: l10n.monthlyShort,
-        value: data.monthlyConsumption,
-      ),
+      _ChartPoint(label: l10n.dailyShort, value: data.dailyConsumption),
+      _ChartPoint(label: l10n.monthlyShort, value: data.monthlyConsumption),
     ];
 
     return Card(
@@ -446,9 +466,7 @@ class _ConsumptionCharts extends StatelessWidget {
               height: 200,
               child: SfCartesianChart(
                 primaryXAxis: const CategoryAxis(),
-                primaryYAxis: NumericAxis(
-                  title: AxisTitle(text: 'kWh'),
-                ),
+                primaryYAxis: NumericAxis(title: AxisTitle(text: 'kWh')),
                 series: <ColumnSeries<_ChartPoint, String>>[
                   ColumnSeries<_ChartPoint, String>(
                     dataSource: barData,
@@ -456,18 +474,19 @@ class _ConsumptionCharts extends StatelessWidget {
                     yValueMapper: (p, _) => p.value,
                     dataLabelSettings: DataLabelSettings(
                       isVisible: true,
-                      builder: (
-                        dynamic value,
-                        dynamic point,
-                        dynamic series,
-                        int pointIndex,
-                        int seriesIndex,
-                      ) {
-                        final v = (point.y as num).toDouble();
-                        return Text(
-                          v.toStringAsFixed(1).localizedDigits(locale),
-                        );
-                      },
+                      builder:
+                          (
+                            dynamic value,
+                            dynamic point,
+                            dynamic series,
+                            int pointIndex,
+                            int seriesIndex,
+                          ) {
+                            final v = (point.y as num).toDouble();
+                            return Text(
+                              v.toStringAsFixed(1).localizedDigits(locale),
+                            );
+                          },
                     ),
                   ),
                 ],
@@ -498,16 +517,9 @@ class _SolarSizingPanel extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Text(
-              l10n.solarSizingTitle,
-              style: theme.textTheme.titleMedium,
-            ),
+            Text(l10n.solarSizingTitle, style: theme.textTheme.titleMedium),
             const SizedBox(height: 12),
-            _solarRow(
-              l10n.selectCity,
-              solar.cityName,
-              theme,
-            ),
+            _solarRow(l10n.selectCity, solar.cityName, theme),
             _solarRow(
               l10n.panelCount,
               l10n.panelsUnit(solar.panelCount),
@@ -672,13 +684,9 @@ class _AnimatedMarkdownTyperState extends State<_AnimatedMarkdownTyper> {
 
   @override
   Widget build(BuildContext context) {
-    final visible =
-        _completed
-            ? widget.markdown
-            : widget.markdown.substring(
-              0,
-              _len.clamp(0, widget.markdown.length),
-            );
+    final visible = _completed
+        ? widget.markdown
+        : widget.markdown.substring(0, _len.clamp(0, widget.markdown.length));
     return Stack(
       children: [
         MarkdownBody(

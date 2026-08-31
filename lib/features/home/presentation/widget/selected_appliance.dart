@@ -44,32 +44,31 @@ class GroupCard extends StatelessWidget {
           borderRadius: BorderRadius.circular(12),
           color: theme.colorScheme.tertiaryContainer,
         ),
-        child:
-            isCompact
-                ? _CompactLayout(
-                  icon: icon,
-                  name: name,
-                  totalWh: totalWh,
-                  count: count,
-                  locale: locale,
-                  onCard: onCard,
-                  onAdd: onAdd,
-                  onRemoveOne: onRemoveOne,
-                  onRemoveAll: onRemoveAll,
-                  onEditHours: onEditHours,
-                )
-                : _StandardLayout(
-                  icon: icon,
-                  name: name,
-                  totalWh: totalWh,
-                  count: count,
-                  locale: locale,
-                  onCard: onCard,
-                  onAdd: onAdd,
-                  onRemoveOne: onRemoveOne,
-                  onRemoveAll: onRemoveAll,
-                  onEditHours: onEditHours,
-                ),
+        child: isCompact
+            ? _CompactLayout(
+                icon: icon,
+                name: name,
+                totalWh: totalWh,
+                count: count,
+                locale: locale,
+                onCard: onCard,
+                onAdd: onAdd,
+                onRemoveOne: onRemoveOne,
+                onRemoveAll: onRemoveAll,
+                onEditHours: onEditHours,
+              )
+            : _StandardLayout(
+                icon: icon,
+                name: name,
+                totalWh: totalWh,
+                count: count,
+                locale: locale,
+                onCard: onCard,
+                onAdd: onAdd,
+                onRemoveOne: onRemoveOne,
+                onRemoveAll: onRemoveAll,
+                onEditHours: onEditHours,
+              ),
       ),
     );
   }

@@ -4,7 +4,9 @@ import 'package:dio/dio.dart';
 ///
 /// Source: https://github.com/rate-json/default (updated 3–4× daily).
 abstract final class ExchangeRateService {
-  static const int fallbackUsdToman = 175000;
+  // Rounded snapshot for offline use, reviewed on 2026-08-31. The live source
+  // remains authoritative whenever it is reachable.
+  static const int fallbackUsdToman = 210000;
   static const _url =
       'https://raw.githubusercontent.com/rate-json/default/main/data.json';
   static const _cacheDuration = Duration(hours: 6);
@@ -39,11 +41,7 @@ abstract final class ExchangeRateService {
           _cachedRate = usd;
           _cachedAt = DateTime.now();
           _cachedDate = root['generated_by_tomanify_at'] as String?;
-          return UsdRate(
-            toman: usd,
-            sourceDate: _cachedDate,
-            fromCache: false,
-          );
+          return UsdRate(toman: usd, sourceDate: _cachedDate, fromCache: false);
         }
       }
     } catch (_) {}
@@ -60,11 +58,7 @@ abstract final class ExchangeRateService {
 }
 
 class UsdRate {
-  const UsdRate({
-    required this.toman,
-    this.sourceDate,
-    this.fromCache = false,
-  });
+  const UsdRate({required this.toman, this.sourceDate, this.fromCache = false});
 
   final int toman;
   final String? sourceDate;

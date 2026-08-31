@@ -124,14 +124,21 @@ class AppLocalizationsFa extends AppLocalizations {
 
   @override
   String get deepSeekApiKeyMissing =>
-      'کلید API هوش مصنوعی (DEEPSEEK_API_KEY) تنظیم نشده است. برای تحلیل هوشمند، کلید را در فایل .env قرار دهید.';
+      'اتصال امن تحلیل هوشمند تنظیم نشده است؛ پیشنهاد محلی نمایش داده می‌شود.';
 
   @override
-  String get analysisNotAvailable =>
-      'تحلیل هوش مصنوعی در دسترس نیست. نتایج محاسبه محلی در زیر نمایش داده شده‌اند.';
+  String get analysisNotAvailable => 'در حال آماده‌سازی پیشنهاد محلی…';
 
   @override
   String get enableAiAnalysis => 'تحلیل هوشمند خورشیدی (DeepSeek)';
+
+  @override
+  String get localRecommendationEnabled =>
+      'پیشنهاد محلی و بدون نیاز به کلید فعال است';
+
+  @override
+  String get aiSecureProxyRequired =>
+      'تحلیل DeepSeek در نسخه وب فقط با اتصال امن سمت سرور فعال می‌شود.';
 
   @override
   String get presetsTitle => 'پیش‌فرض‌های سریع';
@@ -263,8 +270,12 @@ class AppLocalizationsFa extends AppLocalizations {
 
   @override
   String get aiFallbackNotice =>
-      'هوش مصنوعی در دسترس نیست — پیشنهاد فرمولی نمایش داده می‌شود.';
+      'اتصال تحلیل هوشمند در دسترس نیست — پیشنهاد محلی نمایش داده می‌شود.';
 
   @override
   String get refreshAnalysis => 'بروزرسانی تحلیل هوشمند';
+
+  @override
+  String get estimateDisclaimer =>
+      'این نتایج برآورد اولیه هستند و جایگزین بازدید، طراحی و تأیید نصاب یا مهندس برق نیستند.';
 }

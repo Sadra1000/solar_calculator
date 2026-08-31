@@ -47,8 +47,8 @@ class _MainAppState extends State<MainApp> {
               final usePersianFont = locale.languageCode == 'fa';
               return MaterialApp.router(
                 debugShowCheckedModeBanner: false,
-                onGenerateTitle:
-                    (context) => AppLocalizations.of(context)!.appTitle,
+                onGenerateTitle: (context) =>
+                    AppLocalizations.of(context)!.appTitle,
                 locale: locale,
                 localizationsDelegates: const [
                   AppLocalizations.delegate,

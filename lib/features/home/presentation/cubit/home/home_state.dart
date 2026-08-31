@@ -58,10 +58,9 @@ class HomeState extends Equatable {
       initialList: initialList ?? this.initialList,
       selectedCityId: selectedCityId ?? this.selectedCityId,
       electricityRateToman: electricityRateToman ?? this.electricityRateToman,
-      navigationEvent:
-          clearNavigationEvent
-              ? null
-              : (navigationEvent ?? this.navigationEvent),
+      navigationEvent: clearNavigationEvent
+          ? null
+          : (navigationEvent ?? this.navigationEvent),
       applianceSearchQuery: applianceSearchQuery ?? this.applianceSearchQuery,
     );
   }

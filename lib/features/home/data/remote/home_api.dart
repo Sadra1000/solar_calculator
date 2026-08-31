@@ -32,23 +32,24 @@ class HomeApi {
     };
   }
 
-  Options _authOptions({
-    required bool stream,
-    Duration? receiveTimeout,
-  }) {
+  Options _authOptions({required bool stream, Duration? receiveTimeout}) {
+    final headers = <String, String>{};
+    if (ApiConfig.shouldSendAuthorization) {
+      headers['Authorization'] = 'Bearer ${ApiConfig.deepSeekApiKey}';
+    }
     return Options(
-      headers: {'Authorization': 'Bearer ${ApiConfig.deepSeekApiKey}'},
+      headers: headers,
       responseType: stream ? ResponseType.stream : ResponseType.json,
       receiveTimeout: receiveTimeout ?? const Duration(seconds: 90),
       sendTimeout: const Duration(seconds: 30),
     );
   }
 
-  void _ensureApiKey() {
-    if (!ApiConfig.hasApiKey) {
+  void _ensureAiConfigured() {
+    if (!ApiConfig.hasAiConfiguration) {
       throw DioException(
-        requestOptions: RequestOptions(path: ApiConfig.chatCompletionsPath),
-        message: 'DEEPSEEK_API_KEY is not configured',
+        requestOptions: RequestOptions(path: ApiConfig.chatCompletionsUrl),
+        message: 'AI_ENDPOINT is not configured',
         type: DioExceptionType.unknown,
       );
     }
@@ -59,10 +60,10 @@ class HomeApi {
     required int usdToToman,
     String? rateDate,
   }) async {
-    _ensureApiKey();
+    _ensureAiConfigured();
 
     return dio.post(
-      ApiConfig.chatCompletionsPath,
+      ApiConfig.chatCompletionsUrl,
       data: _requestBody(
         userMessage: userMessage,
         stream: false,
@@ -79,10 +80,10 @@ class HomeApi {
     required int usdToToman,
     String? rateDate,
   }) async* {
-    _ensureApiKey();
+    _ensureAiConfigured();
 
     final response = await dio.post<ResponseBody>(
-      ApiConfig.chatCompletionsPath,
+      ApiConfig.chatCompletionsUrl,
       data: _requestBody(
         userMessage: userMessage,
         stream: true,

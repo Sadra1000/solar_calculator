@@ -125,14 +125,21 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get deepSeekApiKeyMissing =>
-      'The AI API key (DEEPSEEK_API_KEY) is not configured. Add it to your .env file to enable smart analysis.';
+      'Secure AI connectivity is not configured; a local recommendation will be shown.';
 
   @override
-  String get analysisNotAvailable =>
-      'AI analysis is not available. Local calculation results are shown below.';
+  String get analysisNotAvailable => 'Preparing the local recommendation…';
 
   @override
   String get enableAiAnalysis => 'Include AI solar advice (DeepSeek)';
+
+  @override
+  String get localRecommendationEnabled =>
+      'Local recommendation is available without an API key';
+
+  @override
+  String get aiSecureProxyRequired =>
+      'DeepSeek analysis on the web is enabled only through a secure server-side connection.';
 
   @override
   String get presetsTitle => 'Quick presets';
@@ -264,8 +271,12 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get aiFallbackNotice =>
-      'AI unavailable — showing formula-based recommendation.';
+      'AI connectivity is unavailable — showing the local recommendation.';
 
   @override
   String get refreshAnalysis => 'Refresh AI analysis';
+
+  @override
+  String get estimateDisclaimer =>
+      'These results are preliminary estimates and do not replace an on-site assessment, engineering design, or approval by a qualified installer or electrical engineer.';
 }

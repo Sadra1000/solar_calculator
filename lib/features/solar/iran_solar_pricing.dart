@@ -1,6 +1,7 @@
-/// Iran solar market pricing: USD base + premium %, converted via live rate.
+/// Planning assumptions for Iran solar-market pricing: USD base + a conservative
+/// market premium, converted through the latest available exchange rate.
 ///
-/// Premium covers sanctions routing, limited official imports, and distribution markup.
+/// These values are not vendor quotes and must be confirmed before purchase.
 abstract final class IranSolarPricing {
   // --- Iran premium components (percent added to international USD price) ---
   static const int sanctionsImportPct = 45;
@@ -42,8 +43,9 @@ abstract final class IranSolarPricing {
     int? premiumPct,
   }) {
     final pct = premiumPct ?? totalEquipmentPremiumPct;
-    final basePerW =
-        withBattery ? installedHybridGlobalUsdPerW : installedOnGridGlobalUsdPerW;
+    final basePerW = withBattery
+        ? installedHybridGlobalUsdPerW
+        : installedOnGridGlobalUsdPerW;
     var total = iranUsdFromGlobal(systemKw * 1000 * basePerW, premiumPct: pct);
     if (batteryKwh > 0) {
       total += iranUsdFromGlobal(
@@ -56,10 +58,9 @@ abstract final class IranSolarPricing {
 
   /// Markdown block for AI system prompt.
   static String promptCatalog({required int usdToToman, String? rateDate}) {
-    final rateLine =
-        rateDate != null
-            ? 'نرخ دلار آزاد: **$usdToToman تومان** (تاریخ: $rateDate)'
-            : 'نرخ دلار آزاد: **$usdToToman تومان**';
+    final rateLine = rateDate != null
+        ? 'نرخ دلار آزاد: **$usdToToman تومان** (تاریخ: $rateDate)'
+        : 'نرخ دلار آزاد: **$usdToToman تومان**';
 
     return '''
 **روش قیمت‌گذاری (الزامی — قیمت ثابت تومانی ندهید)**

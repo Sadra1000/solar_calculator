@@ -26,6 +26,9 @@ GoRouter createAppRouter() {
       if (prefs.hasUserVisitedOnboarding() && onOnboarding) {
         return '/';
       }
+      if (state.matchedLocation == '/result' && state.extra is! ResultSession) {
+        return '/';
+      }
       return null;
     },
     routes: [
@@ -33,20 +36,16 @@ GoRouter createAppRouter() {
         path: '/onboarding',
         builder: (context, state) => const OnboardingPage(),
       ),
-      GoRoute(
-        path: '/',
-        builder: (context, state) => const HomePage(),
-      ),
+      GoRoute(path: '/', builder: (context, state) => const HomePage()),
       GoRoute(
         path: '/result',
         builder: (context, state) {
-          final session = state.extra! as ResultSession;
+          final session = state.extra as ResultSession;
           return BlocProvider(
-            create:
-                (_) => ResultCubit(
-                  repo: locator<HomeRepository>(),
-                  prefs: locator<SharedPrefOperator>(),
-                )..start(session),
+            create: (_) => ResultCubit(
+              repo: locator<HomeRepository>(),
+              prefs: locator<SharedPrefOperator>(),
+            )..start(session),
             child: const ResultPage(),
           );
         },

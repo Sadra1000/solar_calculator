@@ -1,18 +1,12 @@
 import 'package:solar_calculator/features/solar/solar_calculator.dart';
 
 class ApplianceConsumptionShare {
-  const ApplianceConsumptionShare({
-    required this.name,
-    required this.dailyKwh,
-  });
+  const ApplianceConsumptionShare({required this.name, required this.dailyKwh});
 
   final String name;
   final double dailyKwh;
 
-  Map<String, dynamic> toJson() => {
-    'name': name,
-    'dailyKwh': dailyKwh,
-  };
+  Map<String, dynamic> toJson() => {'name': name, 'dailyKwh': dailyKwh};
 
   factory ApplianceConsumptionShare.fromJson(Map<String, dynamic> json) {
     return ApplianceConsumptionShare(
@@ -93,14 +87,12 @@ class ResulteModel {
       monthlyConsumption: (json['monthlyConsumption'] as num).toDouble(),
       yearlyConsumption: (json['yearlyConsumption'] as num).toDouble(),
       yearlyCo2Production: (json['yearlyCo2Production'] as num).toDouble(),
-      applianceShares:
-          (json['applianceShares'] as List<dynamic>? ?? const [])
-              .map(
-                (e) => ApplianceConsumptionShare.fromJson(
-                  e as Map<String, dynamic>,
-                ),
-              )
-              .toList(),
+      applianceShares: (json['applianceShares'] as List<dynamic>? ?? const [])
+          .map(
+            (e) =>
+                ApplianceConsumptionShare.fromJson(e as Map<String, dynamic>),
+          )
+          .toList(),
       solarSizing: SolarSizingResult.fromJson(
         json['solarSizing'] as Map<String, dynamic>,
       ),

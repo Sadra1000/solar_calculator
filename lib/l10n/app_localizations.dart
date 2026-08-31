@@ -299,13 +299,13 @@ abstract class AppLocalizations {
   /// Error when DEEPSEEK_API_KEY environment variable is missing
   ///
   /// In en, this message translates to:
-  /// **'The AI API key (DEEPSEEK_API_KEY) is not configured. Add it to your .env file to enable smart analysis.'**
+  /// **'Secure AI connectivity is not configured; a local recommendation will be shown.'**
   String get deepSeekApiKeyMissing;
 
   /// Placeholder when AI analysis was not requested or failed
   ///
   /// In en, this message translates to:
-  /// **'AI analysis is not available. Local calculation results are shown below.'**
+  /// **'Preparing the local recommendation…'**
   String get analysisNotAvailable;
 
   /// Toggle label for optional DeepSeek analysis on home screen
@@ -313,6 +313,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Include AI solar advice (DeepSeek)'**
   String get enableAiAnalysis;
+
+  /// No description provided for @localRecommendationEnabled.
+  ///
+  /// In en, this message translates to:
+  /// **'Local recommendation is available without an API key'**
+  String get localRecommendationEnabled;
+
+  /// No description provided for @aiSecureProxyRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'DeepSeek analysis on the web is enabled only through a secure server-side connection.'**
+  String get aiSecureProxyRequired;
 
   /// Section title for preset appliance bundles
   ///
@@ -551,7 +563,7 @@ abstract class AppLocalizations {
   /// Banner when AI failed and fallback text is shown
   ///
   /// In en, this message translates to:
-  /// **'AI unavailable — showing formula-based recommendation.'**
+  /// **'AI connectivity is unavailable — showing the local recommendation.'**
   String get aiFallbackNotice;
 
   /// Tooltip to retry AI analysis on result screen
@@ -559,6 +571,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Refresh AI analysis'**
   String get refreshAnalysis;
+
+  /// No description provided for @estimateDisclaimer.
+  ///
+  /// In en, this message translates to:
+  /// **'These results are preliminary estimates and do not replace an on-site assessment, engineering design, or approval by a qualified installer or electrical engineer.'**
+  String get estimateDisclaimer;
 }
 
 class _AppLocalizationsDelegate

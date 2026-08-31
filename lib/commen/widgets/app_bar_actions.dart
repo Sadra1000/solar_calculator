@@ -38,7 +38,6 @@ class AppBarActions extends StatelessWidget {
           BlocBuilder<ThemeCubit, bool>(
             builder: (context, isDark) {
               return IconButton(
-              
                 icon: Icon(isDark ? Icons.light_mode : Icons.dark_mode),
                 tooltip: l10n.themeToggle,
                 onPressed: () => context.read<ThemeCubit>().changeThemeMode(),

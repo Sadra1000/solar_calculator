@@ -89,18 +89,13 @@ class CalculationHistoryEntry {
       yearlyCo2Production: (json['yearlyCo2Production'] as num).toDouble(),
       applianceCount: json['applianceCount'] as int,
       applianceSummary: json['applianceSummary'] as String,
-      result:
-          resultJson != null ? ResulteModel.fromJson(resultJson) : null,
-      appliances:
-          appliancesJson
-              ?.map(
-                (e) => Appliance.fromStoredMap(e as Map<String, dynamic>),
-              )
-              .toList(),
+      result: resultJson != null ? ResulteModel.fromJson(resultJson) : null,
+      appliances: appliancesJson
+          ?.map((e) => Appliance.fromStoredMap(e as Map<String, dynamic>))
+          .toList(),
       cityId: json['cityId'] as String?,
       languageCode: json['languageCode'] as String?,
-      electricityRateToman:
-          (json['electricityRateToman'] as num?)?.toDouble(),
+      electricityRateToman: (json['electricityRateToman'] as num?)?.toDouble(),
     );
   }
 

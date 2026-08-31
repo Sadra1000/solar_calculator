@@ -8,10 +8,9 @@ class LocaleCubit extends Cubit<Locale> {
   final SharedPrefOperator _prefs;
 
   void toggleLocale() {
-    final next =
-        state.languageCode == 'fa'
-            ? const Locale('en')
-            : const Locale('fa');
+    final next = state.languageCode == 'fa'
+        ? const Locale('en')
+        : const Locale('fa');
     emit(next);
     _prefs.saveLocaleCode(next.languageCode);
   }

@@ -99,10 +99,9 @@ class _OnboardingPageState extends State<OnboardingPage> {
                   width: _page == i ? 24 : 8,
                   height: 8,
                   decoration: BoxDecoration(
-                    color:
-                        _page == i
-                            ? Theme.of(context).colorScheme.primary
-                            : Theme.of(context).colorScheme.outline,
+                    color: _page == i
+                        ? Theme.of(context).colorScheme.primary
+                        : Theme.of(context).colorScheme.outline,
                     borderRadius: BorderRadius.circular(4),
                   ),
                 );

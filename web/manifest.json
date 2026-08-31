@@ -1,12 +1,12 @@
 {
-    "name": "Solar Calculator",
+    "name": "ماشین‌حساب خورشیدی | Solar Calculator",
     "short_name": "Solar Calc",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#1A1C1E",
     "theme_color": "#001B42",
-    "description": "a solar caculator for calculate how much enargy you are use in a day.",
-    "orientation": "portrait-primary",
+    "description": "Bilingual household energy and solar-system estimator for Iran.",
+    "orientation": "any",
     "prefer_related_applications": false,
     "icons": [
         {

@@ -1,14 +1,16 @@
 name: solar_calculator
-description: "a solar caculator for calculate how much enargy you are use in a day."
+description: "Bilingual household energy and solar-system estimator for Iran."
 publish_to: 'none'
-version: 0.1.0
+version: 1.0.0+1
 
 environment:
   sdk: ^3.12.2
+  flutter: 3.47.1
 
 dependencies:
   flutter:
     sdk: flutter
+  cupertino_icons: ^1.0.8
   loading_animation_widget: ^1.3.0
   dio: ^5.10.0
   bloc: ^9.2.0
@@ -18,7 +20,7 @@ dependencies:
   equatable: ^2.1.0
   go_router: ^15.1.2
   flutter_staggered_animations: ^1.1.1
-  flutter_markdown: ^0.7.7+1
+  flutter_markdown_plus: ^1.0.12
   syncfusion_flutter_charts: ^33.2.15
   share_plus: ^10.1.4
   flutter_localizations:

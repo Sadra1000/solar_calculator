@@ -16,91 +16,86 @@ class HistoryPage extends StatelessWidget {
     final entries = locator<SharedPrefOperator>().loadCalculationHistory();
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(l10n.historyTitle),
-        centerTitle: true,
-      ),
-      body:
-          entries.isEmpty
-              ? Center(child: Text(l10n.historyEmpty))
-              : ListView.separated(
-                padding: const EdgeInsets.all(16),
-                itemCount: entries.length,
-                separatorBuilder: (_, __) => const SizedBox(height: 8),
-                itemBuilder: (context, index) {
-                  final entry = entries[index];
-                  final date = DateTime.fromMillisecondsSinceEpoch(
-                    entry.timestampMs,
-                  );
-                  final dateStr = DateFormat.yMMMd(
-                    locale.languageCode,
-                  ).add_jm().format(date).localizedDigits(locale);
+      appBar: AppBar(title: Text(l10n.historyTitle), centerTitle: true),
+      body: entries.isEmpty
+          ? Center(child: Text(l10n.historyEmpty))
+          : ListView.separated(
+              padding: const EdgeInsets.all(16),
+              itemCount: entries.length,
+              separatorBuilder: (_, __) => const SizedBox(height: 8),
+              itemBuilder: (context, index) {
+                final entry = entries[index];
+                final date = DateTime.fromMillisecondsSinceEpoch(
+                  entry.timestampMs,
+                );
+                final dateStr = DateFormat.yMMMd(
+                  locale.languageCode,
+                ).add_jm().format(date).localizedDigits(locale);
 
-                  return Card(
-                    clipBehavior: Clip.antiAlias,
-                    child: InkWell(
-                      onTap:
-                          entry.canOpenResults
-                              ? () {
-                                final session = entry.toResultSession()!;
-                                context.push('/result', extra: session);
-                              }
-                              : null,
-                      child: Padding(
-                        padding: const EdgeInsets.all(16),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              dateStr,
-                              style: Theme.of(context).textTheme.titleSmall,
+                return Card(
+                  clipBehavior: Clip.antiAlias,
+                  child: InkWell(
+                    onTap: entry.canOpenResults
+                        ? () {
+                            final session = entry.toResultSession()!;
+                            context.push('/result', extra: session);
+                          }
+                        : null,
+                    child: Padding(
+                      padding: const EdgeInsets.all(16),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            dateStr,
+                            style: Theme.of(context).textTheme.titleSmall,
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            l10n.historyApplianceSummary(
+                              entry.applianceCount,
+                              entry.applianceSummary,
                             ),
-                            const SizedBox(height: 4),
-                            Text(
-                              l10n.historyApplianceSummary(
-                                entry.applianceCount,
-                                entry.applianceSummary,
-                              ),
-                              style: Theme.of(context).textTheme.bodySmall,
-                              maxLines: 2,
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                            const Divider(height: 20),
-                            _metricRow(
-                              context,
-                              l10n.dailyConsumption,
-                              entry.dailyConsumption
-                                  .toStringAsFixed(2)
-                                  .tokWhPersian(locale),
-                            ),
-                            _metricRow(
-                              context,
-                              l10n.monthlyConsumption,
-                              entry.monthlyConsumption
-                                  .toStringAsFixed(2)
-                                  .tokWhPersian(locale),
-                            ),
-                            _metricRow(
-                              context,
-                              l10n.yearlyConsumption,
-                              entry.yearlyConsumption
-                                  .toStringAsFixed(2)
-                                  .tokWhPersian(locale),
-                            ),
-                            _metricRow(
-                              context,
-                              l10n.yearlyCo2Production,
-                              entry.yearlyCo2Production
-                                  .toStringAsFixed(2)
-                                  .tokgPersian(locale),
-                            ),
-                          ],
-                        ),
+                            style: Theme.of(context).textTheme.bodySmall,
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                          const Divider(height: 20),
+                          _metricRow(
+                            context,
+                            l10n.dailyConsumption,
+                            entry.dailyConsumption
+                                .toStringAsFixed(2)
+                                .tokWhPersian(locale),
+                          ),
+                          _metricRow(
+                            context,
+                            l10n.monthlyConsumption,
+                            entry.monthlyConsumption
+                                .toStringAsFixed(2)
+                                .tokWhPersian(locale),
+                          ),
+                          _metricRow(
+                            context,
+                            l10n.yearlyConsumption,
+                            entry.yearlyConsumption
+                                .toStringAsFixed(2)
+                                .tokWhPersian(locale),
+                          ),
+                          _metricRow(
+                            context,
+                            l10n.yearlyCo2Production,
+                            entry.yearlyCo2Production
+                                .toStringAsFixed(2)
+                                .tokgPersian(locale),
+                          ),
+                        ],
                       ),
                     ),
-                  );
-                },
-              ),
+                  ),
+                );
+              },
+            ),
     );
   }
 

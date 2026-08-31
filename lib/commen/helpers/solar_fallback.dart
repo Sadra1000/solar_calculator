@@ -1,25 +1,25 @@
 import 'package:solar_calculator/commen/services/exchange_rate_service.dart';
 import 'package:solar_calculator/features/solar/iran_solar_pricing.dart';
+import 'package:solar_calculator/features/solar/solar_calculator.dart';
 
 /// Formula-based solar recommendation when the AI API is unavailable.
 abstract final class SolarFallback {
-  static const double peakSunHoursIran = 4.5;
-
   static String buildRecommendation({
     required double dailyKwh,
     required double monthlyKwh,
     required double yearlyKwh,
+    required SolarSizingResult solarSizing,
+    required String languageCode,
     String city = 'تهران',
     String? budget,
     int usdToToman = ExchangeRateService.fallbackUsdToman,
+    String? rateDate,
   }) {
     final panelW = SolarModels1405.defaultPanelWattage;
-    final systemKw =
-        (dailyKwh / peakSunHoursIran).clamp(0.5, double.infinity);
-    final panelCount = (systemKw * 1000 / panelW).ceil().clamp(1, 999);
-    final actualKw = panelCount * panelW / 1000;
-    final inverterKw = _roundInverterSize(actualKw);
-    final batteryKwh = (dailyKwh * 0.5).ceil().clamp(1, 100);
+    final panelCount = solarSizing.panelCount;
+    final actualKw = solarSizing.arrayCapacityKw;
+    final inverterKw = solarSizing.inverterCapacityKw;
+    final batteryKwh = solarSizing.batteryCapacityKwh;
 
     final totalUsd = IranSolarPricing.estimateSystemIranUsd(
       systemKw: actualKw,
@@ -28,24 +28,72 @@ abstract final class SolarFallback {
     final totalToman = IranSolarPricing.toToman(totalUsd, usdToToman);
     final perWUsd = IranSolarPricing.installedOnGridIranUsdPerW();
 
-    final budgetLine =
-        budget != null && budget.isNotEmpty
-            ? '\n**نرخ برق:** $budget'
-            : '';
+    final budgetLine = budget != null && budget.isNotEmpty
+        ? '\n**نرخ برق:** $budget'
+        : '';
 
     final altPanels = SolarModels1405.alternatePanels.join('، ');
+    final rateLabel = rateDate == null
+        ? '$usdToToman تومان'
+        : '$usdToToman تومان ($rateDate)';
+
+    if (languageCode == 'en') {
+      final englishRateLabel = rateDate == null
+          ? '$usdToToman Toman'
+          : '$usdToToman Toman ($rateDate)';
+      final electricityLine = budget != null && budget.isNotEmpty
+          ? '\n- Electricity rate: $budget'
+          : '';
+      return '''
+## Local recommendation
+
+> Planning scenario based on global USD pricing + a conservative Iran market-premium assumption (+${IranSolarPricing.totalEquipmentPremiumPct}%) × USD rate $englishRateLabel
+
+**Inputs**
+- City: $city
+- Daily consumption: ${dailyKwh.toStringAsFixed(2)} kWh
+- Monthly consumption: ${monthlyKwh.toStringAsFixed(1)} kWh
+- Annual consumption: ${yearlyKwh.toStringAsFixed(0)} kWh
+- USD rate: $englishRateLabel$electricityLine
+
+---
+
+### Solar panels
+- Quantity: **$panelCount × $panelW W**
+- Array capacity: **${actualKw.toStringAsFixed(1)} kW**
+- Primary model: **${SolarModels1405.defaultPanelModel}**
+- Alternatives: $altPanels
+
+### Inverter
+- Recommended standard capacity: **${inverterKw.toStringAsFixed(1)} kW**
+- Model: **${SolarModels1405.defaultInverter}** or ${SolarModels1405.hybridInverters.first}
+
+### Battery
+- Nominal one-day backup capacity: **${batteryKwh.toStringAsFixed(1)} kWh**
+- Optional for an on-grid setup
+- Model family: ${SolarModels1405.defaultBattery}
+
+### Estimated cost
+- **~\$${totalUsd.toStringAsFixed(0)} USD** for an installed on-grid planning scenario
+- **~${_formatToman(totalToman)} Toman** at $englishRateLabel
+- Assumed Iran installed cost: ~\$${perWUsd.toStringAsFixed(2)}/W
+
+---
+*This is a preliminary estimate. Confirm equipment prices and site conditions with a qualified installer or electrical engineer.*
+''';
+    }
 
     return '''
 ## توصیه محلی (بدون هوش مصنوعی)
 
-> برآورد بر اساس قیمت جهانی USD + حاشیه ایران (+${IranSolarPricing.totalEquipmentPremiumPct}%) × نرخ دلار $usdToToman تومان
+> سناریوی برنامه‌ریزی بر اساس قیمت جهانی USD + فرض حاشیه بازار ایران (+${IranSolarPricing.totalEquipmentPremiumPct}%) × نرخ دلار $rateLabel
 
 **ورودی‌ها**
 - شهر: $city
 - مصرف روزانه: ${dailyKwh.toStringAsFixed(2)} کیلووات‌ساعت
 - مصرف ماهانه: ${monthlyKwh.toStringAsFixed(1)} کیلووات‌ساعت
 - مصرف سالانه: ${yearlyKwh.toStringAsFixed(0)} کیلووات‌ساعت
-- نرخ دلار: $usdToToman تومان$budgetLine
+- نرخ دلار: $rateLabel$budgetLine
 
 ---
 
@@ -72,16 +120,8 @@ abstract final class SolarFallback {
 - فرمول: \$${IranSolarPricing.installedOnGridGlobalUsdPerW}/W جهانی × ${1 + IranSolarPricing.totalEquipmentPremiumPct / 100} × ${actualKw.toStringAsFixed(1)} kW × $usdToToman
 
 ---
-*قیمت‌ها تقریبی‌اند. با نصاب محلی مشورت کنید.*
+*این خروجی برآورد اولیه است. قیمت‌ها و شرایط نصب را با نصاب یا مهندس برق تأیید کنید.*
 ''';
-  }
-
-  static double _roundInverterSize(double kw) {
-    const sizes = [3.0, 5.0, 6.0, 8.0, 10.0, 12.0, 15.0, 20.0];
-    for (final size in sizes) {
-      if (kw <= size) return size;
-    }
-    return (kw / 5).ceil() * 5.0;
   }
 
   static String _formatToman(int amount) {

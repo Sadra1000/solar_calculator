@@ -38,10 +38,7 @@ class CustomError extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 if (onRetry != null) ...[
-                  TextButton(
-                    onPressed: onRetry,
-                    child: Text(l10n.retry),
-                  ),
+                  TextButton(onPressed: onRetry, child: Text(l10n.retry)),
                   const SizedBox(width: 8),
                 ],
                 FilledButton(

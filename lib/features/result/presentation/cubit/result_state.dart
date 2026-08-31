@@ -36,8 +36,9 @@ class ResultState extends Equatable {
       isStreaming: isStreaming ?? this.isStreaming,
       isFallback: isFallback ?? this.isFallback,
       isRefreshing: isRefreshing ?? this.isRefreshing,
-      shareMessage:
-          clearShareMessage ? null : (shareMessage ?? this.shareMessage),
+      shareMessage: clearShareMessage
+          ? null
+          : (shareMessage ?? this.shareMessage),
     );
   }
 

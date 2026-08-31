@@ -27,7 +27,8 @@ class SettingsSwitchItem extends StatelessWidget {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
     return Padding(
-      padding: padding ?? const EdgeInsets.symmetric(vertical: 16, horizontal: 14),
+      padding:
+          padding ?? const EdgeInsets.symmetric(vertical: 16, horizontal: 14),
       child: Material(
         color: Colors.transparent,
         child: InkWell(

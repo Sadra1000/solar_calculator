@@ -15,22 +15,19 @@ import 'package:solar_calculator/features/solar/solar_calculator.dart';
 import 'package:solar_calculator/l10n/app_localizations.dart';
 
 class ResultCubit extends Cubit<ResultState> {
-  ResultCubit({
-    required this._repo,
-    required SharedPrefOperator prefs,
-  }) : _prefs = prefs,
-       super(
-         ResultState(
-           session: ResultSession(
-             result: _placeholderResult,
-             appliances: const [],
-             cityId: 'tehran',
-             languageCode: 'fa',
-             requestAi: false,
-             electricityRateToman: 2500,
-           ),
-         ),
-       );
+  ResultCubit({required this._repo, required this._prefs})
+    : super(
+        ResultState(
+          session: ResultSession(
+            result: _placeholderResult,
+            appliances: const [],
+            cityId: 'tehran',
+            languageCode: 'fa',
+            requestAi: false,
+            electricityRateToman: 2500,
+          ),
+        ),
+      );
 
   static final _placeholderResult = ResulteModel(
     analysis: '',
@@ -53,17 +50,27 @@ class ResultCubit extends Cubit<ResultState> {
   StreamSubscription<String>? _streamSub;
 
   void start(ResultSession session) {
+    final needsRecommendation = session.result.analysis.trim().isEmpty;
     emit(
       ResultState(
         session: session,
         result: session.result,
-        isStreaming: session.requestAi,
+        isStreaming: session.requestAi || needsRecommendation,
         isFallback: false,
       ),
     );
 
     if (session.requestAi) {
       _loadAnalysis(streamFirst: true);
+    } else if (needsRecommendation) {
+      final city = cityById(session.cityId);
+      unawaited(
+        _applyFallback(
+          cityName: city.localizedName(session.languageCode),
+          aiUnavailable: false,
+          persistHistory: true,
+        ),
+      );
     } else if (session.persistHistory) {
       _saveHistory();
     }
@@ -80,7 +87,7 @@ class ResultCubit extends Cubit<ResultState> {
         result: state.session.result.copyWith(analysis: ''),
       ),
     );
-    await _loadAnalysis(streamFirst: true);
+    await _loadAnalysis(streamFirst: true, persistHistory: false);
     emit(state.copyWith(isRefreshing: false));
   }
 
@@ -99,7 +106,10 @@ class ResultCubit extends Cubit<ResultState> {
     }
   }
 
-  Future<void> _loadAnalysis({required bool streamFirst}) async {
+  Future<void> _loadAnalysis({
+    required bool streamFirst,
+    bool persistHistory = true,
+  }) async {
     await _streamSub?.cancel();
     _streamSub = null;
 
@@ -116,6 +126,7 @@ class ResultCubit extends Cubit<ResultState> {
         dailyKwh: daily,
         monthlyKwh: monthly,
         yearlyKwh: yearly,
+        persistHistory: persistHistory,
       );
       if (usedStream) return;
     }
@@ -125,6 +136,7 @@ class ResultCubit extends Cubit<ResultState> {
       dailyKwh: daily,
       monthlyKwh: monthly,
       yearlyKwh: yearly,
+      persistHistory: persistHistory,
     );
   }
 
@@ -133,6 +145,7 @@ class ResultCubit extends Cubit<ResultState> {
     required double dailyKwh,
     required double monthlyKwh,
     required double yearlyKwh,
+    required bool persistHistory,
   }) async {
     try {
       final buffer = StringBuffer();
@@ -148,6 +161,7 @@ class ResultCubit extends Cubit<ResultState> {
             cityDisplayName: cityName,
             electricityRateToman: session.electricityRateToman,
             languageCode: session.languageCode,
+            solarSizing: session.result.solarSizing,
           )
           .listen(
             (chunk) {
@@ -174,7 +188,7 @@ class ResultCubit extends Cubit<ResultState> {
                     isFallback: false,
                   ),
                 );
-                await _saveHistory();
+                if (persistHistory) await _saveHistory();
                 if (!completer.isCompleted) completer.complete(true);
               } else if (!completer.isCompleted) {
                 completer.complete(false);
@@ -194,6 +208,7 @@ class ResultCubit extends Cubit<ResultState> {
     required double dailyKwh,
     required double monthlyKwh,
     required double yearlyKwh,
+    required bool persistHistory,
   }) async {
     final session = state.session;
     final apiResult = await _repo.callDeepSeek(
@@ -204,6 +219,7 @@ class ResultCubit extends Cubit<ResultState> {
       cityDisplayName: cityName,
       electricityRateToman: session.electricityRateToman,
       languageCode: session.languageCode,
+      solarSizing: session.result.solarSizing,
     );
 
     if (apiResult is DataSuccess<String> && apiResult.data != null) {
@@ -214,30 +230,40 @@ class ResultCubit extends Cubit<ResultState> {
           isFallback: false,
         ),
       );
-      await _saveHistory();
+      if (persistHistory) await _saveHistory();
       return;
     }
 
-    await _applyFallback(cityName: cityName);
+    await _applyFallback(
+      cityName: cityName,
+      aiUnavailable: true,
+      persistHistory: persistHistory,
+    );
   }
 
-  Future<void> _applyFallback({required String cityName}) async {
+  Future<void> _applyFallback({
+    required String cityName,
+    required bool aiUnavailable,
+    required bool persistHistory,
+  }) async {
     final session = state.session;
     final text = await _repo.buildFallbackAnalysis(
       dailyKwh: session.result.dailyConsumption,
       monthlyKwh: session.result.monthlyConsumption,
       yearlyKwh: session.result.yearlyConsumption,
       cityDisplayName: cityName,
+      solarSizing: session.result.solarSizing,
+      languageCode: session.languageCode,
       electricityRateToman: session.electricityRateToman,
     );
     emit(
       state.copyWith(
         result: session.result.copyWith(analysis: text),
         isStreaming: false,
-        isFallback: true,
+        isFallback: aiUnavailable,
       ),
     );
-    _saveHistory();
+    if (persistHistory) await _saveHistory();
   }
 
   Future<void> _saveHistory() async {

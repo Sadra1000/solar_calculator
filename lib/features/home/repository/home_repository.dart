@@ -27,7 +27,9 @@ class HomeRepository {
   Map<String, dynamic> calculateConsumption(List<Appliance> appliances) {
     const int daysInYear = 365;
     const int monthsInYear = 12;
-    const double kgCo2PerKwh = 0.417;
+    // Iran grid emissions intensity reported by Ember for 2022: 494 gCO₂/kWh.
+    // https://ember-energy.org/app/uploads/2024/11/Global-Electricity-Review-2023.pdf
+    const double kgCo2PerKwh = 0.494;
 
     double totalDailyKwh = 0.0;
     for (final appliance in appliances) {
@@ -95,9 +97,14 @@ class HomeRepository {
     final yearly = map['yearlyConsumption'] as double;
     final co2 = map['yearlyCo2Production'] as double;
     final city = cityById(cityId);
+    final peakLoadKw = appliances.fold<double>(
+      0,
+      (total, appliance) => total + appliance.powerUsage / 1000,
+    );
     final solar = SolarCalculator.calculate(
       dailyKwh: daily,
       city: city,
+      peakLoadKw: peakLoadKw,
       cityDisplayName: city.localizedName(languageCode),
     );
 
@@ -126,6 +133,7 @@ class HomeRepository {
     required String cityDisplayName,
     required double electricityRateToman,
     required String languageCode,
+    required SolarSizingResult solarSizing,
   }) async {
     final rate = await ExchangeRateService.fetchUsdToToman();
     return DeepSeekPrompt.buildUserMessage(
@@ -139,6 +147,8 @@ class HomeRepository {
       electricityRateToman: electricityRateToman,
       usdToToman: rate.toman,
       rateDate: rate.sourceDate,
+      solarSizing: solarSizing,
+      languageCode: languageCode,
     );
   }
 
@@ -147,20 +157,26 @@ class HomeRepository {
     required double monthlyKwh,
     required double yearlyKwh,
     required String cityDisplayName,
+    required SolarSizingResult solarSizing,
+    required String languageCode,
     double? electricityRateToman,
   }) async {
     final rate = await ExchangeRateService.fetchUsdToToman();
-    final electricityLine =
-        electricityRateToman != null
-            ? '${electricityRateToman.round()} تومان/kWh'
-            : null;
+    final electricityLine = electricityRateToman == null
+        ? null
+        : languageCode == 'fa'
+        ? '${electricityRateToman.round()} تومان/kWh'
+        : '${electricityRateToman.round()} Toman/kWh';
     return SolarFallback.buildRecommendation(
       dailyKwh: dailyKwh,
       monthlyKwh: monthlyKwh,
       yearlyKwh: yearlyKwh,
       city: cityDisplayName,
+      solarSizing: solarSizing,
+      languageCode: languageCode,
       budget: electricityLine,
       usdToToman: rate.toman,
+      rateDate: rate.sourceDate,
     );
   }
 
@@ -172,6 +188,7 @@ class HomeRepository {
     required String cityDisplayName,
     required double electricityRateToman,
     required String languageCode,
+    required SolarSizingResult solarSizing,
   }) async {
     try {
       final rate = await ExchangeRateService.fetchUsdToToman();
@@ -183,6 +200,7 @@ class HomeRepository {
         cityDisplayName: cityDisplayName,
         electricityRateToman: electricityRateToman,
         languageCode: languageCode,
+        solarSizing: solarSizing,
       );
       final res = await api.callDeepSeekApi(
         prompt,
@@ -215,6 +233,7 @@ class HomeRepository {
     required String cityDisplayName,
     required double electricityRateToman,
     required String languageCode,
+    required SolarSizingResult solarSizing,
   }) async* {
     final rate = await ExchangeRateService.fetchUsdToToman();
     final prompt = await buildUserPrompt(
@@ -225,6 +244,7 @@ class HomeRepository {
       cityDisplayName: cityDisplayName,
       electricityRateToman: electricityRateToman,
       languageCode: languageCode,
+      solarSizing: solarSizing,
     );
     yield* api.streamDeepSeekApi(
       prompt,

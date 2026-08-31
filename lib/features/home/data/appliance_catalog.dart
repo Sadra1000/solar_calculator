@@ -1615,6 +1615,5 @@ const List<AppliancesCategory> applianceCatalog = [
 
 final Map<String, Appliance> applianceById = {
   for (final category in applianceCatalog)
-    for (final appliance in category.appliances)
-      appliance.id: appliance,
+    for (final appliance in category.appliances) appliance.id: appliance,
 };

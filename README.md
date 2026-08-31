@@ -1,69 +1,88 @@
-# Solar Calculator
+# Solar Calculator | ماشین‌حساب خورشیدی
 
-Flutter web app for estimating daily household electricity use and getting AI-powered solar advice via DeepSeek — **no backend server required**.
+A bilingual Flutter web app for estimating household electricity consumption and planning a preliminary solar setup for major Iranian cities.
 
-## API key setup
+**Live demo:** [sadra1000.github.io/solar_calculator](https://sadra1000.github.io/solar_calculator/)
 
-The app calls DeepSeek directly. The key is injected at build time (not stored in source code).
+## What it does
 
-| Environment | How |
-|-------------|-----|
-| Local | Copy `dart_defines.example.json` → `dart_defines.json` and add your key |
-| GitHub Actions | Repository secret `DEEPSEEK_API_KEY` |
+- Calculates daily, monthly, and yearly electricity consumption from selected appliances.
+- Estimates electricity cost using a user-editable Toman/kWh rate.
+- Suggests panel count, solar-array capacity, a standard inverter size, and nominal one-day battery capacity.
+- Accounts for city-level solar resource, connected peak load, system losses, battery depth of discharge, and an inverter safety margin.
+- Shows appliance-level consumption charts and estimated grid-related CO₂ emissions.
+- Saves the latest calculations locally and lets users reopen or share them.
+- Supports Persian and English, light and dark themes, mobile, desktop, and installable PWA layouts.
+- Produces a deterministic local recommendation without requiring an account or API key.
+- Can optionally add DeepSeek analysis through a secure OpenAI-compatible server-side proxy.
+
+## Product boundaries
+
+This app is a planning estimator, not an engineering design tool. Roof area, shading, panel orientation, seasonal generation, cable sizing, protection equipment, local grid rules, structural checks, and installer quotations must be verified on site by a qualified professional.
+
+Equipment prices are scenario assumptions for early planning, not vendor quotes. The exchange rate is refreshed when available and falls back to a documented local value when offline.
+
+## Calculation basis
+
+- Appliance energy: `power (W) × operating hours ÷ 1000`
+- Solar array: `daily kWh ÷ (city irradiance × 0.78 performance ratio)`
+- Inverter: next standard size above `max(array kW, connected load kW) × 1.15`
+- Nominal battery: `daily kWh ÷ (0.80 depth of discharge × 0.90 system efficiency)`
+- Grid emissions: `0.494 kg CO₂/kWh`, based on Ember's reported 2022 Iran electricity intensity
+
+Reference datasets and methodology:
+
+- [World Bank / Global Solar Atlas solar-resource datasets](https://datacatalog.worldbank.org/search/dataset/0038640/world-high-resolution-solar-resource-ghi-dif-gti-dni-gis-data-global-solar-atlas)
+- [Ember Global Electricity Review — Iran electricity intensity](https://ember-energy.org/app/uploads/2024/11/Global-Electricity-Review-2023.pdf)
+- [USD/Toman rate-json dataset](https://github.com/rate-json/default)
+
+## Run locally
+
+Requirements: Flutter `3.47.1` and Dart `3.13.x`.
 
 ```bash
-cp dart_defines.example.json dart_defines.json
-# edit dart_defines.json, then:
-flutter run -d chrome --dart-define-from-file=dart_defines.json
+flutter pub get
+flutter run -d chrome
 ```
 
-Or launch **Flutter (Chrome)** from VS Code (uses `dart_defines.json`).
+The calculator and local recommendation work without configuration.
 
-## GitHub Pages (free hosting)
+For optional DeepSeek analysis, copy `dart_defines.example.json` to the gitignored `dart_defines.json`.
 
-### 1. Enable Pages
+Native/local builds may use a provider key directly:
 
-**Settings → Pages → Build and deployment:**
+```json
+{
+  "DEEPSEEK_API_KEY": "sk-your-key-here",
+  "DEEPSEEK_MODEL": "deepseek-v4-flash"
+}
+```
 
-| Setting | Value |
-|---------|-------|
-| Source | **GitHub Actions** |
+Then run:
 
-**Settings → Actions → General → Workflow permissions:**
+```bash
+flutter run --dart-define-from-file=dart_defines.json
+```
 
-- Select **Read and write permissions**
-- Save
+## Secure AI configuration for public web builds
 
-> If Source is set to **Deploy from a branch (gh-pages)**, either switch to **GitHub Actions** (recommended) or revert the workflow to `peaceiris/actions-gh-pages`.
+Public web builds intentionally ignore `DEEPSEEK_API_KEY`, even if it is supplied at build time. This prevents a private provider key from being embedded in downloadable JavaScript.
 
-### 2. Add API key secret
+To enable AI on the public site, configure `DEEPSEEK_PROXY_URL` with the full HTTPS URL of an OpenAI-compatible `/chat/completions` proxy. The proxy is responsible for adding the provider authorization header, restricting allowed origins, and applying rate limits.
 
-**Settings → Secrets and variables → Actions → New repository secret**
+For GitHub Pages, add `DEEPSEEK_PROXY_URL` under **Settings → Secrets and variables → Actions → Variables**. If it is absent, the deployed app remains fully usable and shows its local recommendation.
 
-| Name | Value |
-|------|-------|
-| `DEEPSEEK_API_KEY` | your DeepSeek API key (`sk-...`) |
+## Quality checks
 
-### 3. Deploy
+```bash
+dart format --output=none --set-exit-if-changed lib test
+flutter analyze --no-pub
+flutter test --no-pub
+flutter build web --release --no-pub --base-href=/solar_calculator/
+```
 
-Push to `main` (or run the workflow manually from the Actions tab).
+The GitHub Actions workflow pins Flutter, checks formatting, analyzes, runs the core tests, builds the release bundle, and deploys it to GitHub Pages.
 
-App URL: `https://<username>.github.io/<repo-name>/`
+## Technology
 
-### Troubleshooting
-
-| Symptom | Fix |
-|---------|-----|
-| **deploy-pages** fails with "Deployment failed, try again later" | Pages source must be **GitHub Actions** (not gh-pages branch). Re-run the workflow after saving Settings. |
-| peaceiris push fails | Enable **Read and write permissions** for workflows |
-| Site 404 after green workflow | Check `--base-href` matches repo name; URL is `https://<user>.github.io/<repo>/` |
-| AI button errors in app | Add `DEEPSEEK_API_KEY` in Secrets |
-
-## Security note
-
-On web, the API key is embedded in compiled JavaScript. For a public portfolio demo:
-
-- Use a **dedicated** DeepSeek key with spending limits
-- Rotate the key if it was ever committed to git
-
-`dart_defines.json` and `.env` are gitignored — never commit real keys.
+Flutter, Dart, Bloc/Cubit, go_router, Dio, get_it, SharedPreferences, Syncfusion Charts, GitHub Actions, and GitHub Pages.

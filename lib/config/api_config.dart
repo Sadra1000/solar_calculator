@@ -1,14 +1,23 @@
-/// DeepSeek client configuration (no backend required).
+import 'package:solar_calculator/config/api_credentials_native.dart'
+    if (dart.library.js_interop) 'package:solar_calculator/config/api_credentials_web.dart'
+    as credentials;
+
+/// Optional DeepSeek client configuration.
 ///
 /// Inject the API key at build/run time:
 ///   --dart-define=DEEPSEEK_API_KEY=sk-...
 /// or:
 ///   --dart-define-from-file=dart_defines.json
 ///
-/// On web builds the key is embedded in compiled JS — use a dedicated
-/// DeepSeek key with usage limits for public portfolio demos.
+/// Web builds intentionally ignore `DEEPSEEK_API_KEY`. Configure an HTTPS
+/// OpenAI-compatible proxy through `DEEPSEEK_PROXY_URL` instead so no secret is
+/// embedded in the public JavaScript bundle.
 abstract final class ApiConfig {
-  static const String deepSeekApiKey = String.fromEnvironment('DEEPSEEK_API_KEY');
+  static const String deepSeekApiKey = credentials.deepSeekApiKey;
+
+  static const String deepSeekProxyUrl = String.fromEnvironment(
+    'DEEPSEEK_PROXY_URL',
+  );
 
   static const String deepSeekBaseUrl = 'https://api.deepseek.com';
 
@@ -21,5 +30,17 @@ abstract final class ApiConfig {
     defaultValue: 'deepseek-v4-pro',
   );
 
+  static bool get hasValidProxy {
+    final uri = Uri.tryParse(deepSeekProxyUrl);
+    return uri != null && uri.scheme == 'https' && uri.host.isNotEmpty;
+  }
+
   static bool get hasApiKey => deepSeekApiKey.isNotEmpty;
+
+  static bool get hasAiConfiguration => hasValidProxy || hasApiKey;
+
+  static bool get shouldSendAuthorization => !hasValidProxy && hasApiKey;
+
+  static String get chatCompletionsUrl =>
+      hasValidProxy ? deepSeekProxyUrl : chatCompletionsPath;
 }

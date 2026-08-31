@@ -34,16 +34,13 @@ class _ApplianceIconState extends State<ApplianceIcon> {
     final backgroundColor = Theme.of(context).scaffoldBackgroundColor;
     final isDarkMode = Theme.of(context).brightness == Brightness.dark;
 
-    final shadowColor1 =
-        isDarkMode ? Colors.black.withValues(alpha: 0.7) : Colors.grey.shade500;
+    final shadowColor1 = isDarkMode
+        ? Colors.black.withValues(alpha: 0.7)
+        : Colors.grey.shade500;
     final shadowColor2 = isDarkMode ? Colors.grey.shade800 : Colors.white;
 
     final pressedShadows = [
-      BoxShadow(
-        color: shadowColor2,
-        offset: const Offset(4, 4),
-        blurRadius: 8,
-      ),
+      BoxShadow(color: shadowColor2, offset: const Offset(4, 4), blurRadius: 8),
       BoxShadow(
         color: shadowColor2,
         offset: const Offset(-4, -4),
@@ -52,11 +49,7 @@ class _ApplianceIconState extends State<ApplianceIcon> {
     ];
 
     final releasedShadows = [
-      BoxShadow(
-        color: shadowColor1,
-        offset: const Offset(5, 5),
-        blurRadius: 7,
-      ),
+      BoxShadow(color: shadowColor1, offset: const Offset(5, 5), blurRadius: 7),
       BoxShadow(
         color: shadowColor2,
         offset: const Offset(-5, -5),
@@ -104,8 +97,9 @@ class _ApplianceIconState extends State<ApplianceIcon> {
   ) {
     final l10n = AppLocalizations.of(context)!;
     final languageCode = Localizations.localeOf(context).languageCode;
-    final textDirection =
-        languageCode == 'fa' ? TextDirection.rtl : TextDirection.ltr;
+    final textDirection = languageCode == 'fa'
+        ? TextDirection.rtl
+        : TextDirection.ltr;
     final maxHeight = MediaQuery.sizeOf(context).height;
 
     showDialog(
@@ -118,14 +112,13 @@ class _ApplianceIconState extends State<ApplianceIcon> {
           child: StatefulBuilder(
             builder: (context, setDialogState) {
               final query = searchQuery.trim().toLowerCase();
-              final filtered =
-                  category.appliances.where((sub) {
-                    if (query.isEmpty) return true;
-                    final localized = sub.localizedName(languageCode).toLowerCase();
-                    return localized.contains(query) ||
-                        sub.nameFa.toLowerCase().contains(query) ||
-                        sub.nameEn.toLowerCase().contains(query);
-                  }).toList();
+              final filtered = category.appliances.where((sub) {
+                if (query.isEmpty) return true;
+                final localized = sub.localizedName(languageCode).toLowerCase();
+                return localized.contains(query) ||
+                    sub.nameFa.toLowerCase().contains(query) ||
+                    sub.nameEn.toLowerCase().contains(query);
+              }).toList();
 
               return AlertDialog(
                 title: Text(
@@ -148,30 +141,29 @@ class _ApplianceIconState extends State<ApplianceIcon> {
                       ),
                       const SizedBox(height: 8),
                       Expanded(
-                        child:
-                            filtered.isEmpty
-                                ? Center(child: Text(l10n.noSearchResults))
-                                : ListView.builder(
-                                  itemCount: filtered.length,
-                                  itemBuilder: (context, index) {
-                                    final subCategory = filtered[index];
-                                    return ListTile(
-                                      title: Text(
-                                        subCategory.localizedName(languageCode),
-                                      ),
-                                      subtitle: Text(
-                                        l10n.watts(subCategory.powerUsage),
-                                      ),
-                                      onTap: () {
-                                        Navigator.of(dialogContext).pop();
-                                        _showHourSelectionDialog(
-                                          context,
-                                          subCategory,
-                                        );
-                                      },
-                                    );
-                                  },
-                                ),
+                        child: filtered.isEmpty
+                            ? Center(child: Text(l10n.noSearchResults))
+                            : ListView.builder(
+                                itemCount: filtered.length,
+                                itemBuilder: (context, index) {
+                                  final subCategory = filtered[index];
+                                  return ListTile(
+                                    title: Text(
+                                      subCategory.localizedName(languageCode),
+                                    ),
+                                    subtitle: Text(
+                                      l10n.watts(subCategory.powerUsage),
+                                    ),
+                                    onTap: () {
+                                      Navigator.of(dialogContext).pop();
+                                      _showHourSelectionDialog(
+                                        context,
+                                        subCategory,
+                                      );
+                                    },
+                                  );
+                                },
+                              ),
                       ),
                       const Divider(),
                       OutlinedButton.icon(
@@ -319,9 +311,7 @@ class _ApplianceIconState extends State<ApplianceIcon> {
                   const SizedBox(height: 24),
                   Text(
                     l10n.hoursValue(
-                      selectedHours
-                          .toStringAsFixed(1)
-                          .localizedDigits(locale),
+                      selectedHours.toStringAsFixed(1).localizedDigits(locale),
                     ),
                     style: Theme.of(context).textTheme.headlineMedium?.copyWith(
                       fontWeight: FontWeight.bold,

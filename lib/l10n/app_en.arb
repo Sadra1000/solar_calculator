@@ -168,11 +168,11 @@
       }
     }
   },
-  "deepSeekApiKeyMissing": "The AI API key (DEEPSEEK_API_KEY) is not configured. Add it to your .env file to enable smart analysis.",
+  "deepSeekApiKeyMissing": "Secure AI connectivity is not configured; a local recommendation will be shown.",
   "@deepSeekApiKeyMissing": {
     "description": "Error when DEEPSEEK_API_KEY environment variable is missing"
   },
-  "analysisNotAvailable": "AI analysis is not available. Local calculation results are shown below.",
+  "analysisNotAvailable": "Preparing the local recommendation…",
   "@analysisNotAvailable": {
     "description": "Placeholder when AI analysis was not requested or failed"
   },
@@ -180,6 +180,8 @@
   "@enableAiAnalysis": {
     "description": "Toggle label for optional DeepSeek analysis on home screen"
   },
+  "localRecommendationEnabled": "Local recommendation is available without an API key",
+  "aiSecureProxyRequired": "DeepSeek analysis on the web is enabled only through a secure server-side connection.",
   "presetsTitle": "Quick presets",
   "@presetsTitle": {
     "description": "Section title for preset appliance bundles"
@@ -352,12 +354,13 @@
       "km": {"type": "String"}
     }
   },
-  "aiFallbackNotice": "AI unavailable — showing formula-based recommendation.",
+  "aiFallbackNotice": "AI connectivity is unavailable — showing the local recommendation.",
   "@aiFallbackNotice": {
     "description": "Banner when AI failed and fallback text is shown"
   },
   "refreshAnalysis": "Refresh AI analysis",
   "@refreshAnalysis": {
     "description": "Tooltip to retry AI analysis on result screen"
-  }
+  },
+  "estimateDisclaimer": "These results are preliminary estimates and do not replace an on-site assessment, engineering design, or approval by a qualified installer or electrical engineer."
 }

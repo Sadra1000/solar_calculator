@@ -8,6 +8,7 @@ import 'package:solar_calculator/commen/layout/responsive.dart';
 import 'package:solar_calculator/commen/platform/navigate_back.dart';
 import 'package:solar_calculator/commen/widgets/error.dart';
 import 'package:solar_calculator/commen/widgets/loading.dart';
+import 'package:solar_calculator/config/api_config.dart';
 import 'package:solar_calculator/features/home/model/appliances.dart';
 import 'package:solar_calculator/features/home/model/preset_profiles.dart';
 import 'package:solar_calculator/features/home/presentation/cubit/home/home_cubit.dart';
@@ -37,17 +38,15 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final textDirection =
-        Localizations.localeOf(context).languageCode == 'fa'
-            ? TextDirection.rtl
-            : TextDirection.ltr;
+    final textDirection = Localizations.localeOf(context).languageCode == 'fa'
+        ? TextDirection.rtl
+        : TextDirection.ltr;
 
     return BlocListener<HomeCubit, HomeState>(
-      listenWhen:
-          (previous, current) =>
-              previous.isLoading != current.isLoading ||
-              previous.errorMsg != current.errorMsg ||
-              previous.navigationEvent != current.navigationEvent,
+      listenWhen: (previous, current) =>
+          previous.isLoading != current.isLoading ||
+          previous.errorMsg != current.errorMsg ||
+          previous.navigationEvent != current.navigationEvent,
       listener: (context, state) async {
         if (state.isLoading && !_loadingDialogOpen) {
           _loadingDialogOpen = true;
@@ -86,14 +85,13 @@ class _HomePageState extends State<HomePage> {
                   Navigator.of(dialogContext).pop();
                   cubit.clearError();
                 },
-                onRetry:
-                    state.aiprocessing
-                        ? () {
-                          Navigator.of(dialogContext).pop();
-                          cubit.clearError();
-                          cubit.process(languageCode: languageCode);
-                        }
-                        : null,
+                onRetry: state.aiprocessing
+                    ? () {
+                        Navigator.of(dialogContext).pop();
+                        cubit.clearError();
+                        cubit.process(languageCode: languageCode);
+                      }
+                    : null,
               );
             },
           );
@@ -114,8 +112,8 @@ class _HomePageState extends State<HomePage> {
                   return IconButton(
                     icon: Icon(isDark ? Icons.light_mode : Icons.dark_mode),
                     tooltip: l10n.themeToggle,
-                    onPressed:
-                        () => context.read<ThemeCubit>().changeThemeMode(),
+                    onPressed: () =>
+                        context.read<ThemeCubit>().changeThemeMode(),
                   );
                 },
               ),
@@ -178,15 +176,9 @@ class _HomePageState extends State<HomePage> {
         Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Expanded(
-              flex: 5,
-              child: _buildSelectedContainer(maxWidth),
-            ),
+            Expanded(flex: 5, child: _buildSelectedContainer(maxWidth)),
             const SizedBox(width: 24),
-            Expanded(
-              flex: 7,
-              child: _buildApplianceGrid(maxWidth),
-            ),
+            Expanded(flex: 7, child: _buildApplianceGrid(maxWidth)),
           ],
         ),
         _buildAiToggle(),
@@ -199,10 +191,18 @@ class _HomePageState extends State<HomePage> {
   Widget _buildAiToggle() {
     final l10n = AppLocalizations.of(context)!;
 
+    if (!ApiConfig.hasAiConfiguration) {
+      return ListTile(
+        contentPadding: EdgeInsets.zero,
+        leading: const Icon(Icons.verified_user_outlined),
+        title: Text(l10n.localRecommendationEnabled),
+        subtitle: Text(l10n.aiSecureProxyRequired),
+      );
+    }
+
     return BlocBuilder<HomeCubit, HomeState>(
-      buildWhen:
-          (previous, current) =>
-              previous.aiprocessing != current.aiprocessing,
+      buildWhen: (previous, current) =>
+          previous.aiprocessing != current.aiprocessing,
       builder: (context, state) {
         return SwitchListTile(
           contentPadding: EdgeInsets.zero,
@@ -216,9 +216,8 @@ class _HomePageState extends State<HomePage> {
 
   Widget _buildConsumptionSummary() {
     return BlocBuilder<HomeCubit, HomeState>(
-      buildWhen:
-          (previous, current) =>
-              previous.selectedAppliance != current.selectedAppliance,
+      buildWhen: (previous, current) =>
+          previous.selectedAppliance != current.selectedAppliance,
       builder: (context, state) {
         if (state.selectedAppliance.isEmpty) {
           return const SizedBox.shrink();
@@ -227,10 +226,9 @@ class _HomePageState extends State<HomePage> {
         final l10n = AppLocalizations.of(context)!;
         final locale = Localizations.localeOf(context);
         final dailyKwh = context.read<HomeCubit>().totalDailyKwh;
-        final value =
-            dailyKwh < 1
-                ? (dailyKwh * 1000).toStringAsFixed(0).toWhPersian(locale)
-                : dailyKwh.toStringAsFixed(2).tokWhPersian(locale);
+        final value = dailyKwh < 1
+            ? (dailyKwh * 1000).toStringAsFixed(0).toWhPersian(locale)
+            : dailyKwh.toStringAsFixed(2).tokWhPersian(locale);
 
         return Padding(
           padding: const EdgeInsets.only(top: 8, bottom: 4),
@@ -248,10 +246,9 @@ class _HomePageState extends State<HomePage> {
 
   Widget _buildOptionsSection() {
     return BlocBuilder<HomeCubit, HomeState>(
-      buildWhen:
-          (previous, current) =>
-              previous.selectedCityId != current.selectedCityId ||
-              previous.electricityRateToman != current.electricityRateToman,
+      buildWhen: (previous, current) =>
+          previous.selectedCityId != current.selectedCityId ||
+          previous.electricityRateToman != current.electricityRateToman,
       builder: (context, state) {
         final l10n = AppLocalizations.of(context)!;
         final locale = Localizations.localeOf(context);
@@ -270,13 +267,12 @@ class _HomePageState extends State<HomePage> {
               Wrap(
                 spacing: 8,
                 runSpacing: 8,
-                children:
-                    presetProfiles.map((preset) {
-                      return ActionChip(
-                        label: Text(preset.localizedName(locale.languageCode)),
-                        onPressed: () => cubit.applyPreset(preset),
-                      );
-                    }).toList(),
+                children: presetProfiles.map((preset) {
+                  return ActionChip(
+                    label: Text(preset.localizedName(locale.languageCode)),
+                    onPressed: () => cubit.applyPreset(preset),
+                  );
+                }).toList(),
               ),
               const SizedBox(height: 16),
               DropdownButtonFormField<String>(
@@ -286,13 +282,12 @@ class _HomePageState extends State<HomePage> {
                   labelText: l10n.selectCity,
                   border: const OutlineInputBorder(),
                 ),
-                items:
-                    iranCities.map((city) {
-                      return DropdownMenuItem(
-                        value: city.id,
-                        child: Text(city.localizedName(locale.languageCode)),
-                      );
-                    }).toList(),
+                items: iranCities.map((city) {
+                  return DropdownMenuItem(
+                    value: city.id,
+                    child: Text(city.localizedName(locale.languageCode)),
+                  );
+                }).toList(),
                 onChanged: (value) {
                   if (value != null) cubit.setSelectedCity(value);
                 },
@@ -321,9 +316,8 @@ class _HomePageState extends State<HomePage> {
 
   Widget _buildSelectedContainer(double maxWidth) {
     return BlocBuilder<HomeCubit, HomeState>(
-      buildWhen:
-          (previous, current) =>
-              previous.selectedAppliance != current.selectedAppliance,
+      buildWhen: (previous, current) =>
+          previous.selectedAppliance != current.selectedAppliance,
       builder: (context, state) {
         final l10n = AppLocalizations.of(context)!;
         final locale = Localizations.localeOf(context);
@@ -347,38 +341,32 @@ class _HomePageState extends State<HomePage> {
         return Padding(
           padding: const EdgeInsets.symmetric(vertical: 24),
           child: Column(
-            children:
-                groups.entries.map((entry) {
-                  final id = entry.key;
-                  final list = entry.value;
-                  final count = list.length;
-                  final icon = list.first.icon;
-                  final totalWh = totalGroupWh(list);
-                  final sample = list.first;
-                  final displayName = sample.localizedName(languageCode);
+            children: groups.entries.map((entry) {
+              final id = entry.key;
+              final list = entry.value;
+              final count = list.length;
+              final icon = list.first.icon;
+              final totalWh = totalGroupWh(list);
+              final sample = list.first;
+              final displayName = sample.localizedName(languageCode);
 
-                  return Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 8),
-                    child: GroupCard(
-                      icon: IconWrapper.getMaterialIcon(icon),
-                      name: displayName,
-                      count: count,
-                      totalWh: totalWh,
-                      maxWidth: maxWidth,
-                      onAdd: () => context.read<HomeCubit>().addOneLike(sample),
-                      onRemoveOne:
-                          () => context
-                              .read<HomeCubit>()
-                              .removeOneApplianceOfType(id),
-                      onRemoveAll:
-                          () => context
-                              .read<HomeCubit>()
-                              .removeAllApplianceOfType(id),
-                      onEditHours:
-                          () => _showEditHoursDialog(context, sample),
-                    ),
-                  );
-                }).toList(),
+              return Padding(
+                padding: const EdgeInsets.symmetric(vertical: 8),
+                child: GroupCard(
+                  icon: IconWrapper.getMaterialIcon(icon),
+                  name: displayName,
+                  count: count,
+                  totalWh: totalWh,
+                  maxWidth: maxWidth,
+                  onAdd: () => context.read<HomeCubit>().addOneLike(sample),
+                  onRemoveOne: () =>
+                      context.read<HomeCubit>().removeOneApplianceOfType(id),
+                  onRemoveAll: () =>
+                      context.read<HomeCubit>().removeAllApplianceOfType(id),
+                  onEditHours: () => _showEditHoursDialog(context, sample),
+                ),
+              );
+            }).toList(),
           ),
         );
       },
@@ -411,9 +399,7 @@ class _HomePageState extends State<HomePage> {
                   const SizedBox(height: 24),
                   Text(
                     l10n.hoursValue(
-                      selectedHours
-                          .toStringAsFixed(1)
-                          .localizedDigits(locale),
+                      selectedHours.toStringAsFixed(1).localizedDigits(locale),
                     ),
                     style: Theme.of(context).textTheme.headlineMedium?.copyWith(
                       fontWeight: FontWeight.bold,
@@ -459,9 +445,8 @@ class _HomePageState extends State<HomePage> {
     final l10n = AppLocalizations.of(context)!;
 
     return BlocBuilder<HomeCubit, HomeState>(
-      buildWhen:
-          (previous, current) =>
-              previous.selectedAppliance != current.selectedAppliance,
+      buildWhen: (previous, current) =>
+          previous.selectedAppliance != current.selectedAppliance,
       builder: (context, state) {
         final hasSelection = state.selectedAppliance.isNotEmpty;
         final languageCode = Localizations.localeOf(context).languageCode;
@@ -486,12 +471,11 @@ class _HomePageState extends State<HomePage> {
                 height: 56,
                 width: double.infinity,
                 child: FilledButton(
-                  onPressed:
-                      hasSelection
-                          ? () => context.read<HomeCubit>().process(
-                            languageCode: languageCode,
-                          )
-                          : null,
+                  onPressed: hasSelection
+                      ? () => context.read<HomeCubit>().process(
+                          languageCode: languageCode,
+                        )
+                      : null,
                   child: Text(
                     l10n.calculate,
                     style: TextStyle(
@@ -509,30 +493,28 @@ class _HomePageState extends State<HomePage> {
 
   Widget _buildApplianceGrid(double maxWidth) {
     return BlocBuilder<HomeCubit, HomeState>(
-      buildWhen:
-          (previous, current) =>
-              previous.initialList != current.initialList ||
-              previous.applianceSearchQuery != current.applianceSearchQuery,
+      buildWhen: (previous, current) =>
+          previous.initialList != current.initialList ||
+          previous.applianceSearchQuery != current.applianceSearchQuery,
       builder: (context, state) {
         final l10n = AppLocalizations.of(context)!;
         final itemSize = adaptiveGridItemSize(maxWidth);
         final query = state.applianceSearchQuery.trim().toLowerCase();
         final languageCode = Localizations.localeOf(context).languageCode;
-        final filtered =
-            state.initialList.where((cat) {
-              if (query.isEmpty) return true;
-              if (cat.localizedName(languageCode).toLowerCase().contains(query)) {
-                return true;
-              }
-              if (cat.nameFa.toLowerCase().contains(query)) return true;
-              if (cat.nameEn.toLowerCase().contains(query)) return true;
-              return cat.appliances.any(
-                (a) =>
-                    a.localizedName(languageCode).toLowerCase().contains(query) ||
-                    a.nameFa.toLowerCase().contains(query) ||
-                    a.nameEn.toLowerCase().contains(query),
-              );
-            }).toList();
+        final filtered = state.initialList.where((cat) {
+          if (query.isEmpty) return true;
+          if (cat.localizedName(languageCode).toLowerCase().contains(query)) {
+            return true;
+          }
+          if (cat.nameFa.toLowerCase().contains(query)) return true;
+          if (cat.nameEn.toLowerCase().contains(query)) return true;
+          return cat.appliances.any(
+            (a) =>
+                a.localizedName(languageCode).toLowerCase().contains(query) ||
+                a.nameFa.toLowerCase().contains(query) ||
+                a.nameEn.toLowerCase().contains(query),
+          );
+        }).toList();
 
         return Padding(
           padding: const EdgeInsets.symmetric(vertical: 16),
@@ -547,10 +529,8 @@ class _HomePageState extends State<HomePage> {
                     borderRadius: BorderRadius.circular(12),
                   ),
                 ),
-                onChanged:
-                    (value) => context.read<HomeCubit>().setApplianceSearchQuery(
-                      value,
-                    ),
+                onChanged: (value) =>
+                    context.read<HomeCubit>().setApplianceSearchQuery(value),
               ),
               const SizedBox(height: 16),
               if (filtered.isEmpty)
@@ -564,14 +544,13 @@ class _HomePageState extends State<HomePage> {
                   runAlignment: WrapAlignment.center,
                   spacing: 16,
                   runSpacing: 16,
-                  children:
-                      filtered.map((appliance) {
-                        return SizedBox(
-                          width: itemSize,
-                          height: itemSize,
-                          child: ApplianceIcon(category: appliance),
-                        );
-                      }).toList(),
+                  children: filtered.map((appliance) {
+                    return SizedBox(
+                      width: itemSize,
+                      height: itemSize,
+                      child: ApplianceIcon(category: appliance),
+                    );
+                  }).toList(),
                 ),
             ],
           ),
@@ -591,11 +570,8 @@ class _HomePageState extends State<HomePage> {
     for (final a in items) {
       map.putIfAbsent(a.key, () => []).add(a);
     }
-    final sorted =
-        map.entries.toList()
-          ..sort(
-            (a, b) => totalGroupWh(b.value).compareTo(totalGroupWh(a.value)),
-          );
+    final sorted = map.entries.toList()
+      ..sort((a, b) => totalGroupWh(b.value).compareTo(totalGroupWh(a.value)));
     return Map.fromEntries(sorted);
   }
 }

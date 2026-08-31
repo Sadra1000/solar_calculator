@@ -40,9 +40,11 @@
       }
     }
   },
-  "deepSeekApiKeyMissing": "کلید API هوش مصنوعی (DEEPSEEK_API_KEY) تنظیم نشده است. برای تحلیل هوشمند، کلید را در فایل .env قرار دهید.",
-  "analysisNotAvailable": "تحلیل هوش مصنوعی در دسترس نیست. نتایج محاسبه محلی در زیر نمایش داده شده‌اند.",
+  "deepSeekApiKeyMissing": "اتصال امن تحلیل هوشمند تنظیم نشده است؛ پیشنهاد محلی نمایش داده می‌شود.",
+  "analysisNotAvailable": "در حال آماده‌سازی پیشنهاد محلی…",
   "enableAiAnalysis": "تحلیل هوشمند خورشیدی (DeepSeek)",
+  "localRecommendationEnabled": "پیشنهاد محلی و بدون نیاز به کلید فعال است",
+  "aiSecureProxyRequired": "تحلیل DeepSeek در نسخه وب فقط با اتصال امن سمت سرور فعال می‌شود.",
   "presetsTitle": "پیش‌فرض‌های سریع",
   "editHours": "ویرایش ساعات",
   "applianceName": "نام وسیله",
@@ -98,6 +100,7 @@
       "km": {"type": "String"}
     }
   },
-  "aiFallbackNotice": "هوش مصنوعی در دسترس نیست — پیشنهاد فرمولی نمایش داده می‌شود.",
-  "refreshAnalysis": "بروزرسانی تحلیل هوشمند"
+  "aiFallbackNotice": "اتصال تحلیل هوشمند در دسترس نیست — پیشنهاد محلی نمایش داده می‌شود.",
+  "refreshAnalysis": "بروزرسانی تحلیل هوشمند",
+  "estimateDisclaimer": "این نتایج برآورد اولیه هستند و جایگزین بازدید، طراحی و تأیید نصاب یا مهندس برق نیستند."
 }

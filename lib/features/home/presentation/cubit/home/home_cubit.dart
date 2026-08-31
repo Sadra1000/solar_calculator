@@ -32,9 +32,7 @@ class HomeCubit extends Cubit<HomeState> {
         ),
       );
     } else if (data is DataFailed) {
-      emit(
-        state.copyWith(errorMsg: data.message, isInitializing: false),
-      );
+      emit(state.copyWith(errorMsg: data.message, isInitializing: false));
     } else {
       emit(state.copyWith(isInitializing: false));
     }
@@ -126,10 +124,9 @@ class HomeCubit extends Cubit<HomeState> {
   }
 
   void updateGroupHours(String id, double hours) {
-    final updated =
-        state.selectedAppliance
-            .map((a) => a.id == id ? a.copyWith(houres: hours) : a)
-            .toList();
+    final updated = state.selectedAppliance
+        .map((a) => a.id == id ? a.copyWith(houres: hours) : a)
+        .toList();
     _updateSelection(updated);
   }
 
@@ -145,7 +142,13 @@ class HomeCubit extends Cubit<HomeState> {
   void process({required String languageCode}) {
     if (state.selectedAppliance.isEmpty) return;
 
-    emit(state.copyWith(isLoading: true, clearNavigationEvent: true, clearError: true));
+    emit(
+      state.copyWith(
+        isLoading: true,
+        clearNavigationEvent: true,
+        clearError: true,
+      ),
+    );
 
     final result = repo.buildResultModel(
       appliances: state.selectedAppliance,

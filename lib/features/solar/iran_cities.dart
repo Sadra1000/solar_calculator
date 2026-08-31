@@ -15,7 +15,11 @@ class IranCity {
       languageCode == 'fa' ? nameFa : nameEn;
 }
 
-/// Peak sun hours / daily irradiance factors for major Iranian cities (kWh/m²/day).
+/// Approximate long-term daily solar-resource values for major Iranian cities.
+///
+/// Intended for preliminary estimates only. Reference methodology and datasets:
+/// https://datacatalog.worldbank.org/search/dataset/0038640/
+/// world-high-resolution-solar-resource-ghi-dif-gti-dni-gis-data-global-solar-atlas
 const List<IranCity> iranCities = [
   IranCity(
     id: 'tehran',
