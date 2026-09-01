@@ -14,7 +14,7 @@ A bilingual Flutter web app for estimating household electricity consumption and
 - Saves the latest calculations locally and lets users reopen or share them.
 - Supports Persian and English, light and dark themes, mobile, desktop, and installable PWA layouts.
 - Produces a deterministic local recommendation without requiring an account or API key.
-- Can optionally add DeepSeek analysis through a secure OpenAI-compatible server-side proxy.
+- Can optionally add DeepSeek analysis directly or through an OpenAI-compatible server-side proxy.
 
 ## Product boundaries
 
@@ -66,9 +66,9 @@ flutter run --dart-define-from-file=dart_defines.json
 
 ## Secure AI configuration for public web builds
 
-Public web builds intentionally ignore `DEEPSEEK_API_KEY`, even if it is supplied at build time. This prevents a private provider key from being embedded in downloadable JavaScript.
+The portfolio deployment injects `DEEPSEEK_API_KEY` into the Flutter Web build so DeepSeek works directly in the browser. This makes the key readable from the downloadable JavaScript and should only be used with a disposable, quota-limited key.
 
-To enable AI on the public site, configure `DEEPSEEK_PROXY_URL` with the full HTTPS URL of an OpenAI-compatible `/chat/completions` proxy. The proxy is responsible for adding the provider authorization header, restricting allowed origins, and applying rate limits.
+For a production deployment, configure `DEEPSEEK_PROXY_URL` with the full HTTPS URL of an OpenAI-compatible `/chat/completions` proxy instead. The proxy is responsible for adding the provider authorization header, restricting allowed origins, and applying rate limits.
 
 For GitHub Pages, add `DEEPSEEK_PROXY_URL` under **Settings → Secrets and variables → Actions → Variables**. If it is absent, the deployed app remains fully usable and shows its local recommendation.
 

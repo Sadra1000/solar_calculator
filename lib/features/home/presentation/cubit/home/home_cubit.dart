@@ -1,6 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:solar_calculator/commen/data_state.dart';
 import 'package:solar_calculator/commen/services/shared_operator.dart';
+import 'package:solar_calculator/config/api_config.dart';
 import 'package:solar_calculator/features/home/model/appliances.dart';
 import 'package:solar_calculator/features/home/model/preset_profiles.dart';
 import 'package:solar_calculator/features/home/presentation/cubit/home/home_navigation_event.dart';
@@ -13,7 +14,7 @@ class HomeCubit extends Cubit<HomeState> {
   final SharedPrefOperator prefs;
 
   HomeCubit({required this.repo, required this.prefs})
-    : super(const HomeState());
+    : super(HomeState(aiprocessing: ApiConfig.hasAiConfiguration));
 
   void initialList() {
     emit(state.copyWith(isInitializing: true));

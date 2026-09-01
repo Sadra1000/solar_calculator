@@ -1,7 +1,7 @@
 name: solar_calculator
 description: "Bilingual household energy and solar-system estimator for Iran."
 publish_to: 'none'
-version: 1.0.0+1
+version: 1.0.1+2
 
 environment:
   sdk: ^3.12.2

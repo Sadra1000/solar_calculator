@@ -9,9 +9,8 @@ import 'package:solar_calculator/config/api_credentials_native.dart'
 /// or:
 ///   --dart-define-from-file=dart_defines.json
 ///
-/// Web builds intentionally ignore `DEEPSEEK_API_KEY`. Configure an HTTPS
-/// OpenAI-compatible proxy through `DEEPSEEK_PROXY_URL` instead so no secret is
-/// embedded in the public JavaScript bundle.
+/// Web builds can use either `DEEPSEEK_API_KEY` directly or an HTTPS
+/// OpenAI-compatible endpoint supplied through `DEEPSEEK_PROXY_URL`.
 abstract final class ApiConfig {
   static const String deepSeekApiKey = credentials.deepSeekApiKey;
 

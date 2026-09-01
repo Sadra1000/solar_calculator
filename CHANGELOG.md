@@ -1,6 +1,12 @@
 # Changelog
 
-## 1.0.0 — 2026-08-31
+## 1.0.1 - 2026-09-01
+
+- Enabled DeepSeek analysis in the public portfolio build.
+- Turned AI analysis on by default whenever AI credentials are configured.
+- Replaced the technical proxy notice with product-facing fallback copy.
+
+## 1.0.0 - 2026-08-31
 
 - Finalized the bilingual Persian/English portfolio release.
 - Added deterministic local solar recommendations that work without AI.

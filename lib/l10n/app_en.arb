@@ -168,7 +168,7 @@
       }
     }
   },
-  "deepSeekApiKeyMissing": "Secure AI connectivity is not configured; a local recommendation will be shown.",
+  "deepSeekApiKeyMissing": "AI analysis is unavailable; a local recommendation will be shown.",
   "@deepSeekApiKeyMissing": {
     "description": "Error when DEEPSEEK_API_KEY environment variable is missing"
   },
@@ -180,8 +180,8 @@
   "@enableAiAnalysis": {
     "description": "Toggle label for optional DeepSeek analysis on home screen"
   },
-  "localRecommendationEnabled": "Local recommendation is available without an API key",
-  "aiSecureProxyRequired": "DeepSeek analysis on the web is enabled only through a secure server-side connection.",
+  "localRecommendationEnabled": "Local recommendation is available",
+  "aiSecureProxyRequired": "AI analysis is not enabled in this build.",
   "presetsTitle": "Quick presets",
   "@presetsTitle": {
     "description": "Section title for preset appliance bundles"

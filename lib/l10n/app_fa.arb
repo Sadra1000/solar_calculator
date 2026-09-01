@@ -40,11 +40,11 @@
       }
     }
   },
-  "deepSeekApiKeyMissing": "اتصال امن تحلیل هوشمند تنظیم نشده است؛ پیشنهاد محلی نمایش داده می‌شود.",
+  "deepSeekApiKeyMissing": "تحلیل هوشمند در دسترس نیست؛ پیشنهاد محلی نمایش داده می‌شود.",
   "analysisNotAvailable": "در حال آماده‌سازی پیشنهاد محلی…",
   "enableAiAnalysis": "تحلیل هوشمند خورشیدی (DeepSeek)",
-  "localRecommendationEnabled": "پیشنهاد محلی و بدون نیاز به کلید فعال است",
-  "aiSecureProxyRequired": "تحلیل DeepSeek در نسخه وب فقط با اتصال امن سمت سرور فعال می‌شود.",
+  "localRecommendationEnabled": "پیشنهاد محلی فعال است",
+  "aiSecureProxyRequired": "تحلیل هوشمند در این نسخه فعال نیست.",
   "presetsTitle": "پیش‌فرض‌های سریع",
   "editHours": "ویرایش ساعات",
   "applianceName": "نام وسیله",

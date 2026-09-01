@@ -42,10 +42,15 @@ jobs:
 
       - name: Create dart defines
         env:
+          API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
           PROXY_URL: ${{ vars.DEEPSEEK_PROXY_URL }}
         run: |
-          jq -n --arg proxy "$PROXY_URL" \
-            '{DEEPSEEK_PROXY_URL: $proxy}' > dart_defines.json
+          if [ -z "$API_KEY" ] && [ -z "$PROXY_URL" ]; then
+            echo "Configure DEEPSEEK_API_KEY or DEEPSEEK_PROXY_URL before deployment."
+            exit 1
+          fi
+          jq -n --arg apiKey "$API_KEY" --arg proxy "$PROXY_URL" \
+            '{DEEPSEEK_API_KEY: $apiKey, DEEPSEEK_PROXY_URL: $proxy}' > dart_defines.json
 
       - name: Build web
         run: |

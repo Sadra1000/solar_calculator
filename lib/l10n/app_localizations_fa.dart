@@ -124,7 +124,7 @@ class AppLocalizationsFa extends AppLocalizations {
 
   @override
   String get deepSeekApiKeyMissing =>
-      'اتصال امن تحلیل هوشمند تنظیم نشده است؛ پیشنهاد محلی نمایش داده می‌شود.';
+      'تحلیل هوشمند در دسترس نیست؛ پیشنهاد محلی نمایش داده می‌شود.';
 
   @override
   String get analysisNotAvailable => 'در حال آماده‌سازی پیشنهاد محلی…';
@@ -133,12 +133,10 @@ class AppLocalizationsFa extends AppLocalizations {
   String get enableAiAnalysis => 'تحلیل هوشمند خورشیدی (DeepSeek)';
 
   @override
-  String get localRecommendationEnabled =>
-      'پیشنهاد محلی و بدون نیاز به کلید فعال است';
+  String get localRecommendationEnabled => 'پیشنهاد محلی فعال است';
 
   @override
-  String get aiSecureProxyRequired =>
-      'تحلیل DeepSeek در نسخه وب فقط با اتصال امن سمت سرور فعال می‌شود.';
+  String get aiSecureProxyRequired => 'تحلیل هوشمند در این نسخه فعال نیست.';
 
   @override
   String get presetsTitle => 'پیش‌فرض‌های سریع';

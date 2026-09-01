@@ -299,7 +299,7 @@ abstract class AppLocalizations {
   /// Error when DEEPSEEK_API_KEY environment variable is missing
   ///
   /// In en, this message translates to:
-  /// **'Secure AI connectivity is not configured; a local recommendation will be shown.'**
+  /// **'AI analysis is unavailable; a local recommendation will be shown.'**
   String get deepSeekApiKeyMissing;
 
   /// Placeholder when AI analysis was not requested or failed
@@ -317,13 +317,13 @@ abstract class AppLocalizations {
   /// No description provided for @localRecommendationEnabled.
   ///
   /// In en, this message translates to:
-  /// **'Local recommendation is available without an API key'**
+  /// **'Local recommendation is available'**
   String get localRecommendationEnabled;
 
   /// No description provided for @aiSecureProxyRequired.
   ///
   /// In en, this message translates to:
-  /// **'DeepSeek analysis on the web is enabled only through a secure server-side connection.'**
+  /// **'AI analysis is not enabled in this build.'**
   String get aiSecureProxyRequired;
 
   /// Section title for preset appliance bundles

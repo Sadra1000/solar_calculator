@@ -125,7 +125,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get deepSeekApiKeyMissing =>
-      'Secure AI connectivity is not configured; a local recommendation will be shown.';
+      'AI analysis is unavailable; a local recommendation will be shown.';
 
   @override
   String get analysisNotAvailable => 'Preparing the local recommendation…';
@@ -134,12 +134,11 @@ class AppLocalizationsEn extends AppLocalizations {
   String get enableAiAnalysis => 'Include AI solar advice (DeepSeek)';
 
   @override
-  String get localRecommendationEnabled =>
-      'Local recommendation is available without an API key';
+  String get localRecommendationEnabled => 'Local recommendation is available';
 
   @override
   String get aiSecureProxyRequired =>
-      'DeepSeek analysis on the web is enabled only through a secure server-side connection.';
+      'AI analysis is not enabled in this build.';
 
   @override
   String get presetsTitle => 'Quick presets';
