@@ -66,7 +66,7 @@ flutter run --dart-define-from-file=dart_defines.json
 
 ## Secure AI configuration for public web builds
 
-The portfolio deployment injects `DEEPSEEK_API_KEY` into the Flutter Web build so DeepSeek works directly in the browser. This makes the key readable from the downloadable JavaScript and should only be used with a disposable, quota-limited key.
+When the `DEEPSEEK_API_KEY` GitHub Secret is configured, the portfolio deployment injects it into the Flutter Web build so DeepSeek works directly in the browser. This makes the key readable from the downloadable JavaScript and should only be used with a disposable, quota-limited key.
 
 For a production deployment, configure `DEEPSEEK_PROXY_URL` with the full HTTPS URL of an OpenAI-compatible `/chat/completions` proxy instead. The proxy is responsible for adding the provider authorization header, restricting allowed origins, and applying rate limits.
 

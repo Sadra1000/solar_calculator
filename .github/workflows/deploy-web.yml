@@ -46,8 +46,7 @@ jobs:
           PROXY_URL: ${{ vars.DEEPSEEK_PROXY_URL }}
         run: |
           if [ -z "$API_KEY" ] && [ -z "$PROXY_URL" ]; then
-            echo "Configure DEEPSEEK_API_KEY or DEEPSEEK_PROXY_URL before deployment."
-            exit 1
+            echo "::warning::DeepSeek is disabled until DEEPSEEK_API_KEY or DEEPSEEK_PROXY_URL is configured."
           fi
           jq -n --arg apiKey "$API_KEY" --arg proxy "$PROXY_URL" \
             '{DEEPSEEK_API_KEY: $apiKey, DEEPSEEK_PROXY_URL: $proxy}' > dart_defines.json
