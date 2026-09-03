@@ -4,6 +4,7 @@
 
 - Enabled DeepSeek analysis in the public portfolio build.
 - Turned AI analysis on by default whenever AI credentials are configured.
+- Disabled DeepSeek thinking mode to reduce response latency.
 - Replaced the technical proxy notice with product-facing fallback copy.
 
 ## 1.0.0 - 2026-08-31

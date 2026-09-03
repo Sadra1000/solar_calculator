@@ -18,6 +18,7 @@ class HomeApi {
   }) {
     return {
       'model': ApiConfig.model,
+      'thinking': {'type': 'disabled'},
       'messages': [
         {
           'role': 'system',

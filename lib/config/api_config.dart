@@ -22,8 +22,8 @@ abstract final class ApiConfig {
 
   static const String chatCompletionsPath = '/chat/completions';
 
-  /// Non-thinking mode successor to deprecated `deepseek-chat`.
-  /// See https://api-docs.deepseek.com/
+  /// DeepSeek model used for analysis. Thinking is explicitly disabled in the
+  /// Chat Completions request so the model returns the final answer directly.
   static const String model = String.fromEnvironment(
     'DEEPSEEK_MODEL',
     defaultValue: 'deepseek-v4-pro',
